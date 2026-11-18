@@ -50,10 +50,10 @@ exercise firestack classes through the gobind facade and its Robolectric shadows
 ./gradlew -PfirestackRepo=rust :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)  # Rust engine
 ./gradlew -PfirestackRepo=rust :app:connectedFdroidFullDebugAndroidTest                            # emulator
 ```
-The full upstream unit suite (`:app:testFdroidFullDebugUnitTest` with no filter) hung once on a macOS host during
-`ConnectionMonitorTest`, blocked in WorkManager/Room `runBlocking`. Run on its own, that class passes (28/28) on both
-pristine v0.5.8 and the fork, so the hang looks like an interaction with earlier tests in the same JVM. Upstream's
-own CI does not run unit tests.
+The full upstream unit suite (`:app:testFdroidFullDebugUnitTest` with no filter) hangs in `ConnectionMonitorTest`,
+blocked in WorkManager/Room `runBlocking`. This was reproduced on **pristine upstream v0.5.8** as well as on the fork,
+both times right after `BraveVPNServiceLifecycleTest`. Run on its own, the class passes (28/28). It is an upstream
+test-isolation issue, and upstream's own CI does not run unit tests. Worth reporting upstream.
 
 ## 5. JVM host tests
 `engine/android/host-test` runs the vendored Java facade on the desktop JVM against a host build of `libgojni`.
