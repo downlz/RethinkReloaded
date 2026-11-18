@@ -1,0 +1,70 @@
+# Builds and publishes signed RethinkReloaded fdroid APKs for fork release tags (vX.Y.Z-rr.N).
+# Secrets: RR_KS_BASE64 (base64 keystore), RR_KS_STORE_PASSWORD, RR_KS_ALIAS, RR_KS_KEY_PASSWORD.
+# See docs/fork/RELEASING.md.
+name: rr-release
+
+on:
+  push:
+    tags: [ "v*-rr.*" ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'existing vX.Y.Z-rr.N tag to (re)build'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.tag || github.ref }}
+      - uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Keystore
+        env:
+          RR_KS_BASE64: ${{ secrets.RR_KS_BASE64 }}
+          RR_KS_STORE_PASSWORD: ${{ secrets.RR_KS_STORE_PASSWORD }}
+          RR_KS_ALIAS: ${{ secrets.RR_KS_ALIAS }}
+          RR_KS_KEY_PASSWORD: ${{ secrets.RR_KS_KEY_PASSWORD }}
+        run: |
+          [ -n "$RR_KS_BASE64" ] || { echo "RR_KS_BASE64 secret not set"; exit 1; }
+          echo "$RR_KS_BASE64" | base64 -d > "$RUNNER_TEMP/rr-release.jks"
+          {
+            echo "storeFile=$RUNNER_TEMP/rr-release.jks"
+            echo "storePassword=$RR_KS_STORE_PASSWORD"
+            echo "keyAlias=$RR_KS_ALIAS"
+            echo "keyPassword=$RR_KS_KEY_PASSWORD"
+          } > keystore.properties
+      - name: Build
+        run: |
+          rev=$(echo "$TAG" | sed -n 's/.*-rr\.\([0-9][0-9]*\)$/\1/p')
+          ./gradlew --no-daemon -PrrRevision="${rev:-0}" :app:assembleFdroidFullRelease
+      - name: Collect APKs
+        run: |
+          mkdir dist
+          for f in app/build/outputs/apk/fdroidFull/release/*.apk; do
+            abi=$(basename "$f" .apk | sed 's/^app-fdroid-full-//; s/-release$//')
+            cp "$f" "dist/RethinkReloaded-$TAG-$abi.apk"
+          done
+          (cd dist && sha256sum *.apk > SHA256SUMS)
+          rm -f keystore.properties
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base=${TAG%-rr.*}
+          notes="RethinkReloaded $TAG, based on [celzero/rethink-app $base](https://github.com/celzero/rethink-app/releases/tag/$base).
+
+          All credit for the app goes to Celzero and the rethink-app contributors. Upstream release notes: https://github.com/celzero/rethink-app/releases/tag/$base"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "RethinkReloaded $TAG" --notes "$notes" --draft
+          gh release upload "$TAG" dist/* --clobber

@@ -1,0 +1,5729 @@
+public abstract class com.celzero.firestack.backend.Backend {
+  public static final java.lang.String Alg = "Alg";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Auto = "Auto";
+    descriptor: Ljava/lang/String;
+  public static final int BadQuery = 4;
+    descriptor: I
+  public static final int BadResponse = 5;
+    descriptor: I
+  public static final java.lang.String Base = "Base";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Block = "Block";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String BlockAll = "BlockAll";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String BlockFree = "BlockFree";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Bootstrap = "Bootstrap";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String CT = "Cache";
+    descriptor: Ljava/lang/String;
+  public static final int ClientError = 8;
+    descriptor: I
+  public static final int Complete = 1;
+    descriptor: I
+  public static final int DEnd = 11;
+    descriptor: I
+  public static final java.lang.String DNS53 = "DNS";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String DNSCrypt = "DNSCrypt";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String DOH = "DNS-over-HTTPS";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String DOT = "DNS-over-TLS";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String DcProxy = "DcProxy";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Default = "Default";
+    descriptor: Ljava/lang/String;
+  public static final long EB32 = 0l;
+    descriptor: J
+  public static final long EB64 = 1l;
+    descriptor: J
+  public static final int END = -3;
+    descriptor: I
+  public static final java.lang.String Exit = "Exit";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Fixed = "Fixed";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String GlobalH1 = "GlobalHttp1";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Goos = "Goos";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String HTTP1 = "http1";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String INTERNET = "net";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Ingress = "Ingress";
+    descriptor: Ljava/lang/String;
+  public static final int InternalError = 6;
+    descriptor: I
+  public static final java.lang.String IpMapper = "IpMapper";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String KVsep = "|";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Kdelim = "@";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Ksep = ",";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Local = "mdns";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Localhost = "localhost";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String NAT64 = "nat64";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String NOOP = "noop";
+    descriptor: Ljava/lang/String;
+  public static final int NoResponse = 3;
+    descriptor: I
+  public static final java.lang.String ODOH = "Oblivious DNS-over-HTTPS";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String OrbotH1 = "OrbotHttp1";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String OrbotS5 = "OrbotSocks5";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String OriginInternal = "self";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String OriginTunnel = "tunnel";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String PIPH2 = "piph2";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String PIPWS = "pipws";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String PXHTTP = "pxhttp";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String PXSOCKS5 = "pxsocks5";
+    descriptor: Ljava/lang/String;
+  public static final int Paused = 9;
+    descriptor: I
+  public static final java.lang.String Plus = "Plus";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Preferred = "Preferred";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Preset = "Preset";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String RPN = "rpn";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Rpn64 = "nat64rpn";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String RpnH2 = "piph2rpn";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String RpnPro = "wgyrpn";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String RpnWin = "wgyrpn";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String RpnWs = "pipwsrpn";
+    descriptor: Ljava/lang/String;
+  public static final int SKO = -1;
+    descriptor: I
+  public static final java.lang.String SOCKS5 = "socks5";
+    descriptor: Ljava/lang/String;
+  public static final int SOK = 1;
+    descriptor: I
+  public static final int SOP = -2;
+    descriptor: I
+  public static final int SUP = 0;
+    descriptor: I
+  public static final java.lang.String SVCHTTP = "svchttp";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String SVCSOCKS5 = "svcsocks5";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Selfhost = "rethink";
+    descriptor: Ljava/lang/String;
+  public static final int SendFailed = 2;
+    descriptor: I
+  public static final int Start = 0;
+    descriptor: I
+  public static final java.lang.String System = "System";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String Systemhost = "system";
+    descriptor: Ljava/lang/String;
+  public static final int TKO = -2;
+    descriptor: I
+  public static final int TNT = 2;
+    descriptor: I
+  public static final int TOK = -1;
+    descriptor: I
+  public static final int TPU = 3;
+    descriptor: I
+  public static final int TUP = 0;
+    descriptor: I
+  public static final int TZZ = 1;
+    descriptor: I
+  public static final int TransportError = 7;
+    descriptor: I
+  public static final int Unknown = 100;
+    descriptor: I
+  public static final int Unpaused = 10;
+    descriptor: I
+  public static final java.lang.String Vsep = ",";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String WG = "wg";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String WGFAST = "gsro";
+    descriptor: Ljava/lang/String;
+  private com.celzero.firestack.backend.Backend();
+    descriptor: ()V
+
+  public static void touch();
+    descriptor: ()V
+
+  private static native void _init();
+    descriptor: ()V
+
+  public static native com.celzero.firestack.backend.PipMsg asPipMsg(java.lang.String);
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/PipMsg;
+
+  public static native com.celzero.firestack.backend.IpTree newIpTree();
+    descriptor: ()Lcom/celzero/firestack/backend/IpTree;
+
+  public static native com.celzero.firestack.backend.PipKeyProvider newPipKeyProvider(byte[], java.lang.String) throws java.lang.Exception;
+    descriptor: ([BLjava/lang/String;)Lcom/celzero/firestack/backend/PipKeyProvider;
+
+  public static native com.celzero.firestack.backend.PipKeyProvider newPipKeyProviderFromMsg(byte[], java.lang.String) throws java.lang.Exception;
+    descriptor: ([BLjava/lang/String;)Lcom/celzero/firestack/backend/PipKeyProvider;
+
+  public static native com.celzero.firestack.backend.PipKeyState newPipKeyStateFrom(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/PipKeyState;
+
+  public static native com.celzero.firestack.backend.PipMsg newPipMsgWith(com.celzero.firestack.backend.PipToken);
+    descriptor: (Lcom/celzero/firestack/backend/PipToken;)Lcom/celzero/firestack/backend/PipMsg;
+
+  public static native com.celzero.firestack.backend.RadixTree newRadixTree();
+    descriptor: ()Lcom/celzero/firestack/backend/RadixTree;
+
+  public static native com.celzero.firestack.backend.RpnOps newRpnOps();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnOps;
+
+  public static native com.celzero.firestack.backend.WgKey newWgPrivateKey() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/WgKey;
+
+  public static native com.celzero.firestack.backend.WgKey newWgPrivateKeyOf(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/WgKey;
+
+  public static native com.celzero.firestack.backend.PipKey pipKeyFrom(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/PipKey;
+
+  public static native com.celzero.firestack.backend.PipToken token() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/PipToken;
+
+  static {};
+    descriptor: ()V
+}
+final class com.celzero.firestack.backend.Backend$proxyClient implements go.Seq$Proxy,com.celzero.firestack.backend.Client {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyClient(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.IPMetadata iP4() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/IPMetadata;
+
+  public native com.celzero.firestack.backend.IPMetadata iP6() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/IPMetadata;
+}
+final class com.celzero.firestack.backend.Backend$proxyConsole implements go.Seq$Proxy,com.celzero.firestack.backend.Console {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyConsole(int);
+    descriptor: (I)V
+
+  public native void log(int, java.lang.String);
+    descriptor: (ILjava/lang/String;)V
+
+  public native boolean logFD(long);
+    descriptor: (J)Z
+
+  public native com.celzero.firestack.backend.LogConsumer logMemFD(long, long, long, long);
+    descriptor: (JJJJ)Lcom/celzero/firestack/backend/LogConsumer;
+}
+final class com.celzero.firestack.backend.Backend$proxyController implements go.Seq$Proxy,com.celzero.firestack.backend.Controller {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyController(int);
+    descriptor: (I)V
+
+  public native void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSListener implements go.Seq$Proxy,com.celzero.firestack.backend.DNSListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSListener(int);
+    descriptor: (I)V
+
+  public native void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSStopped();
+    descriptor: ()V
+
+  public native com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public native com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSResolver implements go.Seq$Proxy,com.celzero.firestack.backend.DNSResolver {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSResolver(int);
+    descriptor: (I)V
+
+  public native boolean add(com.celzero.firestack.backend.DNSTransport);
+    descriptor: (Lcom/celzero/firestack/backend/DNSTransport;)Z
+
+  public native com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public native java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.DNSTransportMult getMult(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransportMult;
+
+  public native com.celzero.firestack.backend.RDNS getRdnsLocal() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public native com.celzero.firestack.backend.RDNS getRdnsRemote() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public native java.lang.String liveTransports();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String refresh() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean remove(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native void setRdnsLocal(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void setRdnsRemote(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public native int status();
+    descriptor: ()I
+
+  public native void translate(boolean, boolean);
+    descriptor: (ZZ)V
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSStatusProvider implements go.Seq$Proxy,com.celzero.firestack.backend.DNSStatusProvider {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSStatusProvider(int);
+    descriptor: (I)V
+
+  public native int status();
+    descriptor: ()I
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSTransport implements go.Seq$Proxy,com.celzero.firestack.backend.DNSTransport {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSTransport(int);
+    descriptor: (I)V
+
+  public native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.Proxy getRelay();
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+
+  public native java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.DNSMeasurement measure(java.lang.String, int, int);
+    descriptor: (Ljava/lang/String;II)Lcom/celzero/firestack/backend/DNSMeasurement;
+
+  public native java.lang.String originalAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native long p50();
+    descriptor: ()J
+
+  public native int status();
+    descriptor: ()I
+
+  public native java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSTransportMult implements go.Seq$Proxy,com.celzero.firestack.backend.DNSTransportMult {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSTransportMult(int);
+    descriptor: (I)V
+
+  public native boolean add(com.celzero.firestack.backend.DNSTransport);
+    descriptor: (Lcom/celzero/firestack/backend/DNSTransport;)Z
+
+  public native com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public native java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String liveTransports();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String refresh() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean remove(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSTransportMultProvider implements go.Seq$Proxy,com.celzero.firestack.backend.DNSTransportMultProvider {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSTransportMultProvider(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.DNSTransportMult getMult(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransportMult;
+}
+final class com.celzero.firestack.backend.Backend$proxyDNSTransportProvider implements go.Seq$Proxy,com.celzero.firestack.backend.DNSTransportProvider {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyDNSTransportProvider(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public native java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyIpTree implements go.Seq$Proxy,com.celzero.firestack.backend.IpTree {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyIpTree(int);
+    descriptor: (I)V
+
+  public native void add(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void clear();
+    descriptor: ()V
+
+  public native boolean del(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native int delAll(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  public native boolean esc(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Z
+
+  public native int escLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)I
+
+  public native java.lang.String get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String getAll(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String getAny(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String getLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public native boolean has(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Z
+
+  public native boolean hasAny(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Z
+
+  public native long len();
+    descriptor: ()J
+
+  public native java.lang.String routes(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String routesLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public native void set(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native java.lang.String values(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String valuesLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyLogConsumer implements go.Seq$Proxy,com.celzero.firestack.backend.LogConsumer {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyLogConsumer(int);
+    descriptor: (I)V
+
+  public native long drain(long, long, long);
+    descriptor: (JJJ)J
+
+  public native boolean onClose();
+    descriptor: ()Z
+}
+final class com.celzero.firestack.backend.Backend$proxyPipKeyProvider implements go.Seq$Proxy,com.celzero.firestack.backend.PipKeyProvider {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyPipKeyProvider(int);
+    descriptor: (I)V
+
+  public native java.lang.String bid();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.PipKeyState blind() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/PipKeyState;
+
+  public native com.celzero.firestack.backend.PipKey finalize(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/PipKey;
+
+  public native com.celzero.firestack.backend.PipMsg msg();
+    descriptor: ()Lcom/celzero/firestack/backend/PipMsg;
+}
+final class com.celzero.firestack.backend.Backend$proxyProtector implements go.Seq$Proxy,com.celzero.firestack.backend.Protector {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyProtector(int);
+    descriptor: (I)V
+
+  public native byte[] uip(java.lang.String);
+    descriptor: (Ljava/lang/String;)[B
+}
+final class com.celzero.firestack.backend.Backend$proxyProxies implements go.Seq$Proxy,com.celzero.firestack.backend.Proxies {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyProxies(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.Proxy addProxy(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public native com.celzero.firestack.backend.Proxy getProxy(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public native boolean hasProxy(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native void hop(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native java.lang.String refreshProxies();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean removeProxy(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public native com.celzero.firestack.backend.Rpn rpn();
+    descriptor: ()Lcom/celzero/firestack/backend/Rpn;
+
+  public native java.lang.String testHop(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.Proxy underlay(java.lang.String, com.celzero.firestack.backend.Controller);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/Controller;)Lcom/celzero/firestack/backend/Proxy;
+}
+final class com.celzero.firestack.backend.Backend$proxyProxy implements go.Seq$Proxy,com.celzero.firestack.backend.Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyProxy(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.Client client();
+    descriptor: ()Lcom/celzero/firestack/backend/Client;
+
+  public native java.lang.String dns();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean pause();
+    descriptor: ()Z
+
+  public native boolean ping();
+    descriptor: ()Z
+
+  public native void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native boolean resume();
+    descriptor: ()Z
+
+  public native com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public native int status();
+    descriptor: ()I
+
+  public native void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyProxyListener implements go.Seq$Proxy,com.celzero.firestack.backend.ProxyListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyProxyListener(int);
+    descriptor: (I)V
+
+  public native void onProxiesStopped();
+    descriptor: ()V
+
+  public native void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+final class com.celzero.firestack.backend.Backend$proxyRDNS implements go.Seq$Proxy,com.celzero.firestack.backend.RDNS {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRDNS(int);
+    descriptor: (I)V
+
+  public native java.lang.String flagsToStamp(java.lang.String, long) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;J)Ljava/lang/String;
+
+  public native java.lang.String getStamp() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native void setStamp(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public native java.lang.String stampToFlags(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String stampToNames(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyRDNSResolver implements go.Seq$Proxy,com.celzero.firestack.backend.RDNSResolver {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRDNSResolver(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.RDNS getRdnsLocal() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public native com.celzero.firestack.backend.RDNS getRdnsRemote() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public native void setRdnsLocal(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void setRdnsRemote(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public native void translate(boolean, boolean);
+    descriptor: (ZZ)V
+}
+final class com.celzero.firestack.backend.Backend$proxyRadixTree implements go.Seq$Proxy,com.celzero.firestack.backend.RadixTree {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRadixTree(int);
+    descriptor: (I)V
+
+  public native boolean add(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native void clear();
+    descriptor: ()V
+
+  public native boolean del(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native int delAll(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  public native java.lang.String get(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native java.lang.String getAny(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native boolean has(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native boolean hasAny(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native long len();
+    descriptor: ()J
+
+  public native void set(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+final class com.celzero.firestack.backend.Backend$proxyResolverListener implements go.Seq$Proxy,com.celzero.firestack.backend.ResolverListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyResolverListener(int);
+    descriptor: (I)V
+
+  public native void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSStopped();
+    descriptor: ()V
+}
+final class com.celzero.firestack.backend.Backend$proxyRouter implements go.Seq$Proxy,com.celzero.firestack.backend.Router {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRouter(int);
+    descriptor: (I)V
+
+  public native boolean contains(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Z
+
+  public native boolean iP4();
+    descriptor: ()Z
+
+  public native boolean iP6();
+    descriptor: ()Z
+
+  public native long mtu() throws java.lang.Exception;
+    descriptor: ()J
+
+  public native boolean reaches(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native boolean self(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native com.celzero.firestack.backend.RouterStats stat();
+    descriptor: ()Lcom/celzero/firestack/backend/RouterStats;
+
+  public native com.celzero.firestack.backend.Proxy via() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+}
+final class com.celzero.firestack.backend.Backend$proxyRpn implements go.Seq$Proxy,com.celzero.firestack.backend.Rpn {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRpn(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.RpnEntitlement entitlementFrom(byte[], java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: ([BLjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public native com.celzero.firestack.backend.RpnProxy exit64() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+
+  public native com.celzero.firestack.backend.RpnProxy pip() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+
+  public native byte[] registerWin(byte[], byte[], java.lang.String, com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: ([B[BLjava/lang/String;Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public native java.lang.String testExit64() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String testWin() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean unregisterWin();
+    descriptor: ()Z
+
+  public native com.celzero.firestack.backend.RpnProxy win() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+}
+final class com.celzero.firestack.backend.Backend$proxyRpnAcc implements go.Seq$Proxy,com.celzero.firestack.backend.RpnAcc {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRpnAcc(int);
+    descriptor: (I)V
+
+  public native long created();
+    descriptor: ()J
+
+  public native com.celzero.firestack.backend.RpnEntitlement entitlement() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public native long expires();
+    descriptor: ()J
+
+  public native com.celzero.firestack.backend.RpnServers locations() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public native com.celzero.firestack.backend.RpnOps ops();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnOps;
+
+  public native byte[] state() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public native byte[] update(com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public native long updated();
+    descriptor: ()J
+
+  public native java.lang.String who();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyRpnEntitlement implements go.Seq$Proxy,com.celzero.firestack.backend.RpnEntitlement {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRpnEntitlement(int);
+    descriptor: (I)V
+
+  public native boolean allowRestore();
+    descriptor: ()Z
+
+  public native java.lang.String cid();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String did();
+    descriptor: ()Ljava/lang/String;
+
+  public native long expiry();
+    descriptor: ()J
+
+  public native byte[] json() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public native java.lang.String providerID();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String status();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean test();
+    descriptor: ()Z
+
+  public native java.lang.String token();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyRpnProxy implements go.Seq$Proxy,com.celzero.firestack.backend.RpnProxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRpnProxy(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.Client client();
+    descriptor: ()Lcom/celzero/firestack/backend/Client;
+
+  public native long created();
+    descriptor: ()J
+
+  public native java.lang.String dns();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.RpnEntitlement entitlement() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public native long expires();
+    descriptor: ()J
+
+  public native com.celzero.firestack.backend.Proxy fork(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public native com.celzero.firestack.backend.Proxy get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean has(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.RpnServers kids();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public native com.celzero.firestack.backend.RpnServers locations() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public native com.celzero.firestack.backend.RpnServer main();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServer;
+
+  public native com.celzero.firestack.backend.RpnOps ops();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnOps;
+
+  public native boolean pause();
+    descriptor: ()Z
+
+  public native boolean ping();
+    descriptor: ()Z
+
+  public native java.lang.String pingAll() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean purge(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public native void redo() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native boolean resume();
+    descriptor: ()Z
+
+  public native com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public native byte[] state() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public native int status();
+    descriptor: ()I
+
+  public native void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+
+  public native byte[] update(com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public native long updated();
+    descriptor: ()J
+
+  public native java.lang.String who();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyRpnServers implements go.Seq$Proxy,com.celzero.firestack.backend.RpnServers {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyRpnServers(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.RpnServer get(long) throws java.lang.Exception;
+    descriptor: (J)Lcom/celzero/firestack/backend/RpnServer;
+
+  public native byte[] json() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public native long len();
+    descriptor: ()J
+}
+final class com.celzero.firestack.backend.Backend$proxyServer implements go.Seq$Proxy,com.celzero.firestack.backend.Server {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyServer(int);
+    descriptor: (I)V
+
+  public native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native void hop(com.celzero.firestack.backend.Proxy) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/Proxy;)V
+
+  public native java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public native void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native void start() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native int status();
+    descriptor: ()I
+
+  public native void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public native java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.backend.Backend$proxyServerListener implements go.Seq$Proxy,com.celzero.firestack.backend.ServerListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyServerListener(int);
+    descriptor: (I)V
+
+  public native void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public native com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+final class com.celzero.firestack.backend.Backend$proxyServices implements go.Seq$Proxy,com.celzero.firestack.backend.Services {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyServices(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.Server addServer(java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Server;
+
+  public native void bridge(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.Server getServer(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Server;
+
+  public native java.lang.String refreshServers();
+    descriptor: ()Ljava/lang/String;
+
+  public native void removeAll();
+    descriptor: ()V
+
+  public native boolean removeServer(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+}
+final class com.celzero.firestack.backend.Backend$proxyWgKey implements go.Seq$Proxy,com.celzero.firestack.backend.WgKey {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Backend$proxyWgKey(int);
+    descriptor: (I)V
+
+  public native java.lang.String base64();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String hex();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean isZero();
+    descriptor: ()Z
+
+  public native com.celzero.firestack.backend.WgKey mult();
+    descriptor: ()Lcom/celzero/firestack/backend/WgKey;
+}
+public interface com.celzero.firestack.backend.Client {
+  public abstract com.celzero.firestack.backend.IPMetadata iP4() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/IPMetadata;
+
+  public abstract com.celzero.firestack.backend.IPMetadata iP6() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/IPMetadata;
+}
+public interface com.celzero.firestack.backend.Console {
+  public abstract void log(int, java.lang.String);
+    descriptor: (ILjava/lang/String;)V
+
+  public abstract boolean logFD(long);
+    descriptor: (J)Z
+
+  public abstract com.celzero.firestack.backend.LogConsumer logMemFD(long, long, long, long);
+    descriptor: (JJJJ)Lcom/celzero/firestack/backend/LogConsumer;
+}
+public interface com.celzero.firestack.backend.Controller {
+  public abstract void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+}
+public interface com.celzero.firestack.backend.DNSListener extends com.celzero.firestack.backend.ResolverListener {
+  public abstract void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSStopped();
+    descriptor: ()V
+
+  public abstract com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public abstract com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+}
+public final class com.celzero.firestack.backend.DNSMeasurement implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.DNSMeasurement(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.DNSMeasurement();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getMID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getMax();
+    descriptor: ()J
+
+  public final native void setMax(long);
+    descriptor: (J)V
+
+  public final native long getMin();
+    descriptor: ()J
+
+  public final native void setMin(long);
+    descriptor: (J)V
+
+  public final native long getP50();
+    descriptor: ()J
+
+  public final native void setP50(long);
+    descriptor: (J)V
+
+  public final native long getP95();
+    descriptor: ()J
+
+  public final native void setP95(long);
+    descriptor: (J)V
+
+  public final native long getJitter();
+    descriptor: ()J
+
+  public final native void setJitter(long);
+    descriptor: (J)V
+
+  public final native int getSuccess();
+    descriptor: ()I
+
+  public final native void setSuccess(int);
+    descriptor: (I)V
+
+  public final native int getSeconds();
+    descriptor: ()I
+
+  public final native void setSeconds(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getDomains();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDomains(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getErrors();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setErrors(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAddrs();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAddrs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.DNSOpts implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.DNSOpts(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.DNSOpts();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getIPCSV();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setIPCSV(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getTIDCSV();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTIDCSV(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getTIDSECCSV();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTIDSECCSV(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getNOBLOCK();
+    descriptor: ()Z
+
+  public final native void setNOBLOCK(boolean);
+    descriptor: (Z)V
+
+  public native com.celzero.firestack.backend.DNSOpts copy();
+    descriptor: ()Lcom/celzero/firestack/backend/DNSOpts;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.DNSResolver extends com.celzero.firestack.backend.DNSStatusProvider,com.celzero.firestack.backend.DNSTransportMult,com.celzero.firestack.backend.DNSTransportMultProvider,com.celzero.firestack.backend.DNSTransportProvider,com.celzero.firestack.backend.RDNSResolver {
+  public abstract boolean add(com.celzero.firestack.backend.DNSTransport);
+    descriptor: (Lcom/celzero/firestack/backend/DNSTransport;)Z
+
+  public abstract com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public abstract java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.DNSTransportMult getMult(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransportMult;
+
+  public abstract com.celzero.firestack.backend.RDNS getRdnsLocal() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public abstract com.celzero.firestack.backend.RDNS getRdnsRemote() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public abstract java.lang.String liveTransports();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String refresh() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean remove(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract void setRdnsLocal(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void setRdnsRemote(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract void translate(boolean, boolean);
+    descriptor: (ZZ)V
+}
+public interface com.celzero.firestack.backend.DNSStatusProvider {
+  public abstract int status();
+    descriptor: ()I
+}
+public final class com.celzero.firestack.backend.DNSSummary implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.DNSSummary(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.DNSSummary();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getType();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setType(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getFID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setFID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getOrigin();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setOrigin(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getStart();
+    descriptor: ()J
+
+  public final native void setStart(long);
+    descriptor: (J)V
+
+  public final native double getLatency();
+    descriptor: ()D
+
+  public final native void setLatency(double);
+    descriptor: (D)V
+
+  public final native java.lang.String getQName();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setQName(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getQType();
+    descriptor: ()J
+
+  public final native void setQType(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getTargets();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTargets(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getCached();
+    descriptor: ()Z
+
+  public final native void setCached(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getRData();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRData(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getRCode();
+    descriptor: ()J
+
+  public final native void setRCode(long);
+    descriptor: (J)V
+
+  public final native long getRTtl();
+    descriptor: ()J
+
+  public final native void setRTtl(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getServer();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setServer(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getRPID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRPID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native int getStatus();
+    descriptor: ()I
+
+  public final native void setStatus(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getBlocklists();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setBlocklists(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getBlockedTarget();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setBlockedTarget(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getUpstreamBlocks();
+    descriptor: ()Z
+
+  public final native void setUpstreamBlocks(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getDO();
+    descriptor: ()Z
+
+  public final native void setDO(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getAD();
+    descriptor: ()Z
+
+  public final native void setAD(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getECH();
+    descriptor: ()Z
+
+  public final native void setECH(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getMsg();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMsg(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getExtra();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setExtra(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getRegion();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRegion(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native int getRank();
+    descriptor: ()I
+
+  public final native void setRank(int);
+    descriptor: (I)V
+
+  public final native int getRankBig();
+    descriptor: ()I
+
+  public final native void setRankBig(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getRankError();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRankError(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.DNSTransport extends com.celzero.firestack.backend.DNSStatusProvider {
+  public abstract java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.Proxy getRelay();
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.DNSMeasurement measure(java.lang.String, int, int);
+    descriptor: (Ljava/lang/String;II)Lcom/celzero/firestack/backend/DNSMeasurement;
+
+  public abstract java.lang.String originalAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract long p50();
+    descriptor: ()J
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+public interface com.celzero.firestack.backend.DNSTransportMult extends com.celzero.firestack.backend.DNSTransportProvider {
+  public abstract boolean add(com.celzero.firestack.backend.DNSTransport);
+    descriptor: (Lcom/celzero/firestack/backend/DNSTransport;)Z
+
+  public abstract com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public abstract java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String liveTransports();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String refresh() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean remove(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+}
+public interface com.celzero.firestack.backend.DNSTransportMultProvider {
+  public abstract com.celzero.firestack.backend.DNSTransportMult getMult(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransportMult;
+}
+public interface com.celzero.firestack.backend.DNSTransportProvider {
+  public abstract com.celzero.firestack.backend.DNSTransport get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSTransport;
+
+  public abstract java.lang.String getIPs(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+}
+public final class com.celzero.firestack.backend.DomainOpts implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.DomainOpts(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.DomainOpts();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native int getRank();
+    descriptor: ()I
+
+  public final native void setRank(int);
+    descriptor: (I)V
+
+  public final native int getRankBig();
+    descriptor: ()I
+
+  public final native void setRankBig(int);
+    descriptor: (I)V
+
+  public final native long getRankDobUnixMs();
+    descriptor: ()J
+
+  public final native void setRankDobUnixMs(long);
+    descriptor: (J)V
+
+  public final native int getRankThreshold();
+    descriptor: ()I
+
+  public final native void setRankThreshold(int);
+    descriptor: (I)V
+
+  public final native int getRankBigThreshold();
+    descriptor: ()I
+
+  public final native void setRankBigThreshold(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getFID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setFID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.DomainOpts copy();
+    descriptor: ()Lcom/celzero/firestack/backend/DomainOpts;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.GoMetrics implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.GoMetrics(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.GoMetrics();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getM();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setM(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getC();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setC(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getL();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setL(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.GoStat go();
+    descriptor: ()Lcom/celzero/firestack/backend/GoStat;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.GoStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.GoStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.GoStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getAlloc();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAlloc(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getTotalAlloc();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTotalAlloc(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getLookups();
+    descriptor: ()J
+
+  public final native void setLookups(long);
+    descriptor: (J)V
+
+  public final native long getMallocs();
+    descriptor: ()J
+
+  public final native void setMallocs(long);
+    descriptor: (J)V
+
+  public final native long getFrees();
+    descriptor: ()J
+
+  public final native void setFrees(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getHeapAlloc();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHeapAlloc(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHeapSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHeapSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHeapIdle();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHeapIdle(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHeapInuse();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHeapInuse(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHeapReleased();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHeapReleased(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getHeapObjects();
+    descriptor: ()J
+
+  public final native void setHeapObjects(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getStackInuse();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setStackInuse(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getStackSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setStackSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getMSpanInuse();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMSpanInuse(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getMSpanSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMSpanSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getMCacheInuse();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMCacheInuse(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getMCacheSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMCacheSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getBuckHashSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setBuckHashSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getEnableGC();
+    descriptor: ()Z
+
+  public final native void setEnableGC(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getDebugGC();
+    descriptor: ()Z
+
+  public final native void setDebugGC(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getGCSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setGCSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getOtherSys();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setOtherSys(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getNextGC();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setNextGC(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getLastGC();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setLastGC(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getPauseSecs();
+    descriptor: ()J
+
+  public final native void setPauseSecs(long);
+    descriptor: (J)V
+
+  public final native int getNumGC();
+    descriptor: ()I
+
+  public final native void setNumGC(int);
+    descriptor: (I)V
+
+  public final native int getNumForcedGC();
+    descriptor: ()I
+
+  public final native void setNumForcedGC(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getGCCPUFraction();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setGCCPUFraction(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getNumGoroutine();
+    descriptor: ()J
+
+  public final native void setNumGoroutine(long);
+    descriptor: (J)V
+
+  public final native long getNumCgo();
+    descriptor: ()J
+
+  public final native void setNumCgo(long);
+    descriptor: (J)V
+
+  public final native long getNumCPU();
+    descriptor: ()J
+
+  public final native void setNumCPU(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getTrac();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTrac(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPers();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPers(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getArgs();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setArgs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getEnv();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setEnv(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.ICMPStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.ICMPStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.ICMPStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native long getRcv4();
+    descriptor: ()J
+
+  public final native void setRcv4(long);
+    descriptor: (J)V
+
+  public final native long getRcv6();
+    descriptor: ()J
+
+  public final native void setRcv6(long);
+    descriptor: (J)V
+
+  public final native long getSnd4();
+    descriptor: ()J
+
+  public final native void setSnd4(long);
+    descriptor: (J)V
+
+  public final native long getSnd6();
+    descriptor: ()J
+
+  public final native void setSnd6(long);
+    descriptor: (J)V
+
+  public final native long getUnrchRcv4();
+    descriptor: ()J
+
+  public final native void setUnrchRcv4(long);
+    descriptor: (J)V
+
+  public final native long getUnrchRcv6();
+    descriptor: ()J
+
+  public final native void setUnrchRcv6(long);
+    descriptor: (J)V
+
+  public final native long getUnrchSnd4();
+    descriptor: ()J
+
+  public final native void setUnrchSnd4(long);
+    descriptor: (J)V
+
+  public final native long getUnrchSnd6();
+    descriptor: ()J
+
+  public final native void setUnrchSnd6(long);
+    descriptor: (J)V
+
+  public final native long getInvalid4();
+    descriptor: ()J
+
+  public final native void setInvalid4(long);
+    descriptor: (J)V
+
+  public final native long getInvalid6();
+    descriptor: ()J
+
+  public final native void setInvalid6(long);
+    descriptor: (J)V
+
+  public final native long getTimeoutSnd4();
+    descriptor: ()J
+
+  public final native void setTimeoutSnd4(long);
+    descriptor: (J)V
+
+  public final native long getTimeoutSnd6();
+    descriptor: ()J
+
+  public final native void setTimeoutSnd6(long);
+    descriptor: (J)V
+
+  public final native long getTimeoutRcv4();
+    descriptor: ()J
+
+  public final native void setTimeoutRcv4(long);
+    descriptor: (J)V
+
+  public final native long getTimeoutRcv6();
+    descriptor: ()J
+
+  public final native void setTimeoutRcv6(long);
+    descriptor: (J)V
+
+  public final native long getDrops4();
+    descriptor: ()J
+
+  public final native void setDrops4(long);
+    descriptor: (J)V
+
+  public final native long getDrops6();
+    descriptor: ()J
+
+  public final native void setDrops6(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.IPFwdStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.IPFwdStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.IPFwdStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native long getErrs();
+    descriptor: ()J
+
+  public final native void setErrs(long);
+    descriptor: (J)V
+
+  public final native long getUnrch();
+    descriptor: ()J
+
+  public final native void setUnrch(long);
+    descriptor: (J)V
+
+  public final native long getNoRoute();
+    descriptor: ()J
+
+  public final native void setNoRoute(long);
+    descriptor: (J)V
+
+  public final native long getNoHop();
+    descriptor: ()J
+
+  public final native void setNoHop(long);
+    descriptor: (J)V
+
+  public final native long getPTB();
+    descriptor: ()J
+
+  public final native void setPTB(long);
+    descriptor: (J)V
+
+  public final native long getTimeouts();
+    descriptor: ()J
+
+  public final native void setTimeouts(long);
+    descriptor: (J)V
+
+  public final native long getDrops();
+    descriptor: ()J
+
+  public final native void setDrops(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.IPMetadata implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.IPMetadata(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.IPMetadata();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getProviderURL();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProviderURL(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getIP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setIP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getASN();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setASN(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getASNOrg();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setASNOrg(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getASNDom();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setASNDom(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCC();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCC(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCity();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCity(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAddr(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native double getLat();
+    descriptor: ()D
+
+  public final native void setLat(double);
+    descriptor: (D)V
+
+  public final native double getLon();
+    descriptor: ()D
+
+  public final native void setLon(double);
+    descriptor: (D)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.IPStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.IPStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.IPStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native long getInvalidDst();
+    descriptor: ()J
+
+  public final native void setInvalidDst(long);
+    descriptor: (J)V
+
+  public final native long getInvalidSrc();
+    descriptor: ()J
+
+  public final native void setInvalidSrc(long);
+    descriptor: (J)V
+
+  public final native long getInvalidFrag();
+    descriptor: ()J
+
+  public final native void setInvalidFrag(long);
+    descriptor: (J)V
+
+  public final native long getInvalidPkt();
+    descriptor: ()J
+
+  public final native void setInvalidPkt(long);
+    descriptor: (J)V
+
+  public final native long getErrs();
+    descriptor: ()J
+
+  public final native void setErrs(long);
+    descriptor: (J)V
+
+  public final native long getRcv();
+    descriptor: ()J
+
+  public final native void setRcv(long);
+    descriptor: (J)V
+
+  public final native long getSnd();
+    descriptor: ()J
+
+  public final native void setSnd(long);
+    descriptor: (J)V
+
+  public final native long getErrRcv();
+    descriptor: ()J
+
+  public final native void setErrRcv(long);
+    descriptor: (J)V
+
+  public final native long getErrSnd();
+    descriptor: ()J
+
+  public final native void setErrSnd(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.IpTree {
+  public abstract void add(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void clear();
+    descriptor: ()V
+
+  public abstract boolean del(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract int delAll(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  public abstract boolean esc(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Z
+
+  public abstract int escLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)I
+
+  public abstract java.lang.String get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String getAll(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String getAny(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String getLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract boolean has(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract boolean hasAny(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract long len();
+    descriptor: ()J
+
+  public abstract java.lang.String routes(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String routesLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract void set(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract java.lang.String values(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String valuesLike(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+public interface com.celzero.firestack.backend.LogConsumer {
+  public abstract long drain(long, long, long);
+    descriptor: (JJJ)J
+
+  public abstract boolean onClose();
+    descriptor: ()Z
+}
+public final class com.celzero.firestack.backend.NICInfo implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.NICInfo(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.NICInfo();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getName();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setName(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHwAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHwAddr(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAddrs();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAddrs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native int getMtu();
+    descriptor: ()I
+
+  public final native void setMtu(int);
+    descriptor: (I)V
+
+  public final native boolean getUp();
+    descriptor: ()Z
+
+  public final native void setUp(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getRunning();
+    descriptor: ()Z
+
+  public final native void setRunning(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getPromisc();
+    descriptor: ()Z
+
+  public final native void setPromisc(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getLo();
+    descriptor: ()Z
+
+  public final native void setLo(boolean);
+    descriptor: (Z)V
+
+  public final native int getArp();
+    descriptor: ()I
+
+  public final native void setArp(int);
+    descriptor: (I)V
+
+  public final native boolean getForwarding4();
+    descriptor: ()Z
+
+  public final native void setForwarding4(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getForwarding6();
+    descriptor: ()Z
+
+  public final native void setForwarding6(boolean);
+    descriptor: (Z)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.NICStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.NICStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.NICStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getRx();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRx(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getRxPkts();
+    descriptor: ()J
+
+  public final native void setRxPkts(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getTx();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTx(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getTxPkts();
+    descriptor: ()J
+
+  public final native void setTxPkts(long);
+    descriptor: (J)V
+
+  public final native long getInvalid();
+    descriptor: ()J
+
+  public final native void setInvalid(long);
+    descriptor: (J)V
+
+  public final native long getL4Unknown();
+    descriptor: ()J
+
+  public final native void setL4Unknown(long);
+    descriptor: (J)V
+
+  public final native long getL3Unknown();
+    descriptor: ()J
+
+  public final native void setL3Unknown(long);
+    descriptor: (J)V
+
+  public final native long getL4Drops();
+    descriptor: ()J
+
+  public final native void setL4Drops(long);
+    descriptor: (J)V
+
+  public final native long getDrops();
+    descriptor: ()J
+
+  public final native void setDrops(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.NetStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.NetStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.NetStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public native com.celzero.firestack.backend.IPFwdStat fwd();
+    descriptor: ()Lcom/celzero/firestack/backend/IPFwdStat;
+
+  public native com.celzero.firestack.backend.ICMPStat icmp();
+    descriptor: ()Lcom/celzero/firestack/backend/ICMPStat;
+
+  public native com.celzero.firestack.backend.IPStat ip();
+    descriptor: ()Lcom/celzero/firestack/backend/IPStat;
+
+  public native com.celzero.firestack.backend.NICStat nic();
+    descriptor: ()Lcom/celzero/firestack/backend/NICStat;
+
+  public native com.celzero.firestack.backend.NICInfo nicinfo();
+    descriptor: ()Lcom/celzero/firestack/backend/NICInfo;
+
+  public native com.celzero.firestack.backend.RDNSInfo rdnsinfo();
+    descriptor: ()Lcom/celzero/firestack/backend/RDNSInfo;
+
+  public native com.celzero.firestack.backend.TCPStat tcp();
+    descriptor: ()Lcom/celzero/firestack/backend/TCPStat;
+
+  public native com.celzero.firestack.backend.TUNStat tun();
+    descriptor: ()Lcom/celzero/firestack/backend/TUNStat;
+
+  public native com.celzero.firestack.backend.UDPStat udp();
+    descriptor: ()Lcom/celzero/firestack/backend/UDPStat;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.PipKey implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.PipKey(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.PipKey();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native com.celzero.firestack.backend.PipMsg getMsg();
+    descriptor: ()Lcom/celzero/firestack/backend/PipMsg;
+
+  public final native void setMsg(com.celzero.firestack.backend.PipMsg);
+    descriptor: (Lcom/celzero/firestack/backend/PipMsg;)V
+
+  public final native java.lang.String getSig();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSig(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getSigHash();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSigHash(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native java.lang.String v();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.PipKeyProvider {
+  public abstract java.lang.String bid();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.PipKeyState blind() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/PipKeyState;
+
+  public abstract com.celzero.firestack.backend.PipKey finalize(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/PipKey;
+
+  public abstract com.celzero.firestack.backend.PipMsg msg();
+    descriptor: ()Lcom/celzero/firestack/backend/PipMsg;
+}
+public final class com.celzero.firestack.backend.PipKeyState implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  public com.celzero.firestack.backend.PipKeyState(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  private static native int __NewPipKeyStateFrom(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  com.celzero.firestack.backend.PipKeyState(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getBid();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setBid(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getBlindMsg();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setBlindMsg(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getR();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setR(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getSalt();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSalt(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native com.celzero.firestack.backend.PipMsg getMsg();
+    descriptor: ()Lcom/celzero/firestack/backend/PipMsg;
+
+  public final native void setMsg(com.celzero.firestack.backend.PipMsg);
+    descriptor: (Lcom/celzero/firestack/backend/PipMsg;)V
+
+  public native java.lang.String v();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.PipMsg implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  public com.celzero.firestack.backend.PipMsg(com.celzero.firestack.backend.PipToken);
+    descriptor: (Lcom/celzero/firestack/backend/PipToken;)V
+
+  private static native int __NewPipMsgWith(com.celzero.firestack.backend.PipToken);
+    descriptor: (Lcom/celzero/firestack/backend/PipToken;)I
+
+  com.celzero.firestack.backend.PipMsg(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.backend.PipToken opaque();
+    descriptor: ()Lcom/celzero/firestack/backend/PipToken;
+
+  public native com.celzero.firestack.backend.PipMsg rotate();
+    descriptor: ()Lcom/celzero/firestack/backend/PipMsg;
+
+  public native java.lang.String s();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.PipToken implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.PipToken(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.PipToken();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public native java.lang.String s();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.Protector {
+  public abstract byte[] uip(java.lang.String);
+    descriptor: (Ljava/lang/String;)[B
+}
+public interface com.celzero.firestack.backend.Proxies {
+  public abstract com.celzero.firestack.backend.Proxy addProxy(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract com.celzero.firestack.backend.Proxy getProxy(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract boolean hasProxy(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract void hop(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract java.lang.String refreshProxies();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean removeProxy(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public abstract com.celzero.firestack.backend.Rpn rpn();
+    descriptor: ()Lcom/celzero/firestack/backend/Rpn;
+
+  public abstract java.lang.String testHop(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.Proxy underlay(java.lang.String, com.celzero.firestack.backend.Controller);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/Controller;)Lcom/celzero/firestack/backend/Proxy;
+}
+public interface com.celzero.firestack.backend.Proxy extends com.celzero.firestack.backend.DNSStatusProvider {
+  public abstract com.celzero.firestack.backend.Client client();
+    descriptor: ()Lcom/celzero/firestack/backend/Client;
+
+  public abstract java.lang.String dns();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean pause();
+    descriptor: ()Z
+
+  public abstract boolean ping();
+    descriptor: ()Z
+
+  public abstract void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract boolean resume();
+    descriptor: ()Z
+
+  public abstract com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+public interface com.celzero.firestack.backend.ProxyListener {
+  public abstract void onProxiesStopped();
+    descriptor: ()V
+
+  public abstract void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+public interface com.celzero.firestack.backend.RDNS {
+  public abstract java.lang.String flagsToStamp(java.lang.String, long) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;J)Ljava/lang/String;
+
+  public abstract java.lang.String getStamp() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract void setStamp(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract java.lang.String stampToFlags(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String stampToNames(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+}
+public final class com.celzero.firestack.backend.RDNSInfo implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.RDNSInfo(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.RDNSInfo();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native boolean getOpen();
+    descriptor: ()Z
+
+  public final native void setOpen(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getDebug();
+    descriptor: ()Z
+
+  public final native void setDebug(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getRecording();
+    descriptor: ()Z
+
+  public final native void setRecording(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getLooping();
+    descriptor: ()Z
+
+  public final native void setLooping(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getSlowdown();
+    descriptor: ()Z
+
+  public final native void setSlowdown(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getNewWireGuard();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setNewWireGuard(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getTransparency();
+    descriptor: ()Z
+
+  public final native void setTransparency(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getHappyEyeballs();
+    descriptor: ()Z
+
+  public final native void setHappyEyeballs(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getSystemDNSForUndelegated();
+    descriptor: ()Z
+
+  public final native void setSystemDNSForUndelegated(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getDefaultDNSAsFallback();
+    descriptor: ()Z
+
+  public final native void setDefaultDNSAsFallback(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getSetUserAgent();
+    descriptor: ()Z
+
+  public final native void setSetUserAgent(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getOwnTunFd();
+    descriptor: ()Z
+
+  public final native void setOwnTunFd(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getPortForward();
+    descriptor: ()Z
+
+  public final native void setPortForward(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getEIMEIF();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setEIMEIF(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getDialer4();
+    descriptor: ()Z
+
+  public final native void setDialer4(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getDialer6();
+    descriptor: ()Z
+
+  public final native void setDialer6(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getDialerOpts();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDialerOpts(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getTunMode();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTunMode(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getDNS64Pfx();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDNS64Pfx(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getDNSPreferred();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDNSPreferred(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getDNSDefault();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDNSDefault(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getDNSSystem();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDNSSystem(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getDNS();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setDNS(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getALG();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setALG(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getProxiesHas4();
+    descriptor: ()Z
+
+  public final native void setProxiesHas4(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getProxiesHas6();
+    descriptor: ()Z
+
+  public final native void setProxiesHas6(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getProxyLastOK();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProxyLastOK(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getProxySince();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProxySince(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getProxyStatus();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProxyStatus(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getProxies();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProxies(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAutoMode();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAutoMode(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getAutoDialsParallel();
+    descriptor: ()Z
+
+  public final native void setAutoDialsParallel(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getLinkMTU();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setLinkMTU(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getOpenConnsTCP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setOpenConnsTCP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getOpenConnsUDP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setOpenConnsUDP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getOpenConnsICMP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setOpenConnsICMP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.RDNSResolver {
+  public abstract com.celzero.firestack.backend.RDNS getRdnsLocal() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public abstract com.celzero.firestack.backend.RDNS getRdnsRemote() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RDNS;
+
+  public abstract void setRdnsLocal(java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void setRdnsRemote(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void translate(boolean, boolean);
+    descriptor: (ZZ)V
+}
+public interface com.celzero.firestack.backend.RadixTree {
+  public abstract boolean add(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract void clear();
+    descriptor: ()V
+
+  public abstract boolean del(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract int delAll(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  public abstract java.lang.String get(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract java.lang.String getAny(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract boolean has(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract boolean hasAny(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract long len();
+    descriptor: ()J
+
+  public abstract void set(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+public interface com.celzero.firestack.backend.ResolverListener {
+  public abstract void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSStopped();
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.Router {
+  public abstract boolean contains(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Z
+
+  public abstract boolean iP4();
+    descriptor: ()Z
+
+  public abstract boolean iP6();
+    descriptor: ()Z
+
+  public abstract long mtu() throws java.lang.Exception;
+    descriptor: ()J
+
+  public abstract boolean reaches(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract boolean self(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract com.celzero.firestack.backend.RouterStats stat();
+    descriptor: ()Lcom/celzero/firestack/backend/RouterStats;
+
+  public abstract com.celzero.firestack.backend.Proxy via() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+}
+public final class com.celzero.firestack.backend.RouterStats implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.RouterStats(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.RouterStats();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getHdl();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHdl(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAddrs();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAddrs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getRx();
+    descriptor: ()J
+
+  public final native void setRx(long);
+    descriptor: (J)V
+
+  public final native long getTx();
+    descriptor: ()J
+
+  public final native void setTx(long);
+    descriptor: (J)V
+
+  public final native long getErrRx();
+    descriptor: ()J
+
+  public final native void setErrRx(long);
+    descriptor: (J)V
+
+  public final native long getErrTx();
+    descriptor: ()J
+
+  public final native void setErrTx(long);
+    descriptor: (J)V
+
+  public final native long getLastTx();
+    descriptor: ()J
+
+  public final native void setLastTx(long);
+    descriptor: (J)V
+
+  public final native long getLastRx();
+    descriptor: ()J
+
+  public final native void setLastRx(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getLastErr();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setLastErr(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getLastRxErr();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setLastRxErr(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getLastTxErr();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setLastTxErr(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getLastGoodRx();
+    descriptor: ()J
+
+  public final native void setLastGoodRx(long);
+    descriptor: (J)V
+
+  public final native long getLastGoodTx();
+    descriptor: ()J
+
+  public final native void setLastGoodTx(long);
+    descriptor: (J)V
+
+  public final native long getLastOK();
+    descriptor: ()J
+
+  public final native void setLastOK(long);
+    descriptor: (J)V
+
+  public final native long getLastRefresh();
+    descriptor: ()J
+
+  public final native void setLastRefresh(long);
+    descriptor: (J)V
+
+  public final native long getLastOpen();
+    descriptor: ()J
+
+  public final native void setLastOpen(long);
+    descriptor: (J)V
+
+  public final native long getSince();
+    descriptor: ()J
+
+  public final native void setSince(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getStatus();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setStatus(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getStatusReason();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setStatusReason(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getExtra();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setExtra(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.Rpn {
+  public abstract com.celzero.firestack.backend.RpnEntitlement entitlementFrom(byte[], java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: ([BLjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public abstract com.celzero.firestack.backend.RpnProxy exit64() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+
+  public abstract com.celzero.firestack.backend.RpnProxy pip() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+
+  public abstract byte[] registerWin(byte[], byte[], java.lang.String, com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: ([B[BLjava/lang/String;Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public abstract java.lang.String testExit64() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String testWin() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean unregisterWin();
+    descriptor: ()Z
+
+  public abstract com.celzero.firestack.backend.RpnProxy win() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnProxy;
+}
+public interface com.celzero.firestack.backend.RpnAcc {
+  public abstract long created();
+    descriptor: ()J
+
+  public abstract com.celzero.firestack.backend.RpnEntitlement entitlement() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public abstract long expires();
+    descriptor: ()J
+
+  public abstract com.celzero.firestack.backend.RpnServers locations() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public abstract com.celzero.firestack.backend.RpnOps ops();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnOps;
+
+  public abstract byte[] state() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public abstract byte[] update(com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public abstract long updated();
+    descriptor: ()J
+
+  public abstract java.lang.String who();
+    descriptor: ()Ljava/lang/String;
+}
+public interface com.celzero.firestack.backend.RpnEntitlement {
+  public abstract boolean allowRestore();
+    descriptor: ()Z
+
+  public abstract java.lang.String cid();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String did();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract long expiry();
+    descriptor: ()J
+
+  public abstract byte[] json() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public abstract java.lang.String providerID();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String status();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean test();
+    descriptor: ()Z
+
+  public abstract java.lang.String token();
+    descriptor: ()Ljava/lang/String;
+}
+public final class com.celzero.firestack.backend.RpnOps implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  public com.celzero.firestack.backend.RpnOps();
+    descriptor: ()V
+
+  private static native int __NewRpnOps();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.RpnOps(int);
+    descriptor: (I)V
+
+  public native java.lang.String dnsConfig();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String excludeCCs();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean fetchServers();
+    descriptor: ()Z
+
+  public native boolean forceInit();
+    descriptor: ()Z
+
+  public native java.lang.String getExcludeCCs();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean perma();
+    descriptor: ()Z
+
+  public native boolean rotate();
+    descriptor: ()Z
+
+  public native void setDNSConfig(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void setExcludeCCs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void setForceFetchServers(boolean);
+    descriptor: (Z)V
+
+  public native void setForceInit(boolean);
+    descriptor: (Z)V
+
+  public native void setPermaCreds(boolean);
+    descriptor: (Z)V
+
+  public native void setPort(int);
+    descriptor: (I)V
+
+  public native void setRotateCreds(boolean);
+    descriptor: (Z)V
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.RpnProxy extends com.celzero.firestack.backend.DNSStatusProvider,com.celzero.firestack.backend.Proxy,com.celzero.firestack.backend.RpnAcc {
+  public abstract com.celzero.firestack.backend.Client client();
+    descriptor: ()Lcom/celzero/firestack/backend/Client;
+
+  public abstract long created();
+    descriptor: ()J
+
+  public abstract java.lang.String dns();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.RpnEntitlement entitlement() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnEntitlement;
+
+  public abstract long expires();
+    descriptor: ()J
+
+  public abstract com.celzero.firestack.backend.Proxy fork(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract com.celzero.firestack.backend.Proxy get(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean has(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.RpnServers kids();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public abstract com.celzero.firestack.backend.RpnServers locations() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServers;
+
+  public abstract com.celzero.firestack.backend.RpnServer main();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnServer;
+
+  public abstract com.celzero.firestack.backend.RpnOps ops();
+    descriptor: ()Lcom/celzero/firestack/backend/RpnOps;
+
+  public abstract boolean pause();
+    descriptor: ()Z
+
+  public abstract boolean ping();
+    descriptor: ()Z
+
+  public abstract java.lang.String pingAll() throws java.lang.Exception;
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean purge(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+
+  public abstract void redo() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract boolean resume();
+    descriptor: ()Z
+
+  public abstract com.celzero.firestack.backend.Router router();
+    descriptor: ()Lcom/celzero/firestack/backend/Router;
+
+  public abstract byte[] state() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract byte[] update(com.celzero.firestack.backend.RpnOps) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/RpnOps;)[B
+
+  public abstract long updated();
+    descriptor: ()J
+
+  public abstract java.lang.String who();
+    descriptor: ()Ljava/lang/String;
+}
+public final class com.celzero.firestack.backend.RpnServer implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.RpnServer(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.RpnServer();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getName();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setName(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAddrs();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAddrs(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getAllowed();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setAllowed(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getP2P();
+    descriptor: ()Z
+
+  public final native void setP2P(boolean);
+    descriptor: (Z)V
+
+  public final native java.lang.String getPubPub();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPubPub(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCC();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCC(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCity();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCity(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getKey();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setKey(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native int getLoad();
+    descriptor: ()I
+
+  public final native void setLoad(int);
+    descriptor: (I)V
+
+  public final native int getLink();
+    descriptor: ()I
+
+  public final native void setLink(int);
+    descriptor: (I)V
+
+  public final native int getCount();
+    descriptor: ()I
+
+  public final native void setCount(int);
+    descriptor: (I)V
+
+  public final native boolean getPremium();
+    descriptor: ()Z
+
+  public final native void setPremium(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getExcluded();
+    descriptor: ()Z
+
+  public final native void setExcluded(boolean);
+    descriptor: (Z)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.RpnServers {
+  public abstract com.celzero.firestack.backend.RpnServer get(long) throws java.lang.Exception;
+    descriptor: (J)Lcom/celzero/firestack/backend/RpnServer;
+
+  public abstract byte[] json() throws java.lang.Exception;
+    descriptor: ()[B
+
+  public abstract long len();
+    descriptor: ()J
+}
+public interface com.celzero.firestack.backend.Server extends com.celzero.firestack.backend.DNSStatusProvider {
+  public abstract java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract void hop(com.celzero.firestack.backend.Proxy) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/backend/Proxy;)V
+
+  public abstract java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract void refresh() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract void start() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract void stop() throws java.lang.Exception;
+    descriptor: ()V
+
+  public abstract java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+public interface com.celzero.firestack.backend.ServerListener {
+  public abstract void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public abstract com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+public final class com.celzero.firestack.backend.ServerSummary implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.ServerSummary(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.ServerSummary();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getType();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setType(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getSID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getTx();
+    descriptor: ()J
+
+  public final native void setTx(long);
+    descriptor: (J)V
+
+  public final native long getRx();
+    descriptor: ()J
+
+  public final native void setRx(long);
+    descriptor: (J)V
+
+  public final native long getDuration();
+    descriptor: ()J
+
+  public final native void setDuration(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getMsg();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMsg(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.Services {
+  public abstract com.celzero.firestack.backend.Server addServer(java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Server;
+
+  public abstract void bridge(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract com.celzero.firestack.backend.Server getServer(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/backend/Server;
+
+  public abstract java.lang.String refreshServers();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract void removeAll();
+    descriptor: ()V
+
+  public abstract boolean removeServer(java.lang.String);
+    descriptor: (Ljava/lang/String;)Z
+}
+public final class com.celzero.firestack.backend.Strx implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Strx(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.Strx();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public native java.lang.String s();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.TCPStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.TCPStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.TCPStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native long getActive();
+    descriptor: ()J
+
+  public final native void setActive(long);
+    descriptor: (J)V
+
+  public final native long getPassive();
+    descriptor: ()J
+
+  public final native void setPassive(long);
+    descriptor: (J)V
+
+  public final native long getEst();
+    descriptor: ()J
+
+  public final native void setEst(long);
+    descriptor: (J)V
+
+  public final native long getEstClo();
+    descriptor: ()J
+
+  public final native void setEstClo(long);
+    descriptor: (J)V
+
+  public final native long getEstRst();
+    descriptor: ()J
+
+  public final native void setEstRst(long);
+    descriptor: (J)V
+
+  public final native long getEstTo();
+    descriptor: ()J
+
+  public final native void setEstTo(long);
+    descriptor: (J)V
+
+  public final native long getCon();
+    descriptor: ()J
+
+  public final native void setCon(long);
+    descriptor: (J)V
+
+  public final native long getConFail();
+    descriptor: ()J
+
+  public final native void setConFail(long);
+    descriptor: (J)V
+
+  public final native long getPortFail();
+    descriptor: ()J
+
+  public final native void setPortFail(long);
+    descriptor: (J)V
+
+  public final native long getSynDrop();
+    descriptor: ()J
+
+  public final native void setSynDrop(long);
+    descriptor: (J)V
+
+  public final native long getAckDrop();
+    descriptor: ()J
+
+  public final native void setAckDrop(long);
+    descriptor: (J)V
+
+  public final native long getErrChecksum();
+    descriptor: ()J
+
+  public final native void setErrChecksum(long);
+    descriptor: (J)V
+
+  public final native long getErrRcv();
+    descriptor: ()J
+
+  public final native void setErrRcv(long);
+    descriptor: (J)V
+
+  public final native long getErrSnd();
+    descriptor: ()J
+
+  public final native void setErrSnd(long);
+    descriptor: (J)V
+
+  public final native long getRcv();
+    descriptor: ()J
+
+  public final native void setRcv(long);
+    descriptor: (J)V
+
+  public final native long getSnd();
+    descriptor: ()J
+
+  public final native void setSnd(long);
+    descriptor: (J)V
+
+  public final native long getRetrans();
+    descriptor: ()J
+
+  public final native void setRetrans(long);
+    descriptor: (J)V
+
+  public final native long getTimeouts();
+    descriptor: ()J
+
+  public final native void setTimeouts(long);
+    descriptor: (J)V
+
+  public final native long getDrops();
+    descriptor: ()J
+
+  public final native void setDrops(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.TUNStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.TUNStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.TUNStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native boolean getOpen();
+    descriptor: ()Z
+
+  public final native void setOpen(boolean);
+    descriptor: (Z)V
+
+  public final native boolean getUp();
+    descriptor: ()Z
+
+  public final native void setUp(boolean);
+    descriptor: (Z)V
+
+  public final native int getMtu();
+    descriptor: ()I
+
+  public final native void setMtu(int);
+    descriptor: (I)V
+
+  public final native long getSid();
+    descriptor: ()J
+
+  public final native void setSid(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getEpStats();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setEpStats(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPcapMode();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPcapMode(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.Tab implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.Tab(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.Tab();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getCID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getBlock();
+    descriptor: ()Z
+
+  public final native void setBlock(boolean);
+    descriptor: (Z)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.backend.UDPStat implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.backend.UDPStat(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.backend.UDPStat();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native long getErrChecksum();
+    descriptor: ()J
+
+  public final native void setErrChecksum(long);
+    descriptor: (J)V
+
+  public final native long getErrRcv();
+    descriptor: ()J
+
+  public final native void setErrRcv(long);
+    descriptor: (J)V
+
+  public final native long getErrSnd();
+    descriptor: ()J
+
+  public final native void setErrSnd(long);
+    descriptor: (J)V
+
+  public final native long getSnd();
+    descriptor: ()J
+
+  public final native void setSnd(long);
+    descriptor: (J)V
+
+  public final native long getRcv();
+    descriptor: ()J
+
+  public final native void setRcv(long);
+    descriptor: (J)V
+
+  public final native long getPortFail();
+    descriptor: ()J
+
+  public final native void setPortFail(long);
+    descriptor: (J)V
+
+  public final native long getDrops();
+    descriptor: ()J
+
+  public final native void setDrops(long);
+    descriptor: (J)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.backend.WgKey {
+  public abstract java.lang.String base64();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract java.lang.String hex();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract boolean isZero();
+    descriptor: ()Z
+
+  public abstract com.celzero.firestack.backend.WgKey mult();
+    descriptor: ()Lcom/celzero/firestack/backend/WgKey;
+}
+public interface com.celzero.firestack.intra.Bridge extends com.celzero.firestack.backend.Controller,com.celzero.firestack.backend.DNSListener,com.celzero.firestack.backend.ProxyListener,com.celzero.firestack.backend.ResolverListener,com.celzero.firestack.backend.ServerListener,com.celzero.firestack.intra.Controller,com.celzero.firestack.intra.DNSListener,com.celzero.firestack.intra.FlowListener,com.celzero.firestack.intra.Listener,com.celzero.firestack.intra.ProxyListener,com.celzero.firestack.intra.ServerListener {
+  public abstract void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public abstract com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSStopped();
+    descriptor: ()V
+
+  public abstract com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public abstract void onProxiesStopped();
+    descriptor: ()V
+
+  public abstract void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public abstract void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public abstract com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+
+  public abstract void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+
+  public abstract com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+public interface com.celzero.firestack.intra.Console {
+  public abstract void log(int, java.lang.String);
+    descriptor: (ILjava/lang/String;)V
+
+  public abstract boolean logFD(long);
+    descriptor: (J)Z
+
+  public abstract com.celzero.firestack.backend.LogConsumer logMemFD(long, long, long, long);
+    descriptor: (JJJJ)Lcom/celzero/firestack/backend/LogConsumer;
+}
+public interface com.celzero.firestack.intra.Controller {
+  public abstract void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public abstract void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+}
+public interface com.celzero.firestack.intra.DNSListener extends com.celzero.firestack.backend.ResolverListener {
+  public abstract void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSStopped();
+    descriptor: ()V
+
+  public abstract com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public abstract com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+}
+public interface com.celzero.firestack.intra.DefaultDNS extends com.celzero.firestack.backend.DNSStatusProvider,com.celzero.firestack.backend.DNSTransport {
+  public abstract java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.Proxy getRelay();
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+
+  public abstract java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract com.celzero.firestack.backend.DNSMeasurement measure(java.lang.String, int, int);
+    descriptor: (Ljava/lang/String;II)Lcom/celzero/firestack/backend/DNSMeasurement;
+
+  public abstract java.lang.String originalAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public abstract long p50();
+    descriptor: ()J
+
+  public abstract int status();
+    descriptor: ()I
+
+  public abstract java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+public interface com.celzero.firestack.intra.FlowListener {
+  public abstract com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public abstract com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public abstract com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+}
+public final class com.celzero.firestack.intra.FlowSummary implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.FlowSummary(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.intra.FlowSummary();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getProto();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setProto(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getRPID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setRPID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getSource();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setSource(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getTarget();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setTarget(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native long getRx();
+    descriptor: ()J
+
+  public final native void setRx(long);
+    descriptor: (J)V
+
+  public final native long getTx();
+    descriptor: ()J
+
+  public final native void setTx(long);
+    descriptor: (J)V
+
+  public final native long getDuration();
+    descriptor: ()J
+
+  public final native void setDuration(long);
+    descriptor: (J)V
+
+  public final native long getRtt();
+    descriptor: ()J
+
+  public final native void setRtt(long);
+    descriptor: (J)V
+
+  public final native java.lang.String getMsg();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setMsg(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public abstract class com.celzero.firestack.intra.Intra {
+  public static final java.lang.String ANDROID_UID_STR = "0";
+    descriptor: Ljava/lang/String;
+  public static final long HDLEND = 1l;
+    descriptor: J
+  public static final long HDLOK = 0l;
+    descriptor: J
+  public static final java.lang.String ProtoTypeICMP = "icmp";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String ProtoTypeTCP = "tcp";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String ProtoTypeUDP = "udp";
+    descriptor: Ljava/lang/String;
+  public static final long UNKNOWN_UID = -1l;
+    descriptor: J
+  public static final java.lang.String UNKNOWN_UID_STR = "-1";
+    descriptor: Ljava/lang/String;
+  public static final long UNSUPPORTED_NETWORK = -1l;
+    descriptor: J
+  private com.celzero.firestack.intra.Intra();
+    descriptor: ()V
+
+  public static void touch();
+    descriptor: ()V
+
+  private static native void _init();
+    descriptor: ()V
+
+  public static native void setSELF_UID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public static native java.lang.String getSELF_UID();
+    descriptor: ()Ljava/lang/String;
+
+  public static native void addDNSCryptRelay(com.celzero.firestack.intra.Tunnel, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;)V
+
+  public static native void addDNSCryptTransport(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addDNSProxy(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addDefaultTransport(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addDoHTransport(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addDoHTransport2(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addDoTTransport(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addODoHTransport(com.celzero.firestack.intra.Tunnel, java.lang.String, java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+
+  public static native void addProxyDNS(com.celzero.firestack.intra.Tunnel, com.celzero.firestack.backend.Proxy) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Lcom/celzero/firestack/backend/Proxy;)V
+
+  public static native java.lang.String build(boolean);
+    descriptor: (Z)Ljava/lang/String;
+
+  public static native int cpuProfile(java.lang.String, java.lang.String, int) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;I)I
+
+  public static native com.celzero.firestack.intra.Tunnel connect(long, long, long, java.lang.String, java.lang.String, com.celzero.firestack.intra.DefaultDNS, com.celzero.firestack.intra.Bridge) throws java.lang.Exception;
+    descriptor: (JJJLjava/lang/String;Ljava/lang/String;Lcom/celzero/firestack/intra/DefaultDNS;Lcom/celzero/firestack/intra/Bridge;)Lcom/celzero/firestack/intra/Tunnel;
+
+  public static native com.celzero.firestack.intra.Tunnel connect2(long, long, com.celzero.firestack.intra.DefaultDNS, com.celzero.firestack.intra.Bridge) throws java.lang.Exception;
+    descriptor: (JJLcom/celzero/firestack/intra/DefaultDNS;Lcom/celzero/firestack/intra/Bridge;)Lcom/celzero/firestack/intra/Tunnel;
+
+  public static native com.celzero.firestack.intra.Tunnel connect3(long, long, com.celzero.firestack.intra.Bridge) throws java.lang.Exception;
+    descriptor: (JJLcom/celzero/firestack/intra/Bridge;)Lcom/celzero/firestack/intra/Tunnel;
+
+  public static native com.celzero.firestack.backend.Router controlledRouter(com.celzero.firestack.intra.Controller, java.lang.String, java.lang.String);
+    descriptor: (Lcom/celzero/firestack/intra/Controller;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Router;
+
+  public static native void crash(long, long);
+    descriptor: (JJ)V
+
+  public static native void defaultDNSAsFallback(boolean);
+    descriptor: (Z)V
+
+  public static native void experimentalWireGuard(boolean);
+    descriptor: (Z)V
+
+  public static native void floodWireGuard(boolean);
+    descriptor: (Z)V
+
+  public static native com.celzero.firestack.backend.GoMetrics goMet();
+    descriptor: ()Lcom/celzero/firestack/backend/GoMetrics;
+
+  public static native void logLevel(int, int, int);
+    descriptor: (III)V
+
+  public static native void loopback(boolean);
+    descriptor: (Z)V
+
+  public static native void lowMem(long);
+    descriptor: (J)V
+
+  public static native void memProfile(int, java.lang.String) throws java.lang.Exception;
+    descriptor: (ILjava/lang/String;)V
+
+  public static native com.celzero.firestack.intra.DefaultDNS newBuiltinDefaultDNS() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/intra/DefaultDNS;
+
+  public static native com.celzero.firestack.intra.DefaultDNS newDefaultDNS(java.lang.String, java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/DefaultDNS;
+
+  public static native com.celzero.firestack.intra.Tunnel newTunnel(long, long, java.lang.String, java.lang.String, com.celzero.firestack.intra.DefaultDNS, com.celzero.firestack.intra.Bridge) throws java.lang.Exception;
+    descriptor: (JJLjava/lang/String;Ljava/lang/String;Lcom/celzero/firestack/intra/DefaultDNS;Lcom/celzero/firestack/intra/Bridge;)Lcom/celzero/firestack/intra/Tunnel;
+
+  public static native com.celzero.firestack.intra.Tunnel newTunnel2(long, long, long, java.lang.String, java.lang.String, com.celzero.firestack.intra.DefaultDNS, com.celzero.firestack.intra.Bridge) throws java.lang.Exception;
+    descriptor: (JJJLjava/lang/String;Ljava/lang/String;Lcom/celzero/firestack/intra/DefaultDNS;Lcom/celzero/firestack/intra/Bridge;)Lcom/celzero/firestack/intra/Tunnel;
+
+  public static native byte[] printStack(int);
+    descriptor: (I)[B
+
+  public static native boolean setCrashOutput(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Z
+
+  public static native java.lang.String setFlightRecordOutput(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public static native void setSystemDNS(com.celzero.firestack.intra.Tunnel, java.lang.String) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Tunnel;Ljava/lang/String;)V
+
+  public static native void setupConsole(com.celzero.firestack.intra.Console) throws java.lang.Exception;
+    descriptor: (Lcom/celzero/firestack/intra/Console;)V
+
+  public static native void slowdown(boolean);
+    descriptor: (Z)V
+
+  public static native void transparency(boolean, boolean);
+    descriptor: (ZZ)V
+
+  public static native void undelegatedDomains(boolean);
+    descriptor: (Z)V
+
+  static {};
+    descriptor: ()V
+}
+final class com.celzero.firestack.intra.Intra$proxyBridge implements go.Seq$Proxy,com.celzero.firestack.intra.Bridge {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyBridge(int);
+    descriptor: (I)V
+
+  public native void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public native void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public native com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public native void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSStopped();
+    descriptor: ()V
+
+  public native com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public native void onProxiesStopped();
+    descriptor: ()V
+
+  public native void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public native void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public native com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+
+  public native void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+
+  public native com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+final class com.celzero.firestack.intra.Intra$proxyConsole implements go.Seq$Proxy,com.celzero.firestack.intra.Console {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyConsole(int);
+    descriptor: (I)V
+
+  public native void log(int, java.lang.String);
+    descriptor: (ILjava/lang/String;)V
+
+  public native boolean logFD(long);
+    descriptor: (J)Z
+
+  public native com.celzero.firestack.backend.LogConsumer logMemFD(long, long, long, long);
+    descriptor: (JJJJ)Lcom/celzero/firestack/backend/LogConsumer;
+}
+final class com.celzero.firestack.intra.Intra$proxyController implements go.Seq$Proxy,com.celzero.firestack.intra.Controller {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyController(int);
+    descriptor: (I)V
+
+  public native void bind4(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native void bind6(java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;J)V
+
+  public native void protect(java.lang.String, long);
+    descriptor: (Ljava/lang/String;J)V
+}
+final class com.celzero.firestack.intra.Intra$proxyDNSListener implements go.Seq$Proxy,com.celzero.firestack.intra.DNSListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyDNSListener(int);
+    descriptor: (I)V
+
+  public native void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSStopped();
+    descriptor: ()V
+
+  public native com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public native com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+}
+final class com.celzero.firestack.intra.Intra$proxyDefaultDNS implements go.Seq$Proxy,com.celzero.firestack.intra.DefaultDNS {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyDefaultDNS(int);
+    descriptor: (I)V
+
+  public native java.lang.String getAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.Proxy getRelay();
+    descriptor: ()Lcom/celzero/firestack/backend/Proxy;
+
+  public native java.lang.String id();
+    descriptor: ()Ljava/lang/String;
+
+  public native com.celzero.firestack.backend.DNSMeasurement measure(java.lang.String, int, int);
+    descriptor: (Ljava/lang/String;II)Lcom/celzero/firestack/backend/DNSMeasurement;
+
+  public native java.lang.String originalAddr();
+    descriptor: ()Ljava/lang/String;
+
+  public native long p50();
+    descriptor: ()J
+
+  public native int status();
+    descriptor: ()I
+
+  public native java.lang.String type();
+    descriptor: ()Ljava/lang/String;
+}
+final class com.celzero.firestack.intra.Intra$proxyFlowListener implements go.Seq$Proxy,com.celzero.firestack.intra.FlowListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyFlowListener(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public native void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public native com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public native void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public native com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+}
+final class com.celzero.firestack.intra.Intra$proxyListener implements go.Seq$Proxy,com.celzero.firestack.intra.Listener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyListener(int);
+    descriptor: (I)V
+
+  public native com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public native void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public native com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public native void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native void onDNSStopped();
+    descriptor: ()V
+
+  public native com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public native void onProxiesStopped();
+    descriptor: ()V
+
+  public native void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public native void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public native com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public native void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public native com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+
+  public native com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+final class com.celzero.firestack.intra.Intra$proxyProxyListener implements go.Seq$Proxy,com.celzero.firestack.intra.ProxyListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyProxyListener(int);
+    descriptor: (I)V
+
+  public native void onProxiesStopped();
+    descriptor: ()V
+
+  public native void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public native void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+final class com.celzero.firestack.intra.Intra$proxyServerListener implements go.Seq$Proxy,com.celzero.firestack.intra.ServerListener {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyServerListener(int);
+    descriptor: (I)V
+
+  public native void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public native com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+final class com.celzero.firestack.intra.Intra$proxyTunnel implements go.Seq$Proxy,com.celzero.firestack.intra.Tunnel {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Intra$proxyTunnel(int);
+    descriptor: (I)V
+
+  public native java.lang.String closeConns(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public native void disconnect();
+    descriptor: ()V
+
+  public native boolean enabled();
+    descriptor: ()Z
+
+  public native com.celzero.firestack.backend.Proxies getProxies() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Proxies;
+
+  public native com.celzero.firestack.backend.DNSResolver getResolver() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/DNSResolver;
+
+  public native com.celzero.firestack.backend.Services getServices() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Services;
+
+  public native boolean isConnected();
+    descriptor: ()Z
+
+  public native int mtu();
+    descriptor: ()I
+
+  public native void restart(long, long, long, long) throws java.lang.Exception;
+    descriptor: (JJJJ)V
+
+  public native void setLinkAndRoutes(long, long, long) throws java.lang.Exception;
+    descriptor: (JJJ)V
+
+  public native void setLinkAndRoutes2(long, long, long, long) throws java.lang.Exception;
+    descriptor: (JJJJ)V
+
+  public native boolean setLinkMtu(long);
+    descriptor: (J)Z
+
+  public native void setPcap(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public native com.celzero.firestack.backend.NetStat stat() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/NetStat;
+
+  public native void unlink() throws java.lang.Exception;
+    descriptor: ()V
+}
+public interface com.celzero.firestack.intra.Listener extends com.celzero.firestack.backend.DNSListener,com.celzero.firestack.backend.ProxyListener,com.celzero.firestack.backend.ResolverListener,com.celzero.firestack.backend.ServerListener,com.celzero.firestack.intra.DNSListener,com.celzero.firestack.intra.FlowListener,com.celzero.firestack.intra.ProxyListener,com.celzero.firestack.intra.ServerListener {
+  public abstract com.celzero.firestack.intra.Mark flow(int, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void flowing(com.celzero.firestack.intra.Mark);
+    descriptor: (Lcom/celzero/firestack/intra/Mark;)V
+
+  public abstract com.celzero.firestack.intra.Mark inflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/Mark;
+
+  public abstract void onDNSAdded(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSRemoved(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract void onDNSStopped();
+    descriptor: ()V
+
+  public abstract com.celzero.firestack.backend.DomainOpts onPrequery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DomainOpts;
+
+  public abstract void onProxiesStopped();
+    descriptor: ()V
+
+  public abstract void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onQuery(java.lang.String, java.lang.String, java.lang.String, long);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;J)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void onResponse(com.celzero.firestack.backend.DNSSummary);
+    descriptor: (Lcom/celzero/firestack/backend/DNSSummary;)V
+
+  public abstract void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public abstract com.celzero.firestack.backend.DNSOpts onUpstreamAnswer(java.lang.String, com.celzero.firestack.backend.DNSSummary, com.celzero.firestack.backend.DNSOpts, java.lang.String);
+    descriptor: (Ljava/lang/String;Lcom/celzero/firestack/backend/DNSSummary;Lcom/celzero/firestack/backend/DNSOpts;Ljava/lang/String;)Lcom/celzero/firestack/backend/DNSOpts;
+
+  public abstract void postflow(com.celzero.firestack.intra.FlowSummary);
+    descriptor: (Lcom/celzero/firestack/intra/FlowSummary;)V
+
+  public abstract com.celzero.firestack.intra.PreMark preflow(int, int, java.lang.String, java.lang.String);
+    descriptor: (IILjava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/intra/PreMark;
+
+  public abstract com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+public final class com.celzero.firestack.intra.Mark implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.Mark(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.intra.Mark();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getPIDCSV();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPIDCSV(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getCID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setCID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getIP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setIP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.intra.PreMark implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.intra.PreMark(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.intra.PreMark();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native java.lang.String getUID();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setUID(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native boolean getIsUidSelf();
+    descriptor: ()Z
+
+  public final native void setIsUidSelf(boolean);
+    descriptor: (Z)V
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public interface com.celzero.firestack.intra.ProxyListener {
+  public abstract void onProxiesStopped();
+    descriptor: ()V
+
+  public abstract void onProxyAdded(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyRemoved(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyStopped(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  public abstract void onProxyUpdated(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+}
+public interface com.celzero.firestack.intra.ServerListener {
+  public abstract void onSvcComplete(com.celzero.firestack.backend.ServerSummary);
+    descriptor: (Lcom/celzero/firestack/backend/ServerSummary;)V
+
+  public abstract com.celzero.firestack.backend.Tab svcRoute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/backend/Tab;
+}
+public interface com.celzero.firestack.intra.Tunnel {
+  public abstract java.lang.String closeConns(java.lang.String);
+    descriptor: (Ljava/lang/String;)Ljava/lang/String;
+
+  public abstract void disconnect();
+    descriptor: ()V
+
+  public abstract boolean enabled();
+    descriptor: ()Z
+
+  public abstract com.celzero.firestack.backend.Proxies getProxies() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Proxies;
+
+  public abstract com.celzero.firestack.backend.DNSResolver getResolver() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/DNSResolver;
+
+  public abstract com.celzero.firestack.backend.Services getServices() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/Services;
+
+  public abstract boolean isConnected();
+    descriptor: ()Z
+
+  public abstract int mtu();
+    descriptor: ()I
+
+  public abstract void restart(long, long, long, long) throws java.lang.Exception;
+    descriptor: (JJJJ)V
+
+  public abstract void setLinkAndRoutes(long, long, long) throws java.lang.Exception;
+    descriptor: (JJJ)V
+
+  public abstract void setLinkAndRoutes2(long, long, long, long) throws java.lang.Exception;
+    descriptor: (JJJJ)V
+
+  public abstract boolean setLinkMtu(long);
+    descriptor: (J)Z
+
+  public abstract void setPcap(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)V
+
+  public abstract com.celzero.firestack.backend.NetStat stat() throws java.lang.Exception;
+    descriptor: ()Lcom/celzero/firestack/backend/NetStat;
+
+  public abstract void unlink() throws java.lang.Exception;
+    descriptor: ()V
+}
+public final class com.celzero.firestack.settings.DNSOptions implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  public com.celzero.firestack.settings.DNSOptions(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  private static native int __NewDNSOptions(java.lang.String);
+    descriptor: (Ljava/lang/String;)I
+
+  public com.celzero.firestack.settings.DNSOptions(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  private static native int __NewDNSOptionsFromHostname(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)I
+
+  com.celzero.firestack.settings.DNSOptions(int);
+    descriptor: (I)V
+
+  public native java.lang.String addrPort();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String resolvedAddrs();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.settings.DialerOpts implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  com.celzero.firestack.settings.DialerOpts(int);
+    descriptor: (I)V
+
+  public com.celzero.firestack.settings.DialerOpts();
+    descriptor: ()V
+
+  private static native int __New();
+    descriptor: ()I
+
+  public final native int getStrat();
+    descriptor: ()I
+
+  public final native void setStrat(int);
+    descriptor: (I)V
+
+  public final native int getRetry();
+    descriptor: ()I
+
+  public final native void setRetry(int);
+    descriptor: (I)V
+
+  public final native boolean getLowerKeepAlive();
+    descriptor: ()Z
+
+  public final native void setLowerKeepAlive(boolean);
+    descriptor: (Z)V
+
+  public final native int getReadTimeoutSec();
+    descriptor: ()I
+
+  public final native void setReadTimeoutSec(int);
+    descriptor: (I)V
+
+  public final native int getWriteTimeoutSec();
+    descriptor: ()I
+
+  public final native void setWriteTimeoutSec(int);
+    descriptor: (I)V
+
+  public final native int getWriteBufferSize();
+    descriptor: ()I
+
+  public final native void setWriteBufferSize(int);
+    descriptor: (I)V
+
+  public final native int getReadBufferSize();
+    descriptor: ()I
+
+  public final native void setReadBufferSize(int);
+    descriptor: (I)V
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public final class com.celzero.firestack.settings.ProxyOptions implements go.Seq$Proxy {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  public com.celzero.firestack.settings.ProxyOptions(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)V
+
+  private static native int __NewProxyOptions(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)I
+
+  com.celzero.firestack.settings.ProxyOptions(int);
+    descriptor: (I)V
+
+  public final native java.lang.String getIP();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setIP(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getHost();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setHost(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getPort();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setPort(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getIPPort();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setIPPort(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public final native java.lang.String getScheme();
+    descriptor: ()Ljava/lang/String;
+
+  public final native void setScheme(java.lang.String);
+    descriptor: (Ljava/lang/String;)V
+
+  public native java.lang.String fullUrl();
+    descriptor: ()Ljava/lang/String;
+
+  public native boolean hasAuth();
+    descriptor: ()Z
+
+  public native java.lang.String string();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String url();
+    descriptor: ()Ljava/lang/String;
+
+  public boolean equals(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)Z
+
+  public int hashCode();
+    descriptor: ()I
+
+  public java.lang.String toString();
+    descriptor: ()Ljava/lang/String;
+
+  static {};
+    descriptor: ()V
+}
+public abstract class com.celzero.firestack.settings.Settings {
+  public static final java.lang.String AndroidCcUa = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.32 Safari/537.36";
+    descriptor: Ljava/lang/String;
+  public static final int AutoModeHybrid = 2;
+    descriptor: I
+  public static final int AutoModeLocal = 0;
+    descriptor: I
+  public static final int AutoModeRemote = 1;
+    descriptor: I
+  public static final int BlockModeFilter = 1;
+    descriptor: I
+  public static final int BlockModeFilterProc = 3;
+    descriptor: I
+  public static final int BlockModeNone = 0;
+    descriptor: I
+  public static final int BlockModeSink = 2;
+    descriptor: I
+  public static final int DNSModeIP = 1;
+    descriptor: I
+  public static final int DNSModeNone = 0;
+    descriptor: I
+  public static final int DNSModePort = 2;
+    descriptor: I
+  public static final java.lang.String IP4 = "4";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String IP46 = "46";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String IP6 = "6";
+    descriptor: Ljava/lang/String;
+  public static final java.lang.String IntraUa = "Intra";
+    descriptor: Ljava/lang/String;
+  public static final long NICID = 1l;
+    descriptor: J
+  public static final long Ns4 = 2l;
+    descriptor: J
+  public static final long Ns46 = 6l;
+    descriptor: J
+  public static final long Ns6 = 4l;
+    descriptor: J
+  public static final long PlusFilterAdblock = 1l;
+    descriptor: J
+  public static final long PlusFilterFamily = 3l;
+    descriptor: J
+  public static final long PlusFilterNone = 0l;
+    descriptor: J
+  public static final long PlusFilterSecurity = 2l;
+    descriptor: J
+  public static final long PlusOrderFastest = 2l;
+    descriptor: J
+  public static final long PlusOrderRandom = 1l;
+    descriptor: J
+  public static final long PlusOrderRobust = 3l;
+    descriptor: J
+  public static final long PlusOrderSafest = 0l;
+    descriptor: J
+  public static final int PtModeAuto = 0;
+    descriptor: I
+  public static final int PtModeForce = 4;
+    descriptor: I
+  public static final int PtModeForce46 = 3;
+    descriptor: I
+  public static final int PtModeForce64 = 1;
+    descriptor: I
+  public static final int PtModeNone = 2;
+    descriptor: I
+  public static final int RetryAfterSplit = 0;
+    descriptor: I
+  public static final int RetryNever = 2;
+    descriptor: I
+  public static final int RetryWithSplit = 1;
+    descriptor: I
+  public static final int SplitAuto = 0;
+    descriptor: I
+  public static final int SplitDesync = 3;
+    descriptor: I
+  public static final int SplitNever = 4;
+    descriptor: I
+  public static final int SplitTCP = 2;
+    descriptor: I
+  public static final int SplitTCPOrTLS = 1;
+    descriptor: I
+  private com.celzero.firestack.settings.Settings();
+    descriptor: ()V
+
+  public static void touch();
+    descriptor: ()V
+
+  private static native void _init();
+    descriptor: ()V
+
+  public static native void setDebug(boolean);
+    descriptor: (Z)V
+
+  public static native boolean getDebug();
+    descriptor: ()Z
+
+  public static native void setSupportHappyEyeballs(boolean);
+    descriptor: (Z)V
+
+  public static native boolean getSupportHappyEyeballs();
+    descriptor: ()Z
+
+  public static native boolean autoActive();
+    descriptor: ()Z
+
+  public static native boolean autoAlwaysRemote();
+    descriptor: ()Z
+
+  public static native java.lang.String autoModeStr();
+    descriptor: ()Ljava/lang/String;
+
+  public static native void defaultTunMode();
+    descriptor: ()V
+
+  public static native boolean dupTunFd(boolean);
+    descriptor: (Z)Z
+
+  public static native long engine(java.lang.String);
+    descriptor: (Ljava/lang/String;)J
+
+  public static native java.lang.String l3(long);
+    descriptor: (J)Ljava/lang/String;
+
+  public static native java.lang.String mode2String(java.lang.String, int);
+    descriptor: (Ljava/lang/String;I)Ljava/lang/String;
+
+  public static native com.celzero.firestack.settings.DNSOptions newDNSOptions(java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;)Lcom/celzero/firestack/settings/DNSOptions;
+
+  public static native com.celzero.firestack.settings.DNSOptions newDNSOptionsFromHostname(java.lang.String, java.lang.String) throws java.lang.Exception;
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/settings/DNSOptions;
+
+  public static native com.celzero.firestack.settings.ProxyOptions newProxyOptions(java.lang.String, java.lang.String);
+    descriptor: (Ljava/lang/String;Ljava/lang/String;)Lcom/celzero/firestack/settings/ProxyOptions;
+
+  public static native boolean setAutoDialsParallel(boolean);
+    descriptor: (Z)Z
+
+  public static native int setAutoMode(int);
+    descriptor: (I)I
+
+  public static native boolean setDialerOpts(int, int, int, int, boolean);
+    descriptor: (IIIIZ)Z
+
+  public static native boolean setPlusStrategy(long, long);
+    descriptor: (JJ)Z
+
+  public static native void setTunMode(int, int, int);
+    descriptor: (III)V
+
+  static {};
+    descriptor: ()V
+}
+public class go.Seq {
+  private static java.util.logging.Logger log;
+    descriptor: Ljava/util/logging/Logger;
+  private static final int NULL_REFNUM = 41;
+    descriptor: I
+  public static final go.Seq$Ref nullRef;
+    descriptor: Lgo/Seq$Ref;
+  private static final go.Seq$GoRefQueue goRefQueue;
+    descriptor: Lgo/Seq$GoRefQueue;
+  static final go.Seq$RefTracker tracker;
+    descriptor: Lgo/Seq$RefTracker;
+  public static void setContext(android.content.Context);
+    descriptor: (Landroid/content/Context;)V
+
+  private static native void init();
+    descriptor: ()V
+
+  public static void touch();
+    descriptor: ()V
+
+  private go.Seq();
+    descriptor: ()V
+
+  static native void setContext(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)V
+
+  public static void incRefnum(int);
+    descriptor: (I)V
+
+  public static int incRef(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)I
+
+  public static int incGoObjectRef(go.Seq$GoObject);
+    descriptor: (Lgo/Seq$GoObject;)I
+
+  public static void trackGoRef(int, go.Seq$GoObject);
+    descriptor: (ILgo/Seq$GoObject;)V
+
+  public static go.Seq$Ref getRef(int);
+    descriptor: (I)Lgo/Seq$Ref;
+
+  public static native void incGoRef(int, go.Seq$GoObject);
+    descriptor: (ILgo/Seq$GoObject;)V
+
+  static native void destroyRef(int);
+    descriptor: (I)V
+
+  static void decRef(int);
+    descriptor: (I)V
+
+  static {};
+    descriptor: ()V
+}
+public interface go.Seq$GoObject {
+  public abstract int incRefnum();
+    descriptor: ()I
+}
+class go.Seq$GoRef extends java.lang.ref.PhantomReference<go.Seq$GoObject> {
+  final int refnum;
+    descriptor: I
+  go.Seq$GoRef(int, go.Seq$GoObject, go.Seq$GoRefQueue);
+    descriptor: (ILgo/Seq$GoObject;Lgo/Seq$GoRefQueue;)V
+}
+class go.Seq$GoRefQueue extends java.lang.ref.ReferenceQueue<go.Seq$GoObject> {
+  private final java.util.Collection<go.Seq$GoRef> refs;
+    descriptor: Ljava/util/Collection;
+  void track(int, go.Seq$GoObject);
+    descriptor: (ILgo/Seq$GoObject;)V
+
+  go.Seq$GoRefQueue();
+    descriptor: ()V
+}
+class go.Seq$GoRefQueue$1 implements java.lang.Runnable {
+  final go.Seq$GoRefQueue this$0;
+    descriptor: Lgo/Seq$GoRefQueue;
+  go.Seq$GoRefQueue$1(go.Seq$GoRefQueue);
+    descriptor: (Lgo/Seq$GoRefQueue;)V
+
+  public void run();
+    descriptor: ()V
+}
+public interface go.Seq$Proxy extends go.Seq$GoObject {
+}
+public final class go.Seq$Ref {
+  public final int refnum;
+    descriptor: I
+  private int refcnt;
+    descriptor: I
+  public final java.lang.Object obj;
+    descriptor: Ljava/lang/Object;
+  go.Seq$Ref(int, java.lang.Object);
+    descriptor: (ILjava/lang/Object;)V
+
+  void inc();
+    descriptor: ()V
+}
+final class go.Seq$RefMap {
+  private int next;
+    descriptor: I
+  private int live;
+    descriptor: I
+  private int[] keys;
+    descriptor: [I
+  private go.Seq$Ref[] objs;
+    descriptor: [Lgo/Seq$Ref;
+  go.Seq$RefMap();
+    descriptor: ()V
+
+  go.Seq$Ref get(int);
+    descriptor: (I)Lgo/Seq$Ref;
+
+  void remove(int);
+    descriptor: (I)V
+
+  void put(int, go.Seq$Ref);
+    descriptor: (ILgo/Seq$Ref;)V
+
+  private void grow();
+    descriptor: ()V
+
+  private static int roundPow2(int);
+    descriptor: (I)I
+}
+final class go.Seq$RefTracker {
+  private static final int REF_OFFSET = 42;
+    descriptor: I
+  private int next;
+    descriptor: I
+  private final go.Seq$RefMap javaObjs;
+    descriptor: Lgo/Seq$RefMap;
+  private final java.util.IdentityHashMap<java.lang.Object, java.lang.Integer> javaRefs;
+    descriptor: Ljava/util/IdentityHashMap;
+  go.Seq$RefTracker();
+    descriptor: ()V
+
+  synchronized int inc(java.lang.Object);
+    descriptor: (Ljava/lang/Object;)I
+
+  synchronized void incRefnum(int);
+    descriptor: (I)V
+
+  synchronized void dec(int);
+    descriptor: (I)V
+
+  synchronized go.Seq$Ref get(int);
+    descriptor: (I)Lgo/Seq$Ref;
+}
+public abstract class go.Universe {
+  private go.Universe();
+    descriptor: ()V
+
+  public static void touch();
+    descriptor: ()V
+
+  private static native void _init();
+    descriptor: ()V
+
+  static {};
+    descriptor: ()V
+}
+final class go.Universe$proxyerror extends java.lang.Exception implements go.Seq$Proxy,go.error {
+  private final int refnum;
+    descriptor: I
+  public final int incRefnum();
+    descriptor: ()I
+
+  go.Universe$proxyerror(int);
+    descriptor: (I)V
+
+  public java.lang.String getMessage();
+    descriptor: ()Ljava/lang/String;
+
+  public native java.lang.String error();
+    descriptor: ()Ljava/lang/String;
+}
+public interface go.error {
+  public abstract java.lang.String error();
+    descriptor: ()Ljava/lang/String;
+}

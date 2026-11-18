@@ -1,0 +1,27 @@
+# Natives with a real Rust implementation: <java class> <TAB> <method> <TAB> <crate::impls:: path>
+# After editing, run `cargo run -p jni-gen` in engine/. jni-gen fails if a listed native disappears upstream.
+com.celzero.firestack.intra.Intra	build	intra::build
+com.celzero.firestack.intra.Intra	logLevel	intra::log_level
+com.celzero.firestack.intra.Intra	setupConsole	intra::setup_console
+com.celzero.firestack.intra.Intra	setCrashOutput	intra::set_crash_output
+com.celzero.firestack.intra.Intra	getSELF_UID	intra::get_self_uid
+com.celzero.firestack.intra.Intra	setSELF_UID	intra::set_self_uid
+com.celzero.firestack.intra.Intra	lowMem	intra::low_mem
+com.celzero.firestack.intra.Intra	slowdown	intra::slowdown
+com.celzero.firestack.intra.Intra	loopback	intra::loopback
+com.celzero.firestack.intra.Intra	undelegatedDomains	intra::undelegated_domains
+com.celzero.firestack.intra.Intra	defaultDNSAsFallback	intra::default_dns_as_fallback
+com.celzero.firestack.intra.Intra	experimentalWireGuard	intra::experimental_wireguard
+com.celzero.firestack.intra.Intra	floodWireGuard	intra::flood_wireguard
+com.celzero.firestack.intra.Intra	transparency	intra::transparency
+com.celzero.firestack.backend.Backend	newRadixTree	backend::new_radix_tree
+com.celzero.firestack.backend.Backend$proxyRadixTree	add	backend::radix_add
+com.celzero.firestack.backend.Backend$proxyRadixTree	set	backend::radix_set
+com.celzero.firestack.backend.Backend$proxyRadixTree	del	backend::radix_del
+com.celzero.firestack.backend.Backend$proxyRadixTree	get	backend::radix_get
+com.celzero.firestack.backend.Backend$proxyRadixTree	has	backend::radix_has
+com.celzero.firestack.backend.Backend$proxyRadixTree	getAny	backend::radix_get_any
+com.celzero.firestack.backend.Backend$proxyRadixTree	hasAny	backend::radix_has_any
+com.celzero.firestack.backend.Backend$proxyRadixTree	delAll	backend::radix_del_all
+com.celzero.firestack.backend.Backend$proxyRadixTree	clear	backend::radix_clear
+com.celzero.firestack.backend.Backend$proxyRadixTree	len	backend::radix_len

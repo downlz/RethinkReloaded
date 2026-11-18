@@ -377,7 +377,8 @@ class HomeScreenActivity : BaseActivity(R.layout.activity_home_screen) {
 
         try {
             // /data/data/com.celzero.bravedns/shared_prefs/com.celzero.bravedns_preferences.xml
-            val prefs = getSharedPreferences("com.celzero.bravedns_preferences", MODE_PRIVATE)
+            // [rr] default prefs file is "<applicationId>_preferences"; was hardcoded to com.celzero.bravedns
+            val prefs = getSharedPreferences("${BuildConfig.APPLICATION_ID}_preferences", MODE_PRIVATE)
             val allowBypass = prefs.getBoolean("allow_bypass", false)
             persistentState.privateIps = allowBypass
         } catch (e: Exception) {

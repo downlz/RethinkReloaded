@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- RethinkReloaded fork-only strings (not part of upstream; not translated via Weblate). -->
+<resources>
+    <string name="rr_fork_credit" translatable="false">RethinkReloaded is a community fork of Rethink DNS + Firewall by Celzero and the RethinkDNS contributors. All credit for the app goes to them. Not affiliated with Celzero.</string>
+</resources>

@@ -25,6 +25,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.celzero.bravedns.data.DataUsage
+import com.celzero.bravedns.util.Constants.Companion.RETHINK_PACKAGE // [rr]
 
 @Dao
 interface AppInfoDAO {
@@ -252,7 +253,8 @@ interface AppInfoDAO {
     @Query("select uid from AppInfo where packageName = :packageName")
     fun getAppInfoUidForPackageName(packageName: String): Int
 
-    @Query("update AppInfo set firewallStatus = 7, connectionStatus = 3, isProxyExcluded = 1 where packageName = 'com.celzero.bravedns'")
+    // [rr] package literal -> RETHINK_PACKAGE so the app exempts itself, not com.celzero.bravedns
+    @Query("update AppInfo set firewallStatus = 7, connectionStatus = 3, isProxyExcluded = 1 where packageName = '$RETHINK_PACKAGE'")
     fun exemptRethinkApp()
 
     @Query("select * from AppInfo where tempAllowEnabled = 1 and tempAllowExpiryTime > 0")

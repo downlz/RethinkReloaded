@@ -32,3 +32,8 @@ app/google-services.json
 app/fdroidFull/release
 app/playFull/release
 app/websiteFull/release
+
+# [rr] RethinkReloaded: never commit signing material
+keystore.properties
+*.jks
+*.keystore

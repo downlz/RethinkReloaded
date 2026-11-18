@@ -1,0 +1,18 @@
+[package]
+name = "fs-jni"
+description = "JNI glue (libgojni.so) implementing the gobind-generated firestack Java facade in Rust"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+name = "gojni"            # Java's go.Seq loads System.loadLibrary("gojni")
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+jni = { version = "=0.21.1", default-features = false }
+parking_lot.workspace = true
+fs-iptree = { path = "../fs-iptree" }

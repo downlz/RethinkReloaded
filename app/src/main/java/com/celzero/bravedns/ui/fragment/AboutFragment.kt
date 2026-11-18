@@ -235,6 +235,8 @@ class AboutFragment : Fragment(R.layout.fragment_about), View.OnClickListener, K
             b.fhsTitleRethink.isAllCaps = false
         }
 
+        b.fhsTitleRethinkDesc.append("\n" + getString(R.string.rr_fork_credit)) // [rr] fork credit (app/fork/res)
+
         if (DEBUG) {
             b.aboutMemoryProfile.visibility = View.VISIBLE
         } else {

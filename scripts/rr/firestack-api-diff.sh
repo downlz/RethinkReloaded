@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Shows the Java API delta of the gomobile-generated firestack facade between two pinned commits,
+# using the sources jars published on Maven Central (com.celzero:firestack:<sha10>).
+# Usage: scripts/rr/firestack-api-diff.sh <old-sha10> <new-sha10> [--full]
+set -euo pipefail
+[ $# -ge 2 ] || { echo "usage: $0 <old-sha10> <new-sha10> [--full]"; exit 2; }
+old=$1; new=$2; mode=${3:-}
+base=https://repo1.maven.org/maven2/com/celzero/firestack
+work=$(mktemp -d "${TMPDIR:-/tmp}/fsapi.XXXXXX"); trap 'rm -rf "$work"' EXIT
+
+fetch() { # $1=sha $2=side(old|new) -> $work/$2/src
+  local v=$1 d="$work/$2" jar="firestack-$1-sources.jar"
+  mkdir -p "$d/src"
+  curl -fsSL -o "$d/$jar" "$base/$v/$jar"
+  curl -fsSL -o "$d/$jar.sha1" "$base/$v/$jar.sha1"
+  local want got
+  want=$(tr -d ' \n' < "$d/$jar.sha1" | cut -c1-40)
+  got=$(shasum -a 1 "$d/$jar" | cut -c1-40)
+  [ "$want" = "$got" ] || { echo "sha1 mismatch for $jar"; exit 1; }
+  (cd "$d/src" && unzip -qo "../$jar")
+}
+fetch "$old" old; fetch "$new" new
+
+# Reduce each Java file to its API surface: public/protected declarations and constants.
+api() { # $1=dir
+  (cd "$1" && find . -name '*.java' | sort | while read -r f; do
+     grep -E '^[[:space:]]*(public|protected)[[:space:]]' "$f" | grep -v '^[[:space:]]*//' | sed -E 's/[[:space:]]+/ /g; s/ ?\{.*$//; s/^ //' \
+       | sed "s|^|${f#./}: |"
+   done)
+}
+if [ "$mode" = "--full" ]; then
+  diff -ru "$work/old/src" "$work/new/src" || true
+else
+  delta=$(diff <(api "$work/old/src") <(api "$work/new/src") | grep -E '^[<>]' \
+    | sed 's/^</- removed:/; s/^>/+ added:  /' || true)
+  if [ -n "$delta" ]; then
+    printf '%s\n' "$delta"
+    echo "($(printf '%s\n' "$delta" | wc -l | tr -d ' ') API line(s) changed between $old and $new)"
+  else
+    echo "no public API change between $old and $new"
+  fi
+fi
