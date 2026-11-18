@@ -38,3 +38,9 @@ dependencyResolutionManagement {
         // "ossrh": no-op; mavenCentral (com.celzero:firestack) is already included
     }
 }
+
+// [rr] RethinkReloaded: -PfirestackRepo=rust builds the Rust engine (engine/android) and substitutes it for the
+// Go AAR (io.github.downlz.rethinkreloaded:firestack-rust). See docs/fork/ARCHITECTURE.md.
+if (providers.gradleProperty("firestackRepo").orNull == "rust") {
+    includeBuild("engine/android")
+}

@@ -4,11 +4,14 @@ Parity is checked at four levels: the Java/JNI contract, deterministic logic aga
 test suites run against both engines, and on-device end-to-end, performance and battery measurements.
 
 ## 1. API contract (CI, every PR)
-* `engine/tools/api-contract.sh <sha>` downloads `com.celzero:firestack:<sha>` (AAR + sources jar) from Maven Central
-  and verifies the `.sha1` checksums. It dumps `javap -p -s -constants` for every class in the upstream `classes.jar` and
-  in ours, then diffs them. **The diff must be empty**, constants included.
-* Native completeness: the host test loads the host-built `libgojni`. The number of natives it registers must equal
-  the number of `native` methods javap reports.
+`engine/tools/api-contract.sh` checks against the pin in `engine/api/PIN`:
+1. The vendored facade Java is byte-identical to upstream's `firestack-<pin>-sources.jar`.
+2. The `javap -p -s -constants` dump of our compiled facade equals `engine/api/firestack-api.txt`, the golden taken from
+   upstream's `classes.jar`. Constants are included; compiler-synthesized `access$NNN` accessors are ignored.
+3. Every one of the natives (1061 at `d3d530ea3e`) is exported as a `Java_…` symbol by each ABI's `libgojni.so`.
+4. `crates/fs-jni/src/exports.rs` is up to date with `api/natives.tsv` and `impls.tsv` (`jni-gen --check`).
+
+Checksums of everything downloaded from Maven Central are verified against the published `.sha1` files.
 * `scripts/rr/firestack-api-diff.sh <old> <new>` shows the Java API delta between two upstream pins. It is used during syncs.
 
 ## 2. Go oracle (differential, deterministic logic)
@@ -40,11 +43,15 @@ They write JSON fixtures to `engine/testdata/oracle/<sha>/`, which are checked i
 * Licences and advisories: `cargo deny check`.
 
 ## 4. App test suites against both engines
+CI runs the **parity subset** listed in `scripts/rr/parity-tests.txt` against each engine. The subset covers tests that
+exercise firestack classes through the gobind facade and its Robolectric shadows, plus tests for files the fork patches:
 ```bash
-./gradlew :app:testFdroidFullDebugUnitTest                              # Go engine
-./gradlew -PfirestackRepo=rust :app:testFdroidFullDebugUnitTest         # Rust engine
-./gradlew -PfirestackRepo=rust :app:connectedFdroidFullDebugAndroidTest # emulator
+./gradlew :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)                       # Go engine
+./gradlew -PfirestackRepo=rust :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)  # Rust engine
+./gradlew -PfirestackRepo=rust :app:connectedFdroidFullDebugAndroidTest                            # emulator
 ```
+The full upstream unit suite (`:app:testFdroidFullDebugUnitTest` with no filter) currently hangs in
+`ConnectionMonitorTest` on a host JVM (WorkManager/Room `runBlocking`). Upstream's own CI does not run unit tests.
 
 ## 5. JVM host tests
 `engine/android/host-test` runs the vendored Java facade on the desktop JVM against a host build of `libgojni`.

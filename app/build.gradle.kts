@@ -431,6 +431,7 @@ fun firestackDependency(): String {
         "jitpack" -> "com.github.celzero:firestack:$firestackCommit@aar"
         "github" -> "com.github.celzero:firestack:$firestackCommit@aar"
         "ossrh" -> "com.celzero:firestack:$firestackCommit@aar"
+        "rust" -> "io.github.downlz.rethinkreloaded:firestack-rust:0.0.1" // [rr] Rust engine (engine/android)
         else -> throw GradleException("Unknown firestackRepo: $firestackRepo")
     }
 }

@@ -1,0 +1,27 @@
+# RethinkReloaded network engine: a Rust port of celzero/firestack (MPL-2.0).
+[workspace]
+resolver = "3"
+members = ["crates/*", "tools/jni-gen"]
+
+[workspace.package]
+version = "0.0.1"
+edition = "2024"
+rust-version = "1.99"
+license = "MPL-2.0"
+repository = "https://github.com/downlz/RethinkReloaded"
+authors = ["RethinkReloaded contributors", "RethinkDNS and its authors (firestack)"]
+
+[workspace.dependencies]
+jni = "0.21"
+parking_lot = "0.12"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "unwind"          # panics are caught at every JNI boundary
+debug = "line-tables-only"
+strip = "none"            # symbols are split out by the AAR build, as upstream does
+
+[profile.android-dev]
+inherits = "dev"
+opt-level = 1

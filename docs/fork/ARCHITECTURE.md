@@ -17,7 +17,7 @@ The Kotlin app is unchanged: 71 upstream files import `com.celzero.firestack.*` 
 ```
 Kotlin app (unchanged upstream) ── com.celzero.firestack.{intra,backend,settings} + go.{Seq,Universe,error}
   │  Java facade = gobind output vendored verbatim from firestack-<sha>-sources.jar (Maven Central)
-  ▼  JNI RegisterNatives (library name stays "gojni")      ▲ upcalls: Bridge / Controller / Console / LogConsumer
+  ▼  JNI: one exported Java_* symbol per native (library name stays "gojni")   ▲ upcalls: Bridge / Controller / Console / LogConsumer
 fs-jni (cdylib): Seq refnum table (gobind protocol), struct stores, Go-style errors & panic envelope,
                  CallbackExecutor lanes {protect | flow | dns | notify} on JVM-attached std threads
   ▼  pure-Rust traits (host-testable, no JNI below this line)
@@ -44,11 +44,24 @@ fs-intra Tunnel ─► fs-netstack  stack thread: TUN ↔ smoltcp, held-SYN TCP,
   and no lock is held across an upcall.
 * No periodic timers while idle: expiry is lazy, and gotatun's 250 ms device tick is patched to sleep until the next deadline.
 
+### JNI glue generation
+`engine/tools/facade-sync.sh <sha>` vendors the Java from upstream's sources jar and writes `engine/api/natives.tsv`
+(1061 natives at `d3d530ea3e`). `engine/tools/jni-gen` turns that list, plus `crates/fs-jni/impls.tsv`, into
+`crates/fs-jni/src/exports.rs`, which exports one `Java_…` symbol per native. Each symbol is routed to:
+* a real implementation listed in `impls.tsv`;
+* the generic struct store (`__New` and getters/setters of the 28 gobind struct classes);
+* the gobind runtime (`Seq.init`, `destroyRef`, `proxyerror.error`, package `_init`s);
+* the permanent RPN stub; or
+* the "unimplemented" stub, which throws `proxyerror` for `throws Exception` methods and returns Go's zero value otherwise.
+
+Exported symbols are used instead of `RegisterNatives`, matching gobind's own C glue. Completeness is checked by
+`engine/tools/api-contract.sh`, which compares the `.so` exports with javap's native list.
+
 ## Repository layout (fork-owned paths)
 
 ```
 engine/          Rust workspace (MPL-2.0) + android/ Gradle build producing the AAR
-app/fork/        Branding layer: rethinkreloaded.gradle.kts + res overlays
+app/fork/        Branding layer: rethinkreloaded.gradle + res overlays
 scripts/rr/      Sync / ledger / API-diff / tripwire scripts
 docs/fork/       This documentation
 .github/README.md, .github/workflows/rr-*.yml, NOTICE, FORK_CHANGES.md, .fork/UPSTREAM
@@ -75,5 +88,5 @@ docs/fork/       This documentation
 | `fs-jni` | gomobile `seq` runtime | cdylib `libgojni.so`, generated JNI glue |
 
 ## Branding layer
-See [BRANDING.md](BRANDING.md). Applying `app/fork/rethinkreloaded.gradle.kts` from `app/build.gradle.kts` changes the
+See [BRANDING.md](BRANDING.md). Applying `app/fork/rethinkreloaded.gradle` from `app/build.gradle.kts` changes the
 `applicationId`, the versionCode scheme and the RPN flag, and adds resource overlays. No upstream resources are edited.
