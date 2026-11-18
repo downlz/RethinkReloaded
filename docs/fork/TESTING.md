@@ -60,7 +60,11 @@ exercise firestack classes through the gobind facade and its Robolectric shadows
 The full upstream unit suite (`:app:testFdroidFullDebugUnitTest` with no filter) hangs in `ConnectionMonitorTest`,
 blocked in WorkManager/Room `runBlocking`. This was reproduced on **pristine upstream v0.5.8** as well as on the fork,
 both times right after `BraveVPNServiceLifecycleTest`. Run on its own, the class passes (28/28). It is an upstream
-test-isolation issue, and upstream's own CI does not run unit tests. Worth reporting upstream.
+test-isolation issue, and upstream's own CI does not run unit tests.
+
+Known flaky upstream test in the subset: `TunFirewallManagerTest` "RULE1B - Block new app". It verifies
+`rdb.addNewApp` right after `firewall()` returns, but the production code launches that call on `Dispatchers.IO` in a
+separate scope, so the check races. This is unrelated to the engine. `rr-ci` retries the unit-test step once.
 
 ## 5. JVM host tests
 `engine/android/host-test` runs the vendored Java facade on the desktop JVM against a host build of `libgojni`
