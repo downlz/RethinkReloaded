@@ -1,7 +1,7 @@
 # Unit tests run by rr-ci against BOTH engines (Go AAR and Rust AAR).
 # Selection: tests that exercise firestack classes (via the gobind facade / shadows) or files the fork patches.
-# One test class simple name per line. The full upstream suite currently hangs in ConnectionMonitorTest on CI hosts
-# (WorkManager/Room runBlocking), so it is not run by default.
+# One test class simple name per line. The full upstream suite hung once in ConnectionMonitorTest when run in one JVM
+# (the class passes on its own), so CI runs this subset rather than the whole suite.
 FirewallManagerTest
 RulesImportHelperTest
 GoVpnAdapterTest
