@@ -653,3 +653,6 @@ dependencies {
     "playImplementation"(libs.googleFirebaseFirebaseCrashlytics)
     "playImplementation"(libs.googleFirebaseFirebaseCrashlyticsNdk)
 }
+
+// [rr] RethinkReloaded branding layer (applicationId, versionCode, res overlays); see docs/fork/BRANDING.md
+apply(from = "fork/rethinkreloaded.gradle")

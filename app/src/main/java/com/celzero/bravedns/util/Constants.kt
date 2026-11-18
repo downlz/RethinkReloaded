@@ -15,6 +15,7 @@
  */
 package com.celzero.bravedns.util
 
+import com.celzero.bravedns.BuildConfig // [rr]
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -60,7 +61,8 @@ class Constants {
         const val ONDEVICE_BLOCKLIST_UPDATE_CHECK_QUERYPART_1 = "update"
         const val ONDEVICE_BLOCKLIST_UPDATE_CHECK_QUERYPART_2 = "blocklists"
 
-        const val RETHINK_PACKAGE = "com.celzero.bravedns"
+        // [rr] was "com.celzero.bravedns"; must follow applicationId (forks, .alpha, .izzy builds)
+        const val RETHINK_PACKAGE = BuildConfig.APPLICATION_ID
 
         // url to check if there is update available for on-device blocklist
         const val ONDEVICE_IPDB_UPDATE_CHECK_URL =

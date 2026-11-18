@@ -26,12 +26,14 @@ import androidx.room.Update
 import com.celzero.bravedns.data.AppConnection
 import com.celzero.bravedns.data.DataUsage
 import com.celzero.bravedns.data.DataUsageSummary
+import com.celzero.bravedns.util.Constants.Companion.RETHINK_PACKAGE // [rr]
 import com.celzero.bravedns.data.RpnConnStatsSummary
 import com.celzero.bravedns.data.RecentRoutedAppRow
 private const val CT_COLUMNS =
     "id, 'ct' as source, appName, uid, packageName, usrId, ipAddress, port, protocol, isBlocked, blockedByRule, blocklists, proxyDetails, flag, dnsQuery, timeStamp, connId, downloadBytes, uploadBytes, duration, synack, rpid, message, connType"
+// [rr] package literal -> RETHINK_PACKAGE
 private const val RLOG_COLUMNS =
-    "id, 'rethink' as source, appName, uid, 'com.celzero.bravedns' as packageName, usrId, ipAddress, port, protocol, isBlocked, blockedByRule, blocklists, proxyDetails, flag, dnsQuery, timeStamp, connId, downloadBytes, uploadBytes, duration, synack, rpid, message, connType"
+    "id, 'rethink' as source, appName, uid, '$RETHINK_PACKAGE' as packageName, usrId, ipAddress, port, protocol, isBlocked, blockedByRule, blocklists, proxyDetails, flag, dnsQuery, timeStamp, connId, downloadBytes, uploadBytes, duration, synack, rpid, message, connType"
 private const val SEARCH_PREDICATE =
     "(appName like :query or ipAddress like :query or dnsQuery like :query or flag like :query or proxyDetails like :query or connId like :query)"
 private const val MERGED_ORDER_BY = "order by timeStamp desc, id desc, source asc"

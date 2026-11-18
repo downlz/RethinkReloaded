@@ -17,9 +17,23 @@ Fork-owned paths need no ledger entry because upstream never has them:
 | File | Change | Why | Upstreamable |
 |---|---|---|---|
 | `.gitignore` | ignore `keystore.properties`, `*.jks`, `*.keystore` | never commit signing material | yes |
+| `app/build.gradle.kts` | one `apply(from = "fork/rethinkreloaded.gradle")` line at the end; `"rust"` case in `firestackDependency()` | branding layer; Rust engine selection | no |
+| `settings.gradle.kts` | `includeBuild("engine/android")` when `-PfirestackRepo=rust` | Rust engine selection | no |
+| `app/src/main/java/com/celzero/bravedns/util/Constants.kt` | `RETHINK_PACKAGE = BuildConfig.APPLICATION_ID` | self-detection breaks when applicationId ≠ namespace | yes (also fixes upstream .alpha/.izzy) |
+| `app/src/main/java/com/celzero/bravedns/database/AppInfoDAO.kt` | `exemptRethinkApp` uses `$RETHINK_PACKAGE` | fork would exempt the *original* app from its firewall | yes |
+| `app/src/main/java/com/celzero/bravedns/database/ConnectionTrackerDAO.kt` | `RLOG_COLUMNS` uses `$RETHINK_PACKAGE` | own log rows had wrong package | yes |
+| `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt` | legacy prefs file name from `BuildConfig.APPLICATION_ID` | "LAN traffic" setting reset on every update | yes |
+| `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt` | append fork credit (`R.string.rr_fork_credit`) under the About header | attribution to Celzero in-app | no |
 
 <!-- ledger:begin -->
 - `.gitignore`
+- `app/build.gradle.kts`
+- `settings.gradle.kts`
+- `app/src/main/java/com/celzero/bravedns/util/Constants.kt`
+- `app/src/main/java/com/celzero/bravedns/database/AppInfoDAO.kt`
+- `app/src/main/java/com/celzero/bravedns/database/ConnectionTrackerDAO.kt`
+- `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt`
+- `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt`
 <!-- ledger:end -->
 
 ## Disabled upstream workflows (via `gh workflow disable`, files untouched)

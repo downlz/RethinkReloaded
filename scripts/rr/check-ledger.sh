@@ -7,7 +7,7 @@ base=$(cat .fork/UPSTREAM)
 git rev-parse -q --verify "refs/tags/$base" >/dev/null || { echo "missing tag $base (git fetch upstream --tags)"; exit 2; }
 
 # Fork-owned paths are excluded: upstream never has them.
-changed=$(git diff --name-only "$base" HEAD -- . \
+changed=$(git diff --name-only "$base" -- . \
   ':(exclude)engine/' ':(exclude)docs/fork/' ':(exclude)app/fork/' ':(exclude)scripts/rr/' \
   ':(exclude).fork/' ':(exclude).github/workflows/rr-*' ':(exclude).github/README.md' \
   ':(exclude)NOTICE' ':(exclude)FORK_CHANGES.md' | sort -u)

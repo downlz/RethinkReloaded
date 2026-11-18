@@ -9,16 +9,15 @@ err() { echo "TRIPWIRE: $*"; fail=1; }
 # 1. Our bottom-nav overlay must be upstream's menu minus the rethinkPlus item.
 up=app/src/main/res/menu/bottom_nav_menu.xml; ov=app/fork/res/menu/bottom_nav_menu.xml
 if [ -f "$up" ] && [ -f "$ov" ]; then
-  expected=$(python3 -I - "$up" <<'PY'
-import re,sys
-s=open(sys.argv[1],encoding='utf-8').read()
-s=re.sub(r'\n\s*<item\b(?:(?!/>|</item>).)*?@\+id/rethinkPlus.*?(?:/>|</item>)', '', s, flags=re.S)
-print(s, end='')
-PY
-)
-  actual=$(grep -v '\[rr\]' "$ov")
-  [ "$(printf '%s' "$expected" | tr -d '[:space:]')" = "$(printf '%s' "$actual" | tr -d '[:space:]')" ] \
-    || err "$ov is out of date with $up (regenerate: upstream menu minus @+id/rethinkPlus)"
+  python3 -I - "$up" "$ov" <<'PY2' || err "$ov is out of date with $up (regenerate: upstream menu minus @+id/rethinkPlus)"
+import re, sys
+def norm(s):
+    s = re.sub(r'<!--.*?-->', '', s, flags=re.S)
+    return re.sub(r'\s+', '', s)
+up = open(sys.argv[1], encoding='utf-8').read()
+up = re.sub(r'<item\b[^>]*@\+id/rethinkPlus"[^>]*?(?:/>|>.*?</item>)', '', up, flags=re.S)
+sys.exit(0 if norm(up) == norm(open(sys.argv[2], encoding='utf-8').read()) else 1)
+PY2
 else
   err "missing $up or $ov"
 fi
@@ -28,11 +27,11 @@ for f in app/src/fdroid/java/com/android/billingclient/api/BillingClient.kt \
          app/src/fdroid/java/com/celzero/bravedns/iab/InAppBillingHandler.kt; do
   [ -f "$f" ] || err "fdroid billing stub removed: $f (upstream may be enabling RPN in fdroid)"
 done
-grep -Eq '"?fdroidImplementation"?\(.*(billing|stripe)' app/build.gradle.kts \
+grep -v '^[[:space:]]*//' app/build.gradle.kts | grep -Eq '"?fdroidImplementation"?\(.*(billing|stripe)' \
   && err "app/build.gradle.kts adds a billing/stripe dependency to the fdroid flavor"
 
 # 3. The fork's RPN switch must be present.
-grep -q 'RR_RPN_ENABLED' app/fork/rethinkreloaded.gradle.kts || err "RR_RPN_ENABLED missing from fork gradle layer"
+grep -q 'RR_RPN_ENABLED' app/fork/rethinkreloaded.gradle || err "RR_RPN_ENABLED missing from fork gradle layer"
 
 [ $fail -eq 0 ] && echo "rpn tripwire OK"
 exit $fail
