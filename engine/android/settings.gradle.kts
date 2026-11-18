@@ -23,4 +23,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "rethinkreloaded-engine"
 include(":firestack-rust")
+include(":host-test")
 project(":firestack-rust").projectDir = file("facade")

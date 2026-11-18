@@ -19,13 +19,20 @@ Checksums of everything downloaded from Maven Central are verified against the p
 SHA (so they can reach unexported internals) and run in Docker:
 
 ```bash
-engine/tools/go-oracle/run.sh d3d530ea3e   # docker golang:1.27.3, -tags oracle -ldflags=-checklinkname=0
+engine/tools/go-oracle/run.sh --docker     # pin from engine/api/PIN; Docker image golang:<firestack go.mod version>
 ```
 
-They write JSON fixtures to `engine/testdata/oracle/<sha>/`, which are checked in. Rust tests replay the fixtures.
+firestack only builds for Linux/Android, so on macOS the oracle runs in Docker. It writes TSV fixtures
+(`op \t arg1 \t arg2 \t result \t err`) to `engine/testdata/oracle/<sha>/`, which are checked in.
+`crates/*/tests/oracle.rs` replay them during `cargo test`. Operations on which firestack itself panics are recorded
+as `panic` and skipped (see `engine/PARITY.md`). Results at `d3d530ea3e` are listed in `engine/PARITY.md`.
 
 | Suite | Compared |
 |---|---|
+| IpTree *(done)* | 10040 seeded random ops over all 18 methods (v4/v6/mapped/zoned/invalid) |
+| RadixTree *(done)* | 8040 seeded random ops (Unicode and empty keys) |
+| WgKey *(done)* | parse/encode/derive for 70 inputs, including malformed ones |
+| Settings *(done)* | mode strings, dialer options, auto mode |
 | Blocklist trie | lookups for a pinned blocklist + domain corpus → identical flag sets |
 | Blockstamps | flags↔stamp round trips (EB32 and legacy) |
 | xdns transforms | block answers, TTL clamps, padding, DNS64 synthesis; compared semantically and byte-for-byte |
@@ -53,13 +60,32 @@ exercise firestack classes through the gobind facade and its Robolectric shadows
 The full upstream unit suite (`:app:testFdroidFullDebugUnitTest` with no filter) hangs in `ConnectionMonitorTest`,
 blocked in WorkManager/Room `runBlocking`. This was reproduced on **pristine upstream v0.5.8** as well as on the fork,
 both times right after `BraveVPNServiceLifecycleTest`. Run on its own, the class passes (28/28). It is an upstream
-test-isolation issue, and upstream's own CI does not run unit tests. Worth reporting upstream.
+test-isolation issue, and upstream's own CI does not run unit tests.
+
+Known flaky upstream test in the subset: `TunFirewallManagerTest` "RULE1B - Block new app". It verifies
+`rdb.addNewApp` right after `firewall()` returns, but the production code launches that call on `Dispatchers.IO` in a
+separate scope, so the check races. This is unrelated to the engine. `rr-ci` retries the unit-test step once.
 
 ## 5. JVM host tests
-`engine/android/host-test` runs the vendored Java facade on the desktop JVM against a host build of `libgojni`.
-On Linux CI, `ip tuntap` provides a real TUN device, so `Intra.connect` can run end to end without an emulator.
+`engine/android/host-test` runs the vendored Java facade on the desktop JVM against a host build of `libgojni`
+(`./gradlew -p engine/android :host-test:test`). Unlike the app's Robolectric tests, which replace the native library
+with shadows, these exercise the real JNI path. They check:
+* `go.Universe$proxyerror` exceptions;
+* Go zero values;
+* struct accessors and the generated `equals`;
+* refnum release through GC (`Seq.destroyRef`);
+* stubs.
+
+CI runs them. Once the netstack exists, Linux CI can use `ip tuntap` to run `Intra.connect` end to end.
 
 ## 6. End-to-end on emulator / device
+Local setup used so far: AVD `rr-api35` (`system-images;android-35;google_apis;arm64-v8a`, Pixel 6 profile).
+```bash
+~/Library/Android/sdk/emulator/emulator -avd rr-api35 -no-window -no-audio -no-boot-anim -no-snapshot &
+adb install -r app/build/outputs/apk/fdroidFull/debug/app-fdroid-full-arm64-v8a-debug.apk
+adb shell am start -n io.github.downlz.rethinkreloaded/com.celzero.bravedns.ui.activity.LauncherAliasAppLock
+```
+
 * Pre-authorize the VPN: `adb shell appops set io.github.downlz.rethinkreloaded ACTIVATE_VPN allow`.
 * `engine/e2e/fs-probe` is a small Rust CLI pushed to `/data/local/tmp`. It checks DoH resolution through the tunnel,
   that blocklisted domains are blocked, and TCP/UDP/ICMP reachability.
@@ -78,5 +104,19 @@ On Linux CI, `ip tuntap` provides a real TUN device, so `Intra.connect` can run 
 | Startup | `benchmark/` VpnStartupBenchmark, plus `ATrace` sections emitted by Rust |
 | Size | `libgojni.so` size per ABI, compared with Go's (19–21 MB) |
 
-Baselines are stored as `engine/perf/baseline-<firestack-sha>.json`. Each Phase 1+ exit gate compares against them
+`engine/perf/capture.sh <label>` records PSS, native heap, RSS and thread count of the running app, plus the size of
+`libgojni.so`, as JSON. `engine/perf/device-baseline.sh <label> [--no-vpn]` wraps it for a full device run. With
+`ANDROID_SERIAL` set and RethinkReloaded's VPN connected, it adds:
+* a wakeup proxy (context switches per minute across the app's threads);
+* DNS latency through the VPN's DNS address, cached and uncached;
+* TCP connect latency;
+* download throughput together with the app's CPU seconds per GB.
+
+The probe is `engine/e2e/fs-probe`, built with `cargo ndk -t arm64-v8a build --release -p fs-probe`. It runs as the
+shell user, whose traffic goes through the VPN. For the download, serve a large file from a LAN host
+(`python3 -m http.server`) and pass `RR_HTTP_TARGET="<ip> <port> /<file>"`; public test servers are often blocked or
+throttled. Repeat the run with `--no-vpn` (no VPN active) for the network ceiling. Keep the phone on the same Wi-Fi band
+for both runs: one router isolated 2.4 GHz clients from the LAN host. Recorded files contain no SSID, BSSID, MAC or
+device IP. Baselines are stored as `engine/perf/baseline-<engine>-<firestack-sha>-<device>.json`.
+Compare engines only on the same device and build type. Emulator numbers support relative comparison only. Each Phase 1+ exit gate compares against them
 (see [ENGINE_ROADMAP.md](ENGINE_ROADMAP.md)).

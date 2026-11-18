@@ -1,0 +1,11 @@
+{
+  "label": "baseline-go-d3d530ea3e-emulator",
+  "captured": "2026-11-18T12:39:38Z",
+  "device": "sdk_gphone64_arm64 / Android 15 / arm64-v8a",
+  "emulator": true,
+  "engine": "go",
+  "firestack_pin": "d3d530ea3e",
+  "libgojni_bytes": 19797608,
+  "vpn_connected": true,
+  "samples": [{"pss_kb":160251,"native_heap_kb":19036,"rss_kb":264808,"threads":78},{"pss_kb":159277,"native_heap_kb":21536,"rss_kb":265424,"threads":78},{"pss_kb":157187,"native_heap_kb":19828,"rss_kb":265480,"threads":78},{"pss_kb":157139,"native_heap_kb":19832,"rss_kb":265572,"threads":78},{"pss_kb":157491,"native_heap_kb":19920,"rss_kb":265480,"threads":78},{"pss_kb":156955,"native_heap_kb":19928,"rss_kb":265552,"threads":78},{"pss_kb":156948,"native_heap_kb":19932,"rss_kb":265612,"threads":78},{"pss_kb":157097,"native_heap_kb":19932,"rss_kb":265476,"threads":77},{"pss_kb":157125,"native_heap_kb":19952,"rss_kb":265604,"threads":77},{"pss_kb":156884,"native_heap_kb":19952,"rss_kb":265156,"threads":71}]
+}

@@ -11,7 +11,9 @@ firestack itself incorporates, and this port therefore derives from:
 * outline-go-tun2socks / Intra by Jigsaw Operations LLC and The Outline Authors
   (Apache License 2.0).
 * dnscrypt-proxy by Frank Denis (ISC License) - DNS64 synthesis.
-* critbitgo by k-sone (MIT License) - IpTree / RadixTree ordering semantics.
+* critbitgo by Keita Sone (MIT License, LICENSES/MIT-critbitgo.txt) - the crit-bit trie
+  behind IpTree / RadixTree, ported in crates/fs-iptree.
+* WireGuard key handling by WireGuard LLC (MIT License) - crates/fs-wg/src/key.rs.
 * gotrie by Celzero (succinct blocklist trie format).
 
 Vendored Java facade (android/facade/src/main/java):

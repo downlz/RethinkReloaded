@@ -18,31 +18,59 @@ Total estimate: about 45–50 engineer-weeks.
 
 ## Status (2026-11-18)
 
-**Phase 0: in progress.**
+**Phase 0: exit gate met.** Remaining items carried forward are listed below.
 
-Done:
-* `engine/` workspace with licences, NOTICE, cargo-deny, the toolchain pin and 16 KB page alignment.
-* `facade-sync.sh`: gobind Java vendored verbatim at `d3d530ea3e`, plus the javap golden and `natives.tsv`.
-* `jni-gen`: all **1061** natives exported on all four ABIs.
-* Seq refnum runtime, `proxyerror` errors, panic containment with Go-format crash output.
-* Struct store covering 28 classes (616 accessors).
-* Real implementations of `Intra.build/logLevel/setupConsole/setCrashOutput/SELF_UID/lowMem/toggles`.
-* `Backend.newRadixTree` and the full `RadixTree` port.
-* Gradle `-PfirestackRepo=rust` composite build.
-* `api-contract.sh` passes.
-* `./gradlew -PfirestackRepo=rust :app:assembleFdroidFullDebug` builds.
-* The 562-test parity unit subset passes on both engines.
+| Gate | Result |
+|---|---|
+| API contract diff empty | `engine/tools/api-contract.sh` OK at `d3d530ea3e` |
+| All natives present | 1061/1061 exported on arm64-v8a, armeabi-v7a, x86, x86_64 |
+| `./gradlew -PfirestackRepo=rust :app:assembleFdroidFullDebug` + unit tests | builds; 562 parity unit tests pass on both engines |
+| App launches with the Rust engine | Android 15 arm64 emulator: welcome screen, home screen, About; no crashes; `rust engine loaded` |
+| VPN start fails cleanly | `Intra.newDefaultDNS` / `Intra.connect` throw `go.Universe$proxyerror`; Kotlin logs `err new vpn-adapter`; app stays up |
 
-Remaining before the Phase 0 exit gate:
-* `IpTree` port. It needs critbitgo `Net` traversal order, verified against a Go oracle. Until then `Backend.newIpTree()`
-  returns `null`, so the app cannot start with the Rust engine yet.
-* Real `Settings.*` setters and `WgKey` (x25519).
-* Go oracle harness (`engine/tools/go-oracle`) and the JVM host-test module.
-* On-device check that the app launches and the VPN start fails cleanly. No emulator or device was available in the setup session.
-* Go performance baseline captured on reference devices.
+Delivered in Phase 0:
+* Workspace and tooling: `facade-sync`, `jni-gen` (1061 natives), the API contract check, and the CI engine job.
+* gobind runtime: refnums, struct store (28 classes), Go-format errors and panics.
+* Real implementations (67): `Intra` basics and toggles, all `Settings` natives, `IpTree` and `RadixTree` (faithful critbitgo
+  port), `WgKey`.
+* JVM host tests of the real JNI path (`engine/android/host-test`, 8 tests).
+* Go oracle (`tools/go-oracle`, Docker): 18,204 recorded firestack operations, all reproduced by the Rust replay tests
+  (`engine/PARITY.md`). It also found 107 inputs on which firestack itself panics.
+* Go baselines on the emulator (`baseline-go-d3d530ea3e-emulator.json`) and on a physical phone (below).
 
-Current census: 25 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are
-permanent stubs and 306 natives are still to port.
+### Go baseline on a physical device (2026-11-18)
+
+The setup:
+* motorola edge 60 pro, Android 17 (API 37), arm64.
+* Wi-Fi 802.11ac on 5 GHz.
+* `fdroidFullReleaseDebug` build.
+* DNS set to Cloudflare DoH.
+
+Files: `engine/perf/baseline-go-d3d530ea3e-edge60pro.json` (VPN on) and `engine/perf/reference-novpn-edge60pro.json` (no VPN).
+Captured with `engine/perf/device-baseline.sh` and `engine/e2e/fs-probe`.
+
+| Metric | Go engine (VPN on) | No VPN |
+|---|---|---|
+| App PSS, steady idle (screen on) | ~186 MB (native heap ~38 MB, RSS ~242 MB) | n/a |
+| Threads | 86 | n/a |
+| Context switches / min, idle (wakeup proxy) | ~4,800 | n/a |
+| LAN HTTP download (300 MB from a LAN host) | **133 Mbit/s** | 206 Mbit/s (Go costs ~35%) |
+| App CPU per GB downloaded | **86.9 s** | n/a |
+| DNS, cached (via the VPN's DNS) | p50 23.5 ms, p95 26.2 ms | n/a |
+| DNS, uncached | p50 79 ms, p95 2.19 s, 14/40 timed out | UDP 1.1.1.1: p50 49.7 ms, 7/40 lost |
+| `libgojni.so` (arm64) | 19.8 MB | n/a |
+
+TCP connect through the VPN measures about 4 ms because the netstack terminates the handshake locally. It is recorded
+but is not a network latency. The Phase 1 performance gates compare against the VPN-on column, with the same device,
+build type, network and DNS settings.
+
+Carried forward:
+* Baseline on an **armv7** device. The edge 60 pro is 64-bit only.
+* A battery run of several hours, using `batterystats` and Battery Historian.
+* Census: 67 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
+  stubs and **264** natives remain for Phases 1–3.
+
+**Next: Phase 1** (netstack, dialers, DNS transports, resolver/ALG, blocklists).
 
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the

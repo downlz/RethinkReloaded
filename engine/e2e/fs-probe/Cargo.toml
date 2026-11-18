@@ -1,0 +1,8 @@
+[package]
+name = "fs-probe"
+description = "On-device probe for engine benchmarks/e2e: DNS latency, TCP connect latency, HTTP throughput (std only)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
