@@ -8,18 +8,18 @@ old=$1; new=$2; mode=${3:-}
 base=https://repo1.maven.org/maven2/com/celzero/firestack
 work=$(mktemp -d "${TMPDIR:-/tmp}/fsapi.XXXXXX"); trap 'rm -rf "$work"' EXIT
 
-fetch() { # $1=sha → $work/$1/src
-  local v=$1 jar="firestack-$1-sources.jar"
-  mkdir -p "$work/$v/src"
-  curl -fsSL -o "$work/$v/$jar" "$base/$v/$jar"
-  curl -fsSL -o "$work/$v/$jar.sha1" "$base/$v/$jar.sha1"
+fetch() { # $1=sha $2=side(old|new) -> $work/$2/src
+  local v=$1 d="$work/$2" jar="firestack-$1-sources.jar"
+  mkdir -p "$d/src"
+  curl -fsSL -o "$d/$jar" "$base/$v/$jar"
+  curl -fsSL -o "$d/$jar.sha1" "$base/$v/$jar.sha1"
   local want got
-  want=$(tr -d ' \n' < "$work/$v/$jar.sha1" | cut -c1-40)
-  got=$(shasum -a 1 "$work/$v/$jar" | cut -c1-40)
+  want=$(tr -d ' \n' < "$d/$jar.sha1" | cut -c1-40)
+  got=$(shasum -a 1 "$d/$jar" | cut -c1-40)
   [ "$want" = "$got" ] || { echo "sha1 mismatch for $jar"; exit 1; }
-  (cd "$work/$v/src" && unzip -q "../$jar")
+  (cd "$d/src" && unzip -qo "../$jar")
 }
-fetch "$old"; fetch "$new"
+fetch "$old" old; fetch "$new" new
 
 # Reduce each Java file to its API surface: public/protected declarations and constants.
 api() { # $1=dir
@@ -29,8 +29,14 @@ api() { # $1=dir
    done)
 }
 if [ "$mode" = "--full" ]; then
-  diff -ru "$work/$old/src" "$work/$new/src" || true
+  diff -ru "$work/old/src" "$work/new/src" || true
 else
-  diff <(api "$work/$old/src") <(api "$work/$new/src") | grep -E '^[<>]' \
-    | sed 's/^</- removed:/; s/^>/+ added:  /' || echo "no public API change between $old and $new"
+  delta=$(diff <(api "$work/old/src") <(api "$work/new/src") | grep -E '^[<>]' \
+    | sed 's/^</- removed:/; s/^>/+ added:  /' || true)
+  if [ -n "$delta" ]; then
+    printf '%s\n' "$delta"
+    echo "($(printf '%s\n' "$delta" | wc -l | tr -d ' ') API line(s) changed between $old and $new)"
+  else
+    echo "no public API change between $old and $new"
+  fi
 fi
