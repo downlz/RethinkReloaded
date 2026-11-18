@@ -1,0 +1,54 @@
+mode2String	dns	-1	dns unknown -1	0
+mode2String	dns	0	dns none 0	0
+mode2String	dns	1	dns ip 1	0
+mode2String	dns	2	dns port 2	0
+mode2String	dns	3	dns unknown 3	0
+mode2String	dns	4	dns unknown 4	0
+mode2String	dns	5	dns unknown 5	0
+mode2String	block	-1	block unknown -1	0
+mode2String	block	0	block none 0	0
+mode2String	block	1	block filter 1	0
+mode2String	block	2	block sink 2	0
+mode2String	block	3	block filterproc 3	0
+mode2String	block	4	block unknown 4	0
+mode2String	block	5	block unknown 5	0
+mode2String	pt	-1	pt unknown -1	0
+mode2String	pt	0	pt auto 0	0
+mode2String	pt	1	pt force64 1	0
+mode2String	pt	2	pt nopt 2	0
+mode2String	pt	3	pt force46 3	0
+mode2String	pt	4	pt force 4	0
+mode2String	pt	5	pt unknown 5	0
+mode2String	DNS	-1	DNS unknown -1	0
+mode2String	DNS	0	DNS none 0	0
+mode2String	DNS	1	DNS ip 1	0
+mode2String	DNS	2	DNS port 2	0
+mode2String	DNS	3	DNS unknown 3	0
+mode2String	DNS	4	DNS unknown 4	0
+mode2String	DNS	5	DNS unknown 5	0
+mode2String	x	-1	x unknown -1	0
+mode2String	x	0	x unknown 0	0
+mode2String	x	1	x unknown 1	0
+mode2String	x	2	x unknown 2	0
+mode2String	x	3	x unknown 3	0
+mode2String	x	4	x unknown 4	0
+mode2String	x	5	x unknown 5	0
+l3	0		4	0
+l3	2		4	0
+l3	4		6	0
+l3	6		46	0
+l3	7		4	0
+engine	4		2	0
+engine	6		4	0
+engine	46		6	0
+engine			2	0
+engine	x		2	0
+setDialerOpts	0,0,4096,10,1		true|SplitAuto,RetryAfterSplit,rw: 4096b,LowerKeepAlive,10s,10s	0
+setDialerOpts	3,2,1073741824,-1,0		true|SplitDesync,RetryNever,rw: 2097152b,DefaultKeepAlive,0s,0s	0
+setDialerOpts	9,9,0,0,1		false|SplitAuto,RetryAfterSplit,rw: 0b,LowerKeepAlive,0s,0s	0
+setDialerOpts	4,1,65536,30,0		true|SplitNever,RetryWithSplit,rw: 65536b,DefaultKeepAlive,30s,30s	0
+setAutoMode	-5		0|local|false|false	0
+setAutoMode	0		0|local|false|false	0
+setAutoMode	1		0|remote|true|true	0
+setAutoMode	2		1|hybrid|true|false	0
+setAutoMode	3		2|hybrid|true|false	0

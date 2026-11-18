@@ -18,7 +18,11 @@ Kotlin app runs on it unchanged. Credit for firestack goes to Celzero and the Re
 | `android/facade/src/main/java` | gobind-generated Java facade, vendored **verbatim** from upstream's sources jar |
 | `android/facade` | Android library producing the AAR (`io.github.downlz.rethinkreloaded:firestack-rust`) |
 | `crates/fs-jni` | `libgojni.so`: gobind refnum runtime, struct store, generated `Java_*` exports (`src/exports.rs`), `impls/` |
-| `crates/fs-iptree` | RadixTree (done) / IpTree (next) ports |
+| `crates/fs-core` | engine-wide settings (`Settings.*`, dialer options, tun/auto/plus modes) |
+| `crates/fs-iptree` | critbitgo crit-bit trie port; `RadixTree` and `IpTree` |
+| `crates/fs-wg` | WireGuard (keys now; tunnels in Phase 2) |
+| `android/host-test` | JVM tests of the real JNI path: vendored facade on the desktop JVM against host `libgojni` |
+| `tools/go-oracle` | records firestack's own results (in Docker) into `testdata/oracle/<pin>/*.tsv` for replay tests |
 | `tools/facade-sync.sh` | re-vendor the facade + regenerate API files at a new pin |
 | `tools/jni-gen` | generates `crates/fs-jni/src/exports.rs` from `api/natives.tsv` + `crates/fs-jni/impls.tsv` |
 | `tools/api-contract.sh` | API contract test (facade identical, ABI identical, all natives exported, glue fresh) |
@@ -28,7 +32,9 @@ Kotlin app runs on it unchanged. Credit for firestack goes to Celzero and the Re
 ```bash
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
 cargo install cargo-ndk --locked
-cargo test --workspace                 # host tests
+cargo test --workspace                 # host tests, including oracle replays
+./gradlew -p engine/android :host-test:test   # JVM <-> Rust JNI tests (from the repo root)
+engine/tools/go-oracle/run.sh --docker        # regenerate oracle fixtures at api/PIN (needs Docker)
 # App with the Rust engine. Gradle runs cargo-ndk through the included build engine/android:
 ./gradlew -PfirestackRepo=rust :app:assembleFdroidFullDebug                 # from the repo root
 ./gradlew -PfirestackRepo=rust -PrustAbis=arm64-v8a -PrustProfile=android-dev :app:assembleFdroidFullDebug  # faster dev loop

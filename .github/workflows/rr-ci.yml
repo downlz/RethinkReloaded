@@ -90,6 +90,8 @@ jobs:
           cargo test --workspace --locked
           cargo clippy --workspace --locked -- -D warnings
           cargo fmt --all --check
+      - name: JVM <-> Rust JNI tests (vendored facade against host libgojni)
+        run: ./gradlew --no-daemon -p engine/android :host-test:test
       - name: App with Rust engine (assemble + parity unit tests)
         run: ./gradlew --no-daemon -PfirestackRepo=rust :app:assembleFdroidFullDebug :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)
       - name: API contract vs upstream firestack

@@ -7,18 +7,18 @@
 //
 // Derived-From: celzero/firestack@d3d530ea3e:intra/backend/core_radixtree.go
 // Derived-From: celzero/firestack@d3d530ea3e:intra/xdns/dnsutil.go (StringReverse)
+// Derived-From: github.com/k-sone/critbitgo@v1.4.0 (Trie semantics; MIT)
 
 //! `RadixTree`: a trie of domain names keyed by their (rune-wise) reversed form, so that
 //! `GetAny("a.b.example.com")` finds the value stored for `.example.com` (wildcard) or `a.b.example.com` (exact).
-//!
-//! firestack uses `k-sone/critbitgo.Trie`; an ordered byte-keyed map gives the same lookup semantics.
+//! Backed by the critbitgo trie port, exactly as firestack.
 
+use crate::critbit::Trie;
 use parking_lot::RwLock;
-use std::collections::BTreeMap;
 
 #[derive(Default)]
 pub struct RadixTree {
-    t: RwLock<BTreeMap<Vec<u8>, String>>,
+    t: RwLock<Trie<String>>,
 }
 
 /// `xdns.StringReverse`: reverses by Unicode scalar values (Go's `[]rune`).
@@ -33,32 +33,26 @@ impl RadixTree {
 
     /// Adds `k` (with an empty value). Returns true if `k` was not already present.
     pub fn add(&self, k: &str) -> bool {
-        let mut t = self.t.write();
-        let key = reversed(k);
-        if t.contains_key(&key) {
-            return false;
-        }
-        t.insert(key, String::new());
-        true
+        self.t.write().insert(&reversed(k), String::new())
     }
 
     /// Sets `k` to `v`, overwriting any previous value.
     pub fn set(&self, k: &str, v: &str) {
-        self.t.write().insert(reversed(k), v.to_string());
+        self.t.write().set(&reversed(k), v.to_string());
     }
 
     /// Deletes `k`. Returns true if it was present.
     pub fn del(&self, k: &str) -> bool {
-        self.t.write().remove(&reversed(k)).is_some()
+        self.t.write().delete(&reversed(k)).is_some()
     }
 
     pub fn has(&self, k: &str) -> bool {
-        self.t.read().contains_key(&reversed(k))
+        self.t.read().contains(&reversed(k))
     }
 
     /// Value of `k`, or "" if absent.
     pub fn get(&self, k: &str) -> String {
-        self.t.read().get(&reversed(k)).cloned().unwrap_or_default()
+        self.t.read().get(&reversed(k)).unwrap_or_default()
     }
 
     /// Deletes all keys having `prefix` (as a domain suffix, i.e. a prefix of the reversed key).
@@ -68,22 +62,12 @@ impl RadixTree {
     /// empty key (if present) before the prefixed keys. That behaviour is reproduced here.
     pub fn del_all(&self, prefix: &str) -> i32 {
         let mut t = self.t.write();
-        let mut n = 0;
-        if t.remove(&Vec::new()).is_some() {
-            n += 1;
-        }
-        let p = reversed(prefix);
-        let keys: Vec<Vec<u8>> = t
-            .range(p.clone()..)
-            .take_while(|(k, _)| k.starts_with(&p))
-            .map(|(k, _)| k.clone())
-            .collect();
-        for k in keys {
-            if t.remove(&k).is_some() {
-                n += 1;
-            }
-        }
-        n
+        let mut keys: Vec<Vec<u8>> = vec![Vec::new(); 10];
+        t.all_prefixed(&reversed(prefix), &mut |k, _| {
+            keys.push(k.to_vec());
+            true
+        });
+        keys.iter().filter(|k| t.delete(k).is_some()).count() as i32
     }
 
     /// True if `s` or any of its parent domains (stored as `.parent`) is present.
@@ -97,15 +81,13 @@ impl RadixTree {
     }
 
     fn get_match(&self, s: &str) -> Option<String> {
-        let t = self.t.read();
         let rev = reversed(s);
-        // critbitgo LongestPrefix: the longest stored key that is a prefix of rev.
-        let (mlen, v) = (0..=rev.len())
-            .rev()
-            .find_map(|l| t.get(&rev[..l]).map(|v| (l, v)))?;
+        let (m, v) = self.t.read().longest_prefix(&rev)?;
         // full match, or a match up to a subdomain boundary (".example.com"; trailing dot when reversed)
-        if mlen == rev.len() || (mlen > 0 && rev[mlen - 1] == b'.') {
-            Some(v.clone())
+        if m.len() == rev.len()
+            || (!m.is_empty() && m.len() < rev.len() && rev[m.len() - 1] == b'.')
+        {
+            Some(v)
         } else {
             // partial match that is not a subdomain boundary (e.g. "ample.com" for "example.com").
             // Parity note: Go indexes rev[-1] (and panics) when only the empty key matches; we report no match.

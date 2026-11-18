@@ -11,3 +11,4 @@ pub mod backend;
 pub mod intra;
 pub mod log;
 pub mod seq;
+pub mod settings;

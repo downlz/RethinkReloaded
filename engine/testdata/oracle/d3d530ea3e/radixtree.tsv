@@ -1,0 +1,8040 @@
+new	1			0
+hasAny	.org		false	0
+len			0	0
+delAll	.example.com		0	0
+set		x1		0
+add			false	0
+add	.jp		true	0
+set	.jp	p1		0
+get	b.a			0
+delAll	.jp		2	0
+set	.com	wg01		0
+getAny	example.org			0
+delAll	.a		0	0
+getAny	xample.com		wg01	0
+hasAny	example.com		true	0
+set	xn--bcher-kva.example	p2		0
+get	.org			0
+del	例え.jp		false	0
+get	a.example.com			0
+get	.org			0
+set	.jp	wg01		0
+set	example.org	p		0
+getAny	b.a			0
+getAny	a			0
+get	example.org		p	0
+getAny	.a			0
+getAny	xn--bcher-kva.example		p2	0
+getAny	.jp		wg01	0
+set	ample.com	wg0		0
+del	a.example.com		false	0
+del	b.a		false	0
+has	xn--bcher-kva.example		true	0
+len			5	0
+get	.a			0
+get	b.a			0
+get	xn--bcher-kva.example		p2	0
+getAny	.jp		wg01	0
+add	com		true	0
+has	a		false	0
+getAny	.jp		wg01	0
+getAny	ample.com		wg0	0
+add	xn--bcher-kva.example		false	0
+len			6	0
+set	.example.com	Base		0
+del	.org		false	0
+getAny	ample.com		wg0	0
+del	.a		false	0
+getAny	xn--bcher-kva.example		p2	0
+add	b.a		true	0
+len			8	0
+getAny	.a			0
+hasAny	xn--bcher-kva.example		true	0
+delAll	xample.com		1	0
+set	b.a	Base		0
+hasAny	a		false	0
+del	xn--bcher-kva.example		true	0
+set	example.com	Exit		0
+has	例え.jp		false	0
+hasAny	例え.jp		true	0
+getAny	xn--bcher-kva.example			0
+del	xn--bcher-kva.example		false	0
+get	例え.jp			0
+add	a		true	0
+getAny	.a			0
+len			8	0
+getAny	例え.jp		wg01	0
+set	例え.jp	wg01		0
+set	sub.example.org	Exit		0
+delAll	.org		2	0
+set	b.a.example.com	p2		0
+get	.a			0
+delAll	example.com		2	0
+del	b.a		true	0
+has	a		true	0
+add	example.com		true	0
+get	a			0
+del	a		true	0
+getAny				0
+hasAny	.a		false	0
+has	ample.com		true	0
+getAny	ample.com		wg0	0
+getAny	.com		wg01	0
+get	com			0
+get	.org			0
+del	例え.jp		true	0
+delAll	.jp		1	0
+set	a	p2		0
+hasAny	b.a.example.com		false	0
+add	.jp		true	0
+getAny	.jp			0
+set	xn--bcher-kva.example	p1		0
+has	com		true	0
+getAny	b.a			0
+len			7	0
+getAny	a.example.com			0
+getAny	sub.example.org			0
+getAny	b.a			0
+get	a.example.com			0
+set	.a	x1		0
+del	.a		true	0
+set	b.a			0
+add	.example.com		true	0
+getAny	.a			0
+hasAny	xample.com		false	0
+add	.org		true	0
+getAny	例え.jp			0
+len			10	0
+add	example.org		true	0
+add	example.com		false	0
+add	ample.com		false	0
+delAll			11	0
+getAny	example.org			0
+len			0	0
+add	a.example.com		true	0
+hasAny	a.example.com		true	0
+set	example.org	p1		0
+delAll	com		1	0
+len			1	0
+len			1	0
+has	example.com		false	0
+getAny	xn--bcher-kva.example			0
+add	a.example.com		true	0
+del	xn--bcher-kva.example		false	0
+getAny	a.example.com			0
+getAny	a			0
+delAll	例え.jp		0	0
+hasAny	sub.example.org		false	0
+delAll	.jp		0	0
+getAny	例え.jp			0
+get	.com			0
+del	xn--bcher-kva.example		false	0
+has	.a		false	0
+add	xample.com		true	0
+set	a.example.com	Base		0
+get	b.a.example.com			0
+getAny	.com			0
+delAll	b.a.example.com		0	0
+hasAny	.jp		false	0
+del	.example.com		false	0
+getAny	.jp			0
+set	example.com	wg01		0
+getAny	example.com		wg01	0
+del	com		false	0
+getAny	.com			0
+set	.jp	x1		0
+get	.com			0
+getAny	.a			0
+hasAny			false	0
+getAny	ample.com			0
+set	ample.com	p1		0
+len			6	0
+del	com		false	0
+len			6	0
+getAny	b.a.example.com			0
+get	example.com		wg01	0
+has	ample.com		true	0
+getAny	.com			0
+add	sub.example.org		true	0
+set	xn--bcher-kva.example	Base		0
+getAny	.a			0
+del	example.org		true	0
+getAny	ample.com		p1	0
+has	b.a		false	0
+add	xample.com		false	0
+del	.example.com		false	0
+getAny	a			0
+add	sub.example.org		false	0
+delAll	a.example.com		1	0
+add	com		true	0
+get	.org			0
+hasAny	xample.com		true	0
+add	a		true	0
+del	.a		false	0
+getAny	.example.com			0
+getAny	.com			0
+del	.a		false	0
+delAll			8	0
+len			0	0
+set	b.a	p1,p2		0
+add	example.com		true	0
+getAny	.org			0
+getAny	example.com			0
+add	sub.example.org		true	0
+getAny	.a			0
+add	sub.example.org		false	0
+delAll	.a		1	0
+del	.a		false	0
+getAny	a.example.com			0
+delAll	.example.com		0	0
+del	com		false	0
+getAny	.jp			0
+set	b.a	x1		0
+getAny	.example.com			0
+add	a		true	0
+hasAny	example.org		false	0
+get	xample.com			0
+add	.example.com		true	0
+hasAny	com		false	0
+delAll	sub.example.org		1	0
+add	b.a		false	0
+hasAny	a.example.com		true	0
+new	2			0
+get	a			0
+hasAny	example.org		false	0
+add			true	0
+has	a		false	0
+del	.org		false	0
+set	.com	p1		0
+has	.example.com		false	0
+get	例え.jp			0
+delAll			2	0
+getAny	.org			0
+getAny	ample.com			0
+delAll	.com		0	0
+getAny	sub.example.org			0
+del	.org		false	0
+has	.com		false	0
+getAny	ample.com			0
+delAll	.org		0	0
+has	.org		false	0
+del			false	0
+getAny	sub.example.org			0
+getAny	com			0
+add	example.com		true	0
+getAny	例え.jp			0
+has	com		false	0
+add	xn--bcher-kva.example		true	0
+has	b.a.example.com		false	0
+len			2	0
+has	b.a		false	0
+add	.a		true	0
+has			false	0
+hasAny	sub.example.org		false	0
+del	xample.com		false	0
+add			true	0
+getAnyPanics	xample.com			0
+delAll	例え.jp		1	0
+has	xample.com		false	0
+del	xn--bcher-kva.example		true	0
+del	com		false	0
+set	.com	Exit		0
+set	xample.com	p1		0
+getAny	a.example.com			0
+getAny	ample.com		Exit	0
+getAny	com			0
+get	com			0
+getAny	ample.com		Exit	0
+get	sub.example.org			0
+delAll	xample.com		2	0
+len			2	0
+has	.jp		false	0
+get	例え.jp			0
+has	.example.com		false	0
+add	example.org		true	0
+getAny	a			0
+set	a.example.com	Base		0
+len			4	0
+has	a.example.com		true	0
+len			4	0
+hasAny	.example.com		true	0
+getAny	b.a			0
+getAny	.org			0
+get	.org			0
+delAll	例え.jp		0	0
+add	example.org		false	0
+del			false	0
+len			4	0
+has	xample.com		false	0
+del	sub.example.org		false	0
+has	ample.com		false	0
+delAll	xn--bcher-kva.example		0	0
+delAll	.a		1	0
+add	example.org		false	0
+has	xn--bcher-kva.example		false	0
+del	.org		false	0
+delAll	com		2	0
+add	b.a.example.com		true	0
+del	.org		false	0
+getAny	sub.example.org			0
+has	a		false	0
+get				0
+add	example.org		false	0
+has	b.a		false	0
+getAny	example.org			0
+add	.example.com		true	0
+set	b.a.example.com	Exit		0
+len			3	0
+get	b.a			0
+get	.org			0
+hasAny	.a		false	0
+get				0
+len			3	0
+get	a			0
+getAny	xample.com			0
+del	a.example.com		false	0
+delAll	.a		0	0
+len			3	0
+delAll	.a		0	0
+len			3	0
+has	.a		false	0
+getAny	a			0
+set	.com	x1		0
+get	.com		x1	0
+has	sub.example.org		false	0
+len			4	0
+get	.a			0
+getAny	.jp			0
+getAny	.jp			0
+hasAny	xample.com		true	0
+get	a.example.com			0
+add	.jp		true	0
+has	b.a		false	0
+hasAny	.jp		true	0
+get	ample.com			0
+getAny	.a			0
+getAny	example.com		x1	0
+getAny	b.a			0
+set	例え.jp	p		0
+getAny	.a			0
+getAny	example.org			0
+get	b.a			0
+add	例え.jp		false	0
+get	.example.com			0
+get	xample.com			0
+get	b.a			0
+get	sub.example.org			0
+delAll	.com		3	0
+len			3	0
+getAny	example.org			0
+hasAny	a.example.com		false	0
+hasAny	.com		false	0
+add	ample.com		true	0
+set	example.com	p		0
+add	.jp		false	0
+delAll	example.com		1	0
+getAny	b.a			0
+set	b.a.example.com	p		0
+add			true	0
+set	.example.com	Base		0
+add	com		true	0
+del	com		true	0
+del	xample.com		false	0
+hasAny	xample.com		false	0
+len			7	0
+getAnyPanics	b.a			0
+add	sub.example.org		true	0
+len			8	0
+del	sub.example.org		true	0
+set	.a	p1,p2		0
+get	.jp			0
+len			8	0
+has	example.com		false	0
+delAll	com		4	0
+getAny	xample.com			0
+len			4	0
+getAny	example.com			0
+has	example.org		true	0
+getAny	com			0
+add	a		true	0
+getAny	ample.com			0
+delAll	a		2	0
+getAny	ample.com			0
+add	b.a.example.com		true	0
+hasAny	b.a.example.com		true	0
+get	a.example.com			0
+len			4	0
+del	example.org		true	0
+getAny	.com			0
+len			3	0
+has	xn--bcher-kva.example		false	0
+add	.example.com		true	0
+getAny	.org			0
+hasAny			false	0
+getAny				0
+len			4	0
+delAll	.example.com		2	0
+add	xample.com		true	0
+del	.example.com		false	0
+hasAny	.org		false	0
+get	ample.com			0
+len			3	0
+set	例え.jp	x1		0
+delAll	com		1	0
+has	.jp		true	0
+del	example.org		false	0
+set	.com	p1,p2		0
+hasAny	.org		false	0
+get	b.a.example.com			0
+hasAny	.a		false	0
+delAll	a.example.com		0	0
+add			true	0
+delAll	example.com		1	0
+set	.com	x1		0
+get	例え.jp		x1	0
+del	example.org		false	0
+hasAny	.example.com		true	0
+hasAny	ample.com		true	0
+del	b.a.example.com		false	0
+has	xample.com		false	0
+hasAny	xn--bcher-kva.example		false	0
+has	sub.example.org		false	0
+hasAny			false	0
+new	3			0
+has	ample.com		false	0
+getAny	xn--bcher-kva.example			0
+getAny	xn--bcher-kva.example			0
+get	ample.com			0
+getAny	.a			0
+delAll	sub.example.org		0	0
+set		wg0		0
+delAll	a		1	0
+getAny	例え.jp			0
+getAny	com			0
+get	b.a.example.com			0
+set	com	wg0		0
+del	sub.example.org		false	0
+len			1	0
+getAny	xample.com			0
+getAny	.org			0
+getAny	xample.com			0
+has	ample.com		false	0
+delAll	.com		0	0
+get	xn--bcher-kva.example			0
+delAll	a		0	0
+hasAny	a.example.com		false	0
+getAny	a.example.com			0
+hasAny	.example.com		false	0
+del	com		true	0
+getAny	例え.jp			0
+getAny	com			0
+get	.jp			0
+getAny	example.org			0
+add	b.a.example.com		true	0
+delAll	.org		0	0
+add	b.a.example.com		false	0
+hasAny	com		false	0
+get	b.a			0
+delAll			1	0
+del	example.org		false	0
+add	.jp		true	0
+set	.jp	p2		0
+set	sub.example.org	p1,p2		0
+has	.example.com		false	0
+getAny	a			0
+get	b.a			0
+getAny	b.a			0
+set	.jp	Exit		0
+add	sub.example.org		false	0
+add	.com		true	0
+set	b.a	wg01		0
+has	example.org		false	0
+set	com	Base		0
+has	.jp		true	0
+add	ample.com		true	0
+len			6	0
+getAny	.jp		Exit	0
+delAll	a		1	0
+len			5	0
+len			5	0
+add	.org		true	0
+len			6	0
+getAny	.a			0
+len			6	0
+set	b.a.example.com	p		0
+get	example.org			0
+getAny	ample.com			0
+hasAny	b.a		false	0
+getAny	b.a.example.com		p	0
+get	.jp		Exit	0
+getAny	.com			0
+getAny	例え.jp		Exit	0
+getAny	a.example.com			0
+delAll	a.example.com		1	0
+getAny	ample.com			0
+has	sub.example.org		true	0
+hasAny	sub.example.org		true	0
+getAny	xample.com			0
+getAny	example.com			0
+delAll	example.org		1	0
+len			5	0
+has	ample.com		true	0
+has			false	0
+getAny	.com			0
+add	a		true	0
+add	sub.example.org		true	0
+has	xn--bcher-kva.example		false	0
+del	b.a		false	0
+delAll	xn--bcher-kva.example		0	0
+delAll	example.com		0	0
+delAll	.a		0	0
+del	com		true	0
+has	b.a.example.com		false	0
+get	sub.example.org			0
+len			6	0
+get	a			0
+hasAny	.org		true	0
+getAny	.example.com			0
+getAny	example.com			0
+has	sub.example.org		true	0
+del	.jp		true	0
+add	.example.com		true	0
+len			6	0
+has	.example.com		true	0
+set	.example.com	p1,p2		0
+delAll	.example.com		1	0
+len			5	0
+get	sub.example.org			0
+delAll	.example.com		0	0
+add	example.com		true	0
+get	.org			0
+hasAny	.a		false	0
+hasAny			false	0
+len			6	0
+add	.example.com		true	0
+getAny	a.example.com			0
+hasAny	a		true	0
+add	a.example.com		true	0
+get	b.a.example.com			0
+getAny	.a			0
+delAll	.org		2	0
+hasAny	a.example.com		true	0
+set	例え.jp	Exit		0
+set	ample.com	p		0
+add	b.a.example.com		true	0
+set	.org	p2		0
+delAll	.org		1	0
+delAll	b.a		0	0
+del	example.com		true	0
+delAll	example.com		3	0
+get	example.org			0
+add	xample.com		true	0
+set	例え.jp	p		0
+add	a		false	0
+del	example.org		false	0
+del	xample.com		true	0
+get	.a			0
+set	.org	Base		0
+get	b.a.example.com			0
+len			5	0
+delAll	.jp		1	0
+set	b.a.example.com	p		0
+del	example.org		false	0
+set	ample.com	x1		0
+get				0
+get	com			0
+len			5	0
+hasAny	example.com		false	0
+hasAny	.a		false	0
+del	a.example.com		false	0
+getAny	.com			0
+getAny	.a			0
+set	.jp	p1,p2		0
+getAny	a			0
+hasAny	.com		true	0
+get	sub.example.org			0
+delAll	com		3	0
+set	.jp	p		0
+del	sub.example.org		false	0
+len			3	0
+add	xn--bcher-kva.example		true	0
+del	.example.com		false	0
+delAll			4	0
+set		wg0		0
+add	ample.com		true	0
+len			2	0
+add	example.org		true	0
+set	b.a.example.com	Exit		0
+getAnyPanics	.a			0
+del	xn--bcher-kva.example		false	0
+del	.jp		false	0
+getAny	ample.com			0
+hasAny	example.com		false	0
+getAnyPanics	.a			0
+len			4	0
+getAny	a.example.com			0
+add	com		true	0
+delAll			5	0
+has	a		false	0
+del	.jp		false	0
+getAny	example.com			0
+len			0	0
+hasAny	.example.com		false	0
+has	xample.com		false	0
+set	a			0
+hasAny	a		true	0
+getAny	.org			0
+delAll	.example.com		0	0
+add	.com		true	0
+get	.a			0
+getAny	b.a			0
+getAny	.example.com			0
+get	.example.com			0
+getAny	example.com			0
+add	sub.example.org		true	0
+delAll	example.com		0	0
+has	sub.example.org		true	0
+getAny	example.org			0
+set	.org	p1,p2		0
+add	.com		false	0
+len			4	0
+getAny	a.example.com			0
+set	.jp	Base		0
+has	.jp		true	0
+new	4			0
+add			true	0
+getAnyPanics	.a			0
+hasAnyPanics	.com			0
+getAnyPanics	b.a			0
+has	a.example.com		false	0
+getAnyPanics	例え.jp			0
+getAnyPanics	.a			0
+set	ample.com	wg0		0
+set	xn--bcher-kva.example	p		0
+getAny	xn--bcher-kva.example		p	0
+add	com		true	0
+set	.a	wg0		0
+del	.a		true	0
+set	a			0
+has	.example.com		false	0
+hasAny	xn--bcher-kva.example		true	0
+set	b.a.example.com	p1,p2		0
+get	ample.com		wg0	0
+hasAny	a		true	0
+len			6	0
+len			6	0
+getAny	ample.com		wg0	0
+set	xample.com	wg01		0
+del			true	0
+hasAny	b.a.example.com		true	0
+delAll	.example.com		1	0
+del	.com		false	0
+has	xn--bcher-kva.example		true	0
+del	example.org		false	0
+set	.jp	x1		0
+has	sub.example.org		false	0
+del	ample.com		true	0
+get	b.a			0
+get	.example.com			0
+getAny	.jp		x1	0
+len			5	0
+hasAny	a.example.com		false	0
+get	b.a			0
+delAll	ample.com		1	0
+has	.a		false	0
+del	例え.jp		false	0
+get	例え.jp			0
+hasAny	sub.example.org		false	0
+hasAny	b.a.example.com		false	0
+getAny	xn--bcher-kva.example		p	0
+getAny	example.org			0
+get	example.org			0
+set	ample.com	p1,p2		0
+len			5	0
+getAny	.jp		x1	0
+set	.com	Exit		0
+del	ample.com		true	0
+set	xn--bcher-kva.example	wg0		0
+len			5	0
+hasAny	example.org		false	0
+set	.com	Base		0
+hasAny	example.org		false	0
+getAny	xample.com		Base	0
+len			5	0
+del			false	0
+set	xn--bcher-kva.example	wg01		0
+delAll	ample.com		0	0
+del	xample.com		false	0
+len			5	0
+len			5	0
+getAny	例え.jp		x1	0
+len			5	0
+getAny	xn--bcher-kva.example		wg01	0
+getAny	.jp		x1	0
+getAny	.example.com		Base	0
+len			5	0
+len			5	0
+del	.org		false	0
+getAny				0
+len			5	0
+set	example.com	p1,p2		0
+len			6	0
+delAll	com		3	0
+add			true	0
+add	.com		true	0
+del	b.a.example.com		false	0
+getAny	example.com			0
+len			5	0
+len			5	0
+has	a.example.com		false	0
+get	xn--bcher-kva.example		wg01	0
+set	example.com			0
+hasAny	a		true	0
+del	.example.com		false	0
+has	b.a		false	0
+add			false	0
+has	ample.com		false	0
+getAnyPanics	sub.example.org			0
+set		p1,p2		0
+hasAny			true	0
+delAll	.jp		2	0
+del	.jp		false	0
+del	a		true	0
+add	xample.com		true	0
+del	a.example.com		false	0
+has	com		false	0
+add	xn--bcher-kva.example		false	0
+getAny	b.a			0
+getAny	com			0
+getAny	b.a.example.com			0
+has	b.a.example.com		false	0
+hasAny	b.a.example.com		false	0
+len			4	0
+add	xn--bcher-kva.example		false	0
+delAll	.example.com		0	0
+getAny	com			0
+del	例え.jp		false	0
+getAny	example.com			0
+len			4	0
+hasAny	xample.com		true	0
+delAll	a.example.com		0	0
+hasAny	.com		true	0
+delAll	example.com		1	0
+getAny	.com			0
+set	com	p1		0
+hasAny	.a		false	0
+add	例え.jp		true	0
+getAny	ample.com			0
+getAny	a			0
+del	.org		false	0
+getAny	a			0
+getAny	a			0
+delAll	xample.com		1	0
+del	b.a		false	0
+add	.jp		true	0
+has	a.example.com		false	0
+getAny	ample.com			0
+get	.jp			0
+getAny	sub.example.org			0
+has	.com		true	0
+delAll	例え.jp		1	0
+len			4	0
+get	.a			0
+len			4	0
+add	example.org		true	0
+has	xample.com		false	0
+has	xn--bcher-kva.example		true	0
+hasAny			false	0
+getAny	xample.com			0
+add	.example.com		true	0
+has	b.a		false	0
+len			6	0
+getAny	.example.com			0
+has	.example.com		true	0
+has	a		false	0
+getAny	ample.com			0
+getAny	b.a			0
+del	a		false	0
+del	example.com		false	0
+getAny	.a			0
+len			6	0
+get	.example.com			0
+delAll	a		0	0
+len			6	0
+len			6	0
+getAny	.jp			0
+getAny	b.a			0
+len			6	0
+del	.com		true	0
+hasAny	xn--bcher-kva.example		true	0
+del	a.example.com		false	0
+del	.example.com		true	0
+has	example.org		true	0
+len			4	0
+has	example.org		true	0
+delAll	ample.com		0	0
+get				0
+get	example.com			0
+get	ample.com			0
+get	ample.com			0
+add	.org		true	0
+getAny	.jp			0
+add			true	0
+hasAny	xn--bcher-kva.example		true	0
+has	sub.example.org		false	0
+len			6	0
+delAll	例え.jp		1	0
+has	b.a		false	0
+del	.example.com		false	0
+get	xample.com			0
+del	a		false	0
+del	例え.jp		false	0
+delAll	sub.example.org		0	0
+set	例え.jp	wg01		0
+has	.org		true	0
+del	example.org		true	0
+get	.com			0
+getAny	.com			0
+add	ample.com		true	0
+delAll	.jp		2	0
+getAny	a			0
+del	.jp		false	0
+delAll	例え.jp		0	0
+len			4	0
+getAny	.a			0
+new	5			0
+getAny	例え.jp			0
+get	xn--bcher-kva.example			0
+add	.jp		true	0
+hasAny	.jp		true	0
+len			1	0
+getAny	.example.com			0
+get	example.org			0
+get	b.a			0
+has	ample.com		false	0
+delAll	example.com		0	0
+delAll	xample.com		0	0
+get	example.org			0
+len			1	0
+add	例え.jp		true	0
+set	b.a.example.com	Exit		0
+has	.jp		true	0
+delAll			3	0
+getAny	com			0
+has	example.com		false	0
+get	.a			0
+getAny	b.a.example.com			0
+get	a			0
+getAny				0
+getAny	sub.example.org			0
+len			0	0
+getAny	.example.com			0
+add	xn--bcher-kva.example		true	0
+len			1	0
+getAny	example.org			0
+hasAny	a.example.com		false	0
+delAll	b.a		0	0
+add	.jp		true	0
+has	xn--bcher-kva.example		true	0
+set	.a	wg0		0
+get	b.a.example.com			0
+delAll	xample.com		0	0
+set	b.a.example.com	wg0		0
+set	.a			0
+getAny	com			0
+add	example.org		true	0
+add	xample.com		true	0
+delAll	xample.com		2	0
+set	例え.jp	p1		0
+getAny	b.a.example.com			0
+set	example.org	p2		0
+get	example.org		p2	0
+set	a.example.com	p2		0
+len			6	0
+add	.com		true	0
+hasAny	b.a.example.com		false	0
+del	b.a.example.com		false	0
+getAny	a.example.com		p2	0
+len			7	0
+get				0
+get	例え.jp		p1	0
+hasAny	xn--bcher-kva.example		true	0
+hasAny	xn--bcher-kva.example		true	0
+set	com	wg01		0
+getAny	example.org		p2	0
+hasAny	.jp		true	0
+len			8	0
+getAny	.jp			0
+len			8	0
+len			8	0
+len			8	0
+getAny	.org			0
+hasAny	b.a		true	0
+del	b.a		false	0
+del	com		true	0
+getAny	例え.jp		p1	0
+getAny	.a			0
+del	xample.com		false	0
+getAny	a.example.com		p2	0
+hasAny	xn--bcher-kva.example		true	0
+add	a		true	0
+hasAny	xample.com		true	0
+len			8	0
+getAny	com			0
+hasAny			false	0
+has	com		false	0
+add			true	0
+len			9	0
+del	a.example.com		true	0
+getAny	a.example.com			0
+len			8	0
+getAny	example.org		p2	0
+has	com		false	0
+getAny	a			0
+getAny	ample.com			0
+del	b.a.example.com		false	0
+set	b.a	p		0
+getAny	example.org		p2	0
+hasAny	a		true	0
+len			9	0
+getAny	xample.com			0
+delAll	例え.jp		2	0
+has	.org		false	0
+len			7	0
+has	sub.example.org		false	0
+hasAny	b.a.example.com		true	0
+has	ample.com		false	0
+has	b.a.example.com		false	0
+hasAny	.jp		true	0
+add	.com		false	0
+get	例え.jp			0
+set	b.a.example.com	p1,p2		0
+delAll	a		3	0
+getAny	a			0
+len			5	0
+set	com	p2		0
+del	xn--bcher-kva.example		true	0
+len			5	0
+add	b.a.example.com		false	0
+set	xample.com	p2		0
+len			6	0
+hasAny			false	0
+getAny	com		p2	0
+delAll	a.example.com		1	0
+has	xample.com		true	0
+del	.com		true	0
+get	xample.com		p2	0
+del	example.org		true	0
+hasAny	b.a.example.com		false	0
+getAny	例え.jp			0
+delAll	example.org		0	0
+add	sub.example.org		true	0
+len			4	0
+get	b.a			0
+len			4	0
+len			4	0
+del			false	0
+len			4	0
+del	a.example.com		false	0
+set	.com	Exit		0
+hasAny	.org		false	0
+del	xn--bcher-kva.example		false	0
+len			5	0
+hasAny	b.a.example.com		false	0
+del	example.com		false	0
+hasAny	例え.jp		true	0
+len			5	0
+hasAny	xn--bcher-kva.example		false	0
+set	b.a	x1		0
+del	.org		false	0
+set	sub.example.org	Base		0
+has	ample.com		false	0
+has	.org		false	0
+len			6	0
+getAny	.com		Exit	0
+add	.jp		false	0
+add	ample.com		true	0
+set	b.a.example.com	p1		0
+getAny	ample.com			0
+add	a.example.com		true	0
+getAny	a.example.com			0
+delAll	ample.com		4	0
+hasAny	b.a		true	0
+len			5	0
+len			5	0
+delAll	xn--bcher-kva.example		0	0
+len			5	0
+del			false	0
+hasAny	b.a		true	0
+set	.a	p1,p2		0
+len			6	0
+getAny	.example.com		Exit	0
+get	xn--bcher-kva.example			0
+del	example.org		false	0
+delAll	b.a		1	0
+add	.com		false	0
+hasAny	a		false	0
+set	xn--bcher-kva.example	wg0		0
+add	.jp		false	0
+getAny	.a		p1,p2	0
+has	ample.com		false	0
+add	b.a.example.com		true	0
+set	b.a	Base		0
+len			8	0
+get	sub.example.org		Base	0
+hasAny	.org		false	0
+set	.a	Base		0
+add			true	0
+del	sub.example.org		true	0
+len			8	0
+delAll	com		4	0
+del	b.a		true	0
+get	.example.com			0
+hasAny	.a		true	0
+hasAny	a.example.com		false	0
+del	xn--bcher-kva.example		true	0
+get	.jp			0
+len			2	0
+len			2	0
+get	b.a.example.com			0
+delAll	b.a		0	0
+getAny	ample.com			0
+del	xn--bcher-kva.example		false	0
+del	.jp		true	0
+del			false	0
+has	ample.com		false	0
+new	6			0
+getAny	.example.com			0
+getAny	xample.com			0
+getAny	example.com			0
+get	com			0
+len			0	0
+delAll			0	0
+set	example.com	x1		0
+getAny	a			0
+delAll	.jp		0	0
+get	a			0
+get	example.com		x1	0
+get	xample.com			0
+hasAny	b.a		false	0
+len			1	0
+set	example.org	Base		0
+add	xample.com		true	0
+get	b.a.example.com			0
+len			3	0
+set	example.org	p		0
+getAny	.example.com			0
+hasAny	example.org		true	0
+has	b.a		false	0
+delAll	xample.com		2	0
+len			1	0
+set	example.org	wg0		0
+hasAny	.a		false	0
+del	a		false	0
+add	b.a.example.com		true	0
+delAll	.a		0	0
+hasAny	a		false	0
+get	sub.example.org			0
+delAll	sub.example.org		0	0
+len			2	0
+len			2	0
+del	a.example.com		false	0
+add	例え.jp		true	0
+has	xample.com		false	0
+delAll	xample.com		1	0
+delAll	sub.example.org		0	0
+getAny	b.a			0
+del	b.a		false	0
+del	例え.jp		true	0
+get	.a			0
+delAll	.org		1	0
+len			0	0
+has	.com		false	0
+has	example.org		false	0
+delAll	example.org		0	0
+getAny	b.a			0
+len			0	0
+has	例え.jp		false	0
+get	example.com			0
+len			0	0
+has	ample.com		false	0
+add	example.com		true	0
+set	example.com	Exit		0
+getAny	.a			0
+add	ample.com		true	0
+getAny	xample.com			0
+get	.org			0
+get	xn--bcher-kva.example			0
+del	a		false	0
+delAll	b.a		0	0
+set	xample.com	Exit		0
+get	.com			0
+hasAny	ample.com		true	0
+add			true	0
+getAny	a.example.com			0
+getAnyPanics	xn--bcher-kva.example			0
+getAnyPanics	.jp			0
+hasAny			true	0
+del	b.a.example.com		false	0
+getAnyPanics	xn--bcher-kva.example			0
+del	example.com		true	0
+getAnyPanics	com			0
+set	example.com			0
+delAll	.org		1	0
+getAny	ample.com			0
+get	.a			0
+getAny	b.a.example.com			0
+set	.example.com			0
+len			4	0
+has	sub.example.org		false	0
+getAny	.a			0
+getAny				0
+len			4	0
+get	com			0
+add	.org		true	0
+has	.a		false	0
+del	sub.example.org		false	0
+len			5	0
+getAny	xn--bcher-kva.example			0
+set	example.com	p		0
+set	例え.jp			0
+add	a		true	0
+add	com		true	0
+delAll	com		5	0
+getAny	a.example.com			0
+del	a.example.com		false	0
+del	sub.example.org		false	0
+len			3	0
+getAny	.org			0
+getAny	a.example.com			0
+len			3	0
+len			3	0
+set	ample.com	wg01		0
+delAll	b.a.example.com		0	0
+hasAny	.org		true	0
+getAny	example.com			0
+hasAny	a.example.com		false	0
+len			4	0
+getAny	sub.example.org			0
+delAll	xn--bcher-kva.example		0	0
+has	example.org		false	0
+len			4	0
+len			4	0
+getAny	a.example.com			0
+delAll	.example.com		0	0
+getAny	.example.com			0
+get	example.org			0
+has	a		true	0
+del	example.org		false	0
+has	.jp		false	0
+del	a.example.com		false	0
+delAll	.example.com		0	0
+get	b.a			0
+len			4	0
+len			4	0
+getAny	xn--bcher-kva.example			0
+hasAny			false	0
+has	sub.example.org		false	0
+getAny	example.org			0
+getAny	.com			0
+del	example.org		false	0
+set	a.example.com	wg0		0
+set	例え.jp	Base		0
+add	com		true	0
+has	.a		false	0
+getAny	.example.com			0
+has	a		true	0
+getAny	example.com			0
+getAny	.a			0
+add	example.org		true	0
+get	b.a			0
+getAny	.org			0
+getAny	com			0
+del	b.a.example.com		false	0
+getAny	b.a.example.com			0
+getAny	.org			0
+len			7	0
+getAny	例え.jp		Base	0
+delAll	.com		2	0
+getAny	b.a			0
+has	.com		false	0
+getAny	com			0
+has	sub.example.org		false	0
+add	b.a.example.com		true	0
+add	example.com		true	0
+hasAny	xn--bcher-kva.example		false	0
+getAny	.org			0
+hasAny	xample.com		false	0
+add	.jp		true	0
+delAll	example.org		1	0
+add	ample.com		true	0
+delAll	b.a		0	0
+has	com		true	0
+get				0
+getAny	b.a			0
+has	xn--bcher-kva.example		false	0
+set	a	wg0		0
+del	a.example.com		false	0
+delAll	com		4	0
+len			4	0
+del	ample.com		false	0
+get	.org			0
+set	ample.com	p1		0
+hasAny	b.a		false	0
+del	a.example.com		false	0
+hasAny	b.a.example.com		false	0
+get	xn--bcher-kva.example			0
+getAny	.jp			0
+delAll	.example.com		0	0
+add	.jp		false	0
+del	a		true	0
+add	xample.com		true	0
+del	a.example.com		false	0
+len			5	0
+set	sub.example.org	p1		0
+delAll	a		0	0
+getAny	例え.jp		Base	0
+set	例え.jp	p2		0
+add	example.org		true	0
+has	.com		false	0
+has	.org		true	0
+len			7	0
+add	b.a.example.com		true	0
+set	a	wg0		0
+del	ample.com		true	0
+getAny	b.a.example.com			0
+getAny	com			0
+new	7			0
+hasAny	xample.com		false	0
+has	.jp		false	0
+delAll	.jp		0	0
+getAny	.com			0
+delAll	ample.com		0	0
+getAny	ample.com			0
+hasAny	.example.com		false	0
+hasAny	example.org		false	0
+add	.a		true	0
+getAny	example.com			0
+getAny	example.com			0
+hasAny	a.example.com		false	0
+hasAny	例え.jp		false	0
+set	b.a			0
+has	.example.com		false	0
+getAny	xample.com			0
+set	例え.jp	p1		0
+len			3	0
+getAny	xn--bcher-kva.example			0
+delAll	com		0	0
+del	.com		false	0
+del	.jp		false	0
+getAny	.a			0
+del	xample.com		false	0
+add	a.example.com		true	0
+getAny	ample.com			0
+getAny	a.example.com			0
+add	xample.com		true	0
+add	.org		true	0
+hasAny	ample.com		false	0
+getAny	.jp			0
+getAny	.org			0
+add	.jp		true	0
+get	xample.com			0
+has	xample.com		true	0
+delAll	.a		2	0
+add	b.a.example.com		true	0
+set	b.a.example.com	p1,p2		0
+add	.jp		false	0
+has	a		false	0
+del	b.a		false	0
+getAny	sub.example.org			0
+set	com	p2		0
+set	b.a	wg01		0
+set	a	Exit		0
+del	.a		false	0
+has	sub.example.org		false	0
+hasAny	b.a		true	0
+len			9	0
+add	.a		true	0
+delAll	b.a.example.com		1	0
+len			9	0
+getAny	.a			0
+has	com		true	0
+set	com	Base		0
+hasAny	a.example.com		true	0
+get	xample.com			0
+len			9	0
+len			9	0
+get	.a			0
+get	sub.example.org			0
+len			9	0
+del	example.org		false	0
+del	.jp		true	0
+add	a.example.com		false	0
+del	.example.com		false	0
+len			8	0
+del	example.com		false	0
+len			8	0
+has	b.a		true	0
+has	b.a		true	0
+add	xample.com		false	0
+set	sub.example.org	wg0		0
+hasAny	example.org		true	0
+del	sub.example.org		true	0
+delAll	b.a.example.com		0	0
+del	xn--bcher-kva.example		false	0
+getAny	b.a		wg01	0
+del	.a		true	0
+len			7	0
+hasAny	a.example.com		true	0
+del	ample.com		false	0
+len			7	0
+set	.a	x1		0
+getAny	example.com			0
+getAny	例え.jp		p1	0
+add	ample.com		true	0
+set	b.a.example.com	x1		0
+get	example.com			0
+has	sub.example.org		false	0
+set	sub.example.org	p1,p2		0
+delAll	com		5	0
+getAny	com			0
+del	b.a.example.com		false	0
+getAny	.example.com			0
+set	.example.com	Exit		0
+delAll	com		1	0
+del	sub.example.org		true	0
+has	xample.com		false	0
+del	.com		false	0
+set	xn--bcher-kva.example	x1		0
+getAny				0
+len			6	0
+getAny	.example.com			0
+len			6	0
+set	sub.example.org	p1,p2		0
+has	b.a.example.com		false	0
+add	b.a		false	0
+set	example.org	p2		0
+add	.example.com		true	0
+del	com		false	0
+delAll	.org		3	0
+get	b.a.example.com			0
+len			6	0
+del	b.a.example.com		false	0
+getAny				0
+has	例え.jp		true	0
+hasAny	.org		false	0
+hasAny	例え.jp		true	0
+set	例え.jp	wg0		0
+has	com		false	0
+hasAny	b.a.example.com		true	0
+set	a.example.com	Base		0
+hasAny	b.a		true	0
+getAny	a.example.com		Base	0
+delAll	sub.example.org		0	0
+getAny	example.com			0
+add	xn--bcher-kva.example		false	0
+del			false	0
+len			7	0
+has	.a		true	0
+delAll	a		3	0
+getAny				0
+add			true	0
+hasAnyPanics	.org			0
+add	example.org		true	0
+getAny				0
+getAnyPanics	b.a			0
+has	a		false	0
+set	b.a.example.com	p2		0
+delAll	ample.com		4	0
+has	.jp		false	0
+hasAny	.jp		false	0
+getAny	ample.com			0
+getAny	例え.jp		wg0	0
+set	a.example.com	p1,p2		0
+add	a		true	0
+get	a.example.com		p1,p2	0
+getAny				0
+delAll	a.example.com		1	0
+delAll	.com		0	0
+hasAny	xample.com		false	0
+delAll	.com		0	0
+getAny	sub.example.org			0
+getAny	sub.example.org			0
+get	.example.com			0
+hasAny	.jp		false	0
+del	xn--bcher-kva.example		true	0
+hasAny	.com		false	0
+add	a		false	0
+has	sub.example.org		false	0
+delAll	b.a.example.com		0	0
+has	.example.com		false	0
+hasAny	example.com		false	0
+del	xample.com		false	0
+del	.jp		false	0
+del	sub.example.org		false	0
+getAny	例え.jp		wg0	0
+get	xn--bcher-kva.example			0
+delAll	example.com		0	0
+add	a		false	0
+set	xn--bcher-kva.example	Exit		0
+set	例え.jp	wg0		0
+has	sub.example.org		false	0
+delAll			4	0
+get	xn--bcher-kva.example			0
+delAll	a.example.com		0	0
+getAny	xample.com			0
+len			0	0
+add	com		true	0
+add	xample.com		true	0
+delAll	a		0	0
+getAny	.a			0
+has	xn--bcher-kva.example		false	0
+del	a.example.com		false	0
+getAny	sub.example.org			0
+hasAny	例え.jp		false	0
+delAll	example.org		0	0
+has	.com		false	0
+set	例え.jp	Exit		0
+get	例え.jp		Exit	0
+hasAny	ample.com		false	0
+getAny	.jp			0
+hasAny	b.a.example.com		false	0
+delAll	example.org		0	0
+has	example.com		false	0
+len			3	0
+len			3	0
+add	.com		true	0
+get				0
+new	8			0
+delAll	.org		0	0
+delAll	ample.com		0	0
+get	com			0
+set	com	x1		0
+del	example.com		false	0
+getAny	例え.jp			0
+delAll	.example.com		0	0
+add	b.a		true	0
+has	xample.com		false	0
+set	sub.example.org	p		0
+delAll	.com		0	0
+len			3	0
+getAny	.example.com			0
+getAny	com		x1	0
+getAny	a.example.com			0
+delAll	.a		1	0
+len			2	0
+set	例え.jp	x1		0
+delAll	.org		1	0
+getAny	a.example.com			0
+set	.example.com	p		0
+has	例え.jp		true	0
+add	example.org		true	0
+get	.example.com		p	0
+getAny	xn--bcher-kva.example			0
+hasAny	.com		false	0
+has	.a		false	0
+del	.a		false	0
+del	.org		false	0
+hasAny	xample.com		false	0
+hasAny	com		true	0
+getAny	例え.jp		x1	0
+get	.a			0
+getAny	sub.example.org			0
+delAll	ample.com		1	0
+del			false	0
+delAll	xn--bcher-kva.example		0	0
+set	com	p		0
+getAny	xn--bcher-kva.example			0
+getAny	b.a.example.com			0
+hasAny	.example.com		false	0
+has	ample.com		false	0
+getAny	com		p	0
+get	xample.com			0
+add	com		false	0
+del	a		false	0
+get	b.a			0
+delAll	sub.example.org		0	0
+len			3	0
+del	example.com		false	0
+set	example.org	p1,p2		0
+getAny	xn--bcher-kva.example			0
+set	example.org	Base		0
+getAny	xample.com			0
+getAny	a.example.com			0
+get	.jp			0
+del	ample.com		false	0
+set	.a	wg0		0
+hasAny	.jp		false	0
+add	a.example.com		true	0
+len			5	0
+del	例え.jp		true	0
+hasAny	sub.example.org		false	0
+has			false	0
+getAny	.jp			0
+delAll	xample.com		1	0
+add	ample.com		true	0
+get				0
+getAny	a.example.com			0
+del	example.org		true	0
+del	.jp		false	0
+get	b.a			0
+add	a.example.com		true	0
+get	a			0
+hasAny	a		false	0
+set	.com	wg0		0
+has			false	0
+len			5	0
+has	ample.com		true	0
+del	example.org		false	0
+del	.jp		false	0
+has	a.example.com		true	0
+hasAny	.a		true	0
+del	.org		false	0
+getAny	.jp			0
+delAll	.example.com		1	0
+delAll	ample.com		1	0
+get	a			0
+has	b.a		false	0
+has	example.com		false	0
+add	example.com		true	0
+hasAny	a		false	0
+set	b.a.example.com	wg0		0
+has	a		false	0
+len			5	0
+set	example.com	p1,p2		0
+has	.com		true	0
+add	.com		false	0
+getAny	.jp			0
+set	a.example.com	wg01		0
+len			6	0
+del	a.example.com		true	0
+has	sub.example.org		false	0
+get	a.example.com			0
+get				0
+has	ample.com		false	0
+getAny	xn--bcher-kva.example			0
+get	example.org			0
+get	sub.example.org			0
+has	example.org		false	0
+hasAny			false	0
+has	example.org		false	0
+set	example.org	p1,p2		0
+add	sub.example.org		true	0
+hasAny	sub.example.org		true	0
+len			7	0
+getAny	example.org		p1,p2	0
+delAll	b.a.example.com		1	0
+del	.a		true	0
+hasAny	b.a		false	0
+add	sub.example.org		false	0
+len			5	0
+set	.com			0
+del	.example.com		false	0
+set	sub.example.org	p1,p2		0
+len			5	0
+get	a.example.com			0
+set		Base		0
+getAnyPanics	.a			0
+hasAny	example.com		true	0
+delAll	b.a.example.com		1	0
+set	example.org	wg0		0
+get	.jp			0
+set	a	Base		0
+has	例え.jp		false	0
+getAny	xn--bcher-kva.example			0
+hasAny	com		true	0
+delAll	.jp		0	0
+get	xample.com			0
+delAll	.org		2	0
+add	.a		true	0
+has	xn--bcher-kva.example		false	0
+add	xample.com		true	0
+hasAny	ample.com		true	0
+add	example.com		false	0
+getAny	.a			0
+set	example.com	Exit		0
+hasAny			false	0
+del	example.com		true	0
+getAny	.example.com			0
+getAny	com		p	0
+getAny	.com			0
+delAll	.jp		0	0
+del	xn--bcher-kva.example		false	0
+del	.jp		false	0
+set	b.a.example.com	x1		0
+getAny	a.example.com			0
+get	.example.com			0
+delAll	ample.com		2	0
+hasAny	b.a.example.com		true	0
+hasAny	.jp		false	0
+add	b.a		true	0
+has	xn--bcher-kva.example		false	0
+get	.org			0
+add			true	0
+has	例え.jp		false	0
+add	.com		false	0
+has	.a		true	0
+getAnyPanics	.jp			0
+getAny	xample.com			0
+del	a		true	0
+delAll	例え.jp		1	0
+del	xample.com		false	0
+hasAny	example.com		true	0
+del	b.a.example.com		false	0
+add	sub.example.org		true	0
+add	com		false	0
+hasAny	a		false	0
+del	.example.com		false	0
+delAll	a.example.com		0	0
+len			5	0
+set	ample.com	p1,p2		0
+delAll	example.com		0	0
+del	.com		true	0
+get				0
+get	a.example.com			0
+add			true	0
+getAnyPanics	xn--bcher-kva.example			0
+has	sub.example.org		true	0
+len			6	0
+delAll	a.example.com		1	0
+get	.jp			0
+getAny	a			0
+getAny	ample.com		p1,p2	0
+del	.com		false	0
+getAny	.jp			0
+set	com			0
+delAll	.jp		0	0
+add			true	0
+hasAny			true	0
+new	9			0
+delAll	example.com		0	0
+getAny	b.a			0
+delAll	com		0	0
+len			0	0
+set		wg0		0
+add	xn--bcher-kva.example		true	0
+len			2	0
+get	xample.com			0
+has	.a		false	0
+getAnyPanics	b.a			0
+getAnyPanics	.jp			0
+add	xn--bcher-kva.example		false	0
+del	xample.com		false	0
+delAll	.example.com		1	0
+add	xn--bcher-kva.example		false	0
+get	a.example.com			0
+delAll	ample.com		0	0
+delAll	.org		0	0
+getAny	ample.com			0
+get	example.com			0
+del			false	0
+getAny	example.org			0
+getAny	example.com			0
+len			1	0
+getAny	ample.com			0
+hasAny	b.a		false	0
+len			1	0
+set	例え.jp	Base		0
+len			2	0
+len			2	0
+delAll	a.example.com		0	0
+getAny	ample.com			0
+delAll	.jp		1	0
+has	a		false	0
+set	xn--bcher-kva.example	Exit		0
+len			1	0
+set	.example.com	Exit		0
+len			2	0
+hasAny	a.example.com		true	0
+get	例え.jp			0
+getAny	example.com			0
+getAny	.jp			0
+set	.example.com	p1		0
+del	example.com		false	0
+get	sub.example.org			0
+hasAny	b.a		false	0
+getAny	com			0
+del	b.a		false	0
+del	b.a.example.com		false	0
+del	b.a		false	0
+getAny	com			0
+hasAny	.org		false	0
+getAny	xn--bcher-kva.example		Exit	0
+has	b.a.example.com		false	0
+add	.org		true	0
+delAll	sub.example.org		0	0
+delAll	a		0	0
+set	xample.com	Exit		0
+has	com		false	0
+get	com			0
+getAny	xn--bcher-kva.example		Exit	0
+delAll	example.org		0	0
+has	.a		false	0
+set	.org	x1		0
+getAny	sub.example.org		x1	0
+has	xn--bcher-kva.example		true	0
+delAll	.a		0	0
+getAny	.org		x1	0
+has	例え.jp		false	0
+delAll	.a		0	0
+getAny	com			0
+getAny	b.a.example.com		p1	0
+delAll	sub.example.org		0	0
+set	.example.com	Exit		0
+add	example.com		true	0
+get	.org		x1	0
+add	a.example.com		true	0
+get	a			0
+set	xample.com	wg0		0
+getAny	.example.com		Exit	0
+set	ample.com	Exit		0
+len			7	0
+delAll			7	0
+len			0	0
+len			0	0
+hasAny	b.a		false	0
+delAll	.org		0	0
+getAny	.com			0
+delAll	b.a.example.com		0	0
+get	.jp			0
+hasAny	com		false	0
+len			0	0
+get	b.a			0
+set	sub.example.org	p1		0
+set	.example.com	p1,p2		0
+len			2	0
+hasAny	xample.com		false	0
+add	com		true	0
+add	a.example.com		true	0
+getAny	.jp			0
+len			4	0
+del	b.a		false	0
+has	.jp		false	0
+getAny	例え.jp			0
+get	.a			0
+get				0
+get	b.a.example.com			0
+getAny	.jp			0
+getAny				0
+getAny	.org			0
+getAny	xn--bcher-kva.example			0
+get	ample.com			0
+hasAny	b.a		false	0
+add	xn--bcher-kva.example		true	0
+delAll	example.org		1	0
+set	a	wg01		0
+getAny	例え.jp			0
+getAny	example.com			0
+hasAny	例え.jp		false	0
+hasAny	a		true	0
+set	a.example.com			0
+add	.example.com		false	0
+len			5	0
+getAny	.a			0
+len			5	0
+delAll	sub.example.org		0	0
+set		p1,p2		0
+len			6	0
+getAny	.com			0
+getAnyPanics	.jp			0
+del	b.a		false	0
+hasAny	.com		false	0
+len			6	0
+del	com		true	0
+del	b.a.example.com		false	0
+del	a.example.com		true	0
+get			p1,p2	0
+set	xn--bcher-kva.example	wg01		0
+hasAny	b.a.example.com		true	0
+add	sub.example.org		true	0
+del			true	0
+del	example.com		false	0
+getAny	xample.com			0
+has	例え.jp		false	0
+has	b.a.example.com		false	0
+len			4	0
+set	.a	p1		0
+len			5	0
+len			5	0
+len			5	0
+delAll	.example.com		1	0
+del	a.example.com		false	0
+getAny				0
+hasAny	b.a.example.com		false	0
+len			4	0
+getAny	ample.com			0
+delAll	xn--bcher-kva.example		1	0
+has	.com		false	0
+has	ample.com		false	0
+del	xn--bcher-kva.example		false	0
+len			3	0
+del	.a		true	0
+has	a.example.com		false	0
+getAny	a		wg01	0
+set	ample.com	wg01		0
+getAny	.example.com			0
+len			3	0
+set	例え.jp	Base		0
+getAny	.jp			0
+hasAny	example.com		false	0
+has	xample.com		false	0
+add	a		false	0
+add	example.org		true	0
+getAny	xn--bcher-kva.example			0
+set	a.example.com	Exit		0
+has	xample.com		false	0
+hasAny	xample.com		false	0
+set		x1		0
+len			7	0
+delAll	a.example.com		2	0
+get	.org			0
+hasAny			false	0
+has	a.example.com		false	0
+getAny	sub.example.org			0
+getAny	a		wg01	0
+getAny	sub.example.org			0
+add	example.com		true	0
+has			false	0
+set	ample.com	Exit		0
+add	a.example.com		true	0
+add	com		true	0
+getAny	b.a.example.com			0
+del	ample.com		true	0
+set	b.a.example.com			0
+get	b.a			0
+del	.example.com		false	0
+has	b.a.example.com		true	0
+len			8	0
+del	.example.com		false	0
+get	example.org			0
+new	10			0
+len			0	0
+add	b.a.example.com		true	0
+del	xample.com		false	0
+delAll	.example.com		1	0
+has	a.example.com		false	0
+len			0	0
+hasAny	example.org		false	0
+add	.example.com		true	0
+len			1	0
+has	b.a		false	0
+getAny	example.com			0
+get	.jp			0
+delAll			1	0
+getAny	a			0
+set	.com			0
+getAny				0
+del	.a		false	0
+add	xn--bcher-kva.example		true	0
+del	例え.jp		false	0
+delAll	例え.jp		0	0
+has	.example.com		false	0
+has	b.a		false	0
+add	a.example.com		true	0
+len			3	0
+delAll	.com		2	0
+has	.example.com		false	0
+del	a.example.com		false	0
+getAny	xample.com			0
+delAll	.jp		0	0
+getAny	.com			0
+get	com			0
+getAny	example.com			0
+add	b.a		true	0
+del	xample.com		false	0
+getAny	a.example.com			0
+delAll	b.a		1	0
+add	.jp		true	0
+has	example.org		false	0
+set	b.a	p1,p2		0
+delAll			3	0
+delAll	b.a.example.com		0	0
+set	.example.com	p2		0
+getAny	xn--bcher-kva.example			0
+len			1	0
+del	.com		false	0
+add	.org		true	0
+del	sub.example.org		false	0
+getAny	ample.com			0
+delAll	sub.example.org		0	0
+del	com		false	0
+getAny	a			0
+delAll	.org		1	0
+len			1	0
+has	a		false	0
+set		p2		0
+add	例え.jp		true	0
+len			3	0
+getAnyPanics	ample.com			0
+delAll	例え.jp		2	0
+getAny	.org			0
+len			1	0
+getAny	example.com			0
+get	example.com			0
+delAll	ample.com		1	0
+len			0	0
+hasAny	a.example.com		false	0
+delAll	example.org		0	0
+get				0
+delAll	.a		0	0
+del	example.org		false	0
+del	example.com		false	0
+hasAny	a.example.com		false	0
+del	com		false	0
+get				0
+add	.org		true	0
+getAny	.jp			0
+get	b.a.example.com			0
+get	a.example.com			0
+set	.org			0
+getAny	b.a.example.com			0
+hasAny	xample.com		false	0
+len			1	0
+len			1	0
+hasAny	.example.com		false	0
+del	example.com		false	0
+set	例え.jp	Exit		0
+del	com		false	0
+get	xn--bcher-kva.example			0
+del	sub.example.org		false	0
+set	b.a			0
+has	com		false	0
+get	.a			0
+hasAny			false	0
+delAll	ample.com		0	0
+hasAny	.org		true	0
+len			3	0
+getAny	.org			0
+add	xn--bcher-kva.example		true	0
+has	xample.com		false	0
+hasAny	sub.example.org		true	0
+del	.com		false	0
+set	例え.jp	x1		0
+delAll	xample.com		0	0
+delAll	例え.jp		1	0
+delAll	xn--bcher-kva.example		1	0
+has	a.example.com		false	0
+set	b.a	x1		0
+hasAny	b.a.example.com		false	0
+set	sub.example.org	p1		0
+get	.example.com			0
+set	.a	Base		0
+len			4	0
+add	sub.example.org		false	0
+getAny	example.org			0
+getAny	xn--bcher-kva.example			0
+get	例え.jp			0
+delAll	ample.com		0	0
+getAny	例え.jp			0
+getAny	.example.com			0
+del	a.example.com		false	0
+getAny	example.com			0
+get				0
+getAny	a			0
+add			true	0
+getAny	.org			0
+add	sub.example.org		false	0
+del			true	0
+del			false	0
+set	.com			0
+get	example.com			0
+getAny	.jp			0
+len			5	0
+del	example.com		false	0
+del	.com		true	0
+delAll	sub.example.org		1	0
+getAny	b.a.example.com			0
+delAll			3	0
+len			0	0
+add	xample.com		true	0
+del			false	0
+getAny	.org			0
+getAny	a.example.com			0
+len			1	0
+get	.a			0
+del	例え.jp		false	0
+del	.jp		false	0
+add	.com		true	0
+hasAny	com		false	0
+delAll	a.example.com		0	0
+delAll	b.a		0	0
+getAny	.a			0
+len			2	0
+hasAny	a.example.com		false	0
+len			2	0
+set	xn--bcher-kva.example	wg01		0
+getAny	xn--bcher-kva.example		wg01	0
+getAny	a			0
+del	a.example.com		false	0
+getAny	xample.com			0
+del	ample.com		false	0
+getAny	a.example.com			0
+getAny	例え.jp			0
+del	sub.example.org		false	0
+del	xn--bcher-kva.example		true	0
+add	a		true	0
+len			3	0
+getAny	example.com			0
+has	a		true	0
+set	例え.jp	wg01		0
+set	.a	p2		0
+get	a.example.com			0
+getAny	ample.com			0
+get	sub.example.org			0
+add	b.a		true	0
+has	xn--bcher-kva.example		false	0
+delAll			6	0
+getAny	example.com			0
+delAll	.a		0	0
+get	.org			0
+getAny	.com			0
+delAll	ample.com		0	0
+hasAny	example.org		false	0
+add	example.com		true	0
+hasAny	b.a.example.com		false	0
+getAny	com			0
+set	.example.com	wg01		0
+getAny	b.a.example.com		wg01	0
+len			2	0
+set	.com	p2		0
+len			3	0
+getAny	b.a			0
+has	b.a		false	0
+len			3	0
+getAny	.com		p2	0
+del	.example.com		true	0
+getAny				0
+hasAny	a		false	0
+hasAny	example.com		true	0
+get	b.a.example.com			0
+hasAny	b.a.example.com		false	0
+new	11			0
+delAll	a		0	0
+hasAny	例え.jp		false	0
+len			0	0
+getAny	a.example.com			0
+set	xn--bcher-kva.example	p2		0
+get	example.com			0
+hasAny	sub.example.org		false	0
+add	.a		true	0
+has	b.a.example.com		false	0
+del	a.example.com		false	0
+del	.jp		false	0
+has	.jp		false	0
+delAll	example.org		0	0
+getAny	a			0
+len			2	0
+delAll	example.com		0	0
+has	.org		false	0
+len			2	0
+del	.com		false	0
+getAny	xn--bcher-kva.example		p2	0
+delAll	.a		1	0
+get				0
+add	example.com		true	0
+getAny	xample.com			0
+has	a		false	0
+len			2	0
+has	example.com		true	0
+hasAny	.jp		false	0
+add	a		true	0
+del	ample.com		false	0
+getAny	.a			0
+getAny	.jp			0
+set	.example.com	wg01		0
+delAll	b.a.example.com		0	0
+add	example.org		true	0
+add	.com		true	0
+delAll	.com		3	0
+set	.org	p1		0
+delAll	.com		0	0
+getAny	b.a			0
+delAll	ample.com		0	0
+del	ample.com		false	0
+delAll	.example.com		0	0
+hasAny	例え.jp		false	0
+has	例え.jp		false	0
+has	例え.jp		false	0
+has			false	0
+del	b.a		false	0
+set	example.org	wg01		0
+get	com			0
+get	b.a			0
+get	.a			0
+getAny	xample.com			0
+delAll	example.com		0	0
+add	xn--bcher-kva.example		false	0
+len			4	0
+delAll	com		0	0
+del	.org		true	0
+delAll	.a		0	0
+has	sub.example.org		false	0
+set	.org	p1,p2		0
+get	b.a			0
+getAny	a			0
+hasAny	b.a		false	0
+get	com			0
+len			4	0
+del	b.a.example.com		false	0
+has	example.org		true	0
+add	ample.com		true	0
+del	b.a		false	0
+has	.jp		false	0
+getAny	example.com			0
+has	例え.jp		false	0
+len			5	0
+del	sub.example.org		false	0
+hasAny	b.a		false	0
+get	example.org		wg01	0
+set	a	x1		0
+set	xn--bcher-kva.example	p1		0
+hasAny	a		true	0
+add	.com		true	0
+hasAny	example.org		true	0
+get	.example.com			0
+set	.com	x1		0
+getAny	.a			0
+add	.example.com		true	0
+len			7	0
+get	例え.jp			0
+add	例え.jp		true	0
+len			8	0
+del			false	0
+del	example.org		true	0
+getAny	.a			0
+getAny	.jp			0
+getAny	例え.jp			0
+hasAny	.a		false	0
+len			7	0
+len			7	0
+del	a.example.com		false	0
+get	sub.example.org			0
+get	example.org			0
+getAny	例え.jp			0
+set	.jp			0
+add	example.org		true	0
+get	xample.com			0
+set		wg0		0
+set	例え.jp	p1,p2		0
+set	.com	wg01		0
+delAll	b.a.example.com		1	0
+len			9	0
+len			9	0
+getAny	sub.example.org			0
+getAny	com			0
+getAny	.jp			0
+get	.example.com			0
+delAll	.com		3	0
+getAny	.com			0
+add	.org		false	0
+del	xample.com		false	0
+getAny	a		x1	0
+len			6	0
+delAll	.a		0	0
+len			6	0
+getAny	example.com			0
+has	a		true	0
+set	.jp	p1		0
+has	sub.example.org		false	0
+del	xample.com		false	0
+len			6	0
+add	a.example.com		true	0
+get	com			0
+set	xample.com	x1		0
+getAny	例え.jp		p1,p2	0
+has	.a		false	0
+len			8	0
+has	a		true	0
+has	example.com		false	0
+get	xn--bcher-kva.example		p1	0
+len			8	0
+del			false	0
+hasAny	b.a		false	0
+has	ample.com		false	0
+getAny	b.a.example.com			0
+getAny	例え.jp		p1,p2	0
+len			8	0
+hasAny	例え.jp		true	0
+set	.org	Base		0
+add	.jp		false	0
+getAny	ample.com			0
+add	ample.com		true	0
+delAll	.com		3	0
+delAll	.org		2	0
+hasAny	com		false	0
+set	example.org	wg0		0
+has	.com		false	0
+get	例え.jp		p1,p2	0
+del			false	0
+set	b.a.example.com			0
+len			6	0
+del	.example.com		false	0
+len			6	0
+del	.jp		true	0
+add	.jp		true	0
+has	.com		false	0
+has	b.a.example.com		true	0
+del			false	0
+add	example.org		false	0
+getAny	b.a.example.com			0
+del	.com		false	0
+delAll	.com		1	0
+getAny	b.a			0
+has	com		false	0
+del	example.com		false	0
+len			5	0
+add	.jp		false	0
+set	.jp	wg01		0
+delAll	sub.example.org		0	0
+add	xample.com		true	0
+get	b.a			0
+get	example.com			0
+len			6	0
+has			false	0
+delAll	.org		1	0
+add	.a		true	0
+del	a		true	0
+get	.com			0
+len			5	0
+len			5	0
+len			5	0
+getAny	example.com			0
+getAny	.org			0
+set	example.org	Base		0
+get	.example.com			0
+getAny	a			0
+len			6	0
+del	b.a		false	0
+has	a		false	0
+getAny	.org			0
+has	a		false	0
+delAll	b.a		0	0
+new	12			0
+del	example.org		false	0
+del	sub.example.org		false	0
+len			0	0
+len			0	0
+len			0	0
+hasAny	b.a.example.com		false	0
+set	b.a.example.com			0
+set	example.org	wg01		0
+len			2	0
+add	.org		true	0
+set	.example.com	Exit		0
+getAny	example.com			0
+getAny	a.example.com		Exit	0
+get	例え.jp			0
+getAny	b.a			0
+del	example.org		true	0
+del	xn--bcher-kva.example		false	0
+getAny	b.a.example.com			0
+delAll	xn--bcher-kva.example		0	0
+set		wg0		0
+has	a.example.com		false	0
+getAnyPanics	.a			0
+delAll			4	0
+add	.org		true	0
+del	example.org		false	0
+hasAny	b.a.example.com		false	0
+len			1	0
+hasAny	ample.com		false	0
+add	.jp		true	0
+len			2	0
+delAll	sub.example.org		0	0
+delAll	a		0	0
+del	example.com		false	0
+get	.a			0
+getAny	com			0
+getAny	例え.jp			0
+set	.jp	x1		0
+hasAny	b.a		false	0
+has	例え.jp		false	0
+has	.com		false	0
+add	example.com		true	0
+hasAny	.com		false	0
+set	ample.com	p1,p2		0
+set	xn--bcher-kva.example	x1		0
+hasAny	b.a.example.com		false	0
+getAny	.a			0
+getAny	.org			0
+getAny	example.org			0
+delAll	.jp		1	0
+getAny	a			0
+get	.com			0
+getAny	b.a			0
+len			4	0
+set	xample.com	p1,p2		0
+hasAny	.a		false	0
+has	.org		true	0
+set	example.org			0
+get	com			0
+getAny	ample.com		p1,p2	0
+del	.a		false	0
+delAll			6	0
+has	example.com		false	0
+delAll	b.a.example.com		0	0
+del	例え.jp		false	0
+set	.jp	wg01		0
+delAll	a.example.com		0	0
+add	ample.com		true	0
+delAll	.a		0	0
+getAny	b.a			0
+get	.a			0
+delAll	example.org		0	0
+getAny	.org			0
+delAll	com		1	0
+hasAny			false	0
+len			1	0
+get	sub.example.org			0
+getAny	.jp		wg01	0
+len			1	0
+del	.example.com		false	0
+getAny	com			0
+add	example.org		true	0
+getAny	example.com			0
+set	xn--bcher-kva.example	wg0		0
+hasAny	b.a		false	0
+get	.com			0
+has	.example.com		false	0
+has	xn--bcher-kva.example		true	0
+len			3	0
+has	xn--bcher-kva.example		true	0
+delAll	a		0	0
+del	sub.example.org		false	0
+delAll	b.a.example.com		0	0
+getAny	example.org			0
+getAny	例え.jp		wg01	0
+getAny	b.a.example.com			0
+del	a		false	0
+getAny	b.a.example.com			0
+getAny	.com			0
+add	例え.jp		true	0
+delAll	a.example.com		0	0
+hasAny	.a		false	0
+del	.jp		true	0
+hasAny	ample.com		false	0
+del	ample.com		false	0
+get	.com			0
+get	com			0
+add	xn--bcher-kva.example		false	0
+len			3	0
+getAny	ample.com			0
+del	.jp		false	0
+add	b.a.example.com		true	0
+set	.com	p1		0
+add	.jp		true	0
+has			false	0
+has			false	0
+set	例え.jp	p2		0
+set	xn--bcher-kva.example	wg01		0
+add	ample.com		true	0
+add	ample.com		false	0
+getAny	b.a			0
+add	example.com		true	0
+delAll	a		0	0
+hasAny	example.org		true	0
+add	example.com		false	0
+del	example.org		true	0
+delAll	com		4	0
+len			3	0
+set	.a			0
+getAny	.com			0
+len			4	0
+hasAny	ample.com		false	0
+delAll	.example.com		0	0
+has	b.a.example.com		false	0
+hasAny	.a		true	0
+delAll	xample.com		0	0
+del	xn--bcher-kva.example		true	0
+set	例え.jp	Base		0
+set	ample.com	p1		0
+getAny	b.a.example.com			0
+del	example.com		false	0
+getAny	ample.com		p1	0
+getAny	example.com			0
+del	a		false	0
+get	b.a			0
+hasAny	a		false	0
+has	.com		false	0
+hasAny	ample.com		true	0
+len			4	0
+add	.a		false	0
+has	.com		false	0
+del	.jp		true	0
+len			3	0
+has	.a		true	0
+add	a.example.com		true	0
+getAny	a.example.com			0
+getAny	example.com			0
+hasAny	example.org		false	0
+getAny	example.com			0
+hasAny	.com		false	0
+getAny	xn--bcher-kva.example			0
+delAll	.a		1	0
+len			3	0
+hasAny	.org		false	0
+delAll	xn--bcher-kva.example		0	0
+len			3	0
+get	a			0
+len			3	0
+has	com		false	0
+delAll	b.a		0	0
+add	xn--bcher-kva.example		true	0
+len			4	0
+getAny	.jp			0
+delAll	a		0	0
+add	例え.jp		false	0
+add	.com		true	0
+len			5	0
+del	.com		true	0
+getAny	com			0
+hasAny	a.example.com		true	0
+add	.example.com		true	0
+has	com		false	0
+del	sub.example.org		false	0
+delAll	xample.com		2	0
+getAny	ample.com		p1	0
+has	sub.example.org		false	0
+delAll	ample.com		1	0
+len			2	0
+getAny				0
+del	.a		false	0
+getAny	sub.example.org			0
+has	.org		false	0
+hasAny	a		false	0
+add	.org		true	0
+getAny	example.org			0
+len			3	0
+get	example.org			0
+getAny	.jp			0
+getAny	a			0
+get	b.a			0
+getAny	ample.com			0
+new	13			0
+add	.example.com		true	0
+get	b.a			0
+set	com	wg0		0
+delAll	b.a		0	0
+getAny	example.org			0
+getAny	xn--bcher-kva.example			0
+get	a			0
+add	a.example.com		true	0
+del	xn--bcher-kva.example		false	0
+set	ample.com	p1		0
+has	xn--bcher-kva.example		false	0
+getAny	.example.com			0
+delAll	.com		3	0
+has	.com		false	0
+hasAny			false	0
+has	.com		false	0
+del	xample.com		false	0
+getAny	.jp			0
+hasAny	xample.com		false	0
+get	a			0
+has	a.example.com		false	0
+delAll	xn--bcher-kva.example		0	0
+delAll	example.org		0	0
+hasAny			false	0
+len			1	0
+getAny	.org			0
+del	com		true	0
+delAll	ample.com		0	0
+set	.org	p2		0
+hasAny	com		false	0
+add	ample.com		true	0
+get	.jp			0
+has	example.org		false	0
+hasAny	.com		false	0
+len			2	0
+len			2	0
+hasAny	.org		true	0
+hasAny	b.a.example.com		false	0
+has	com		false	0
+delAll	.a		0	0
+get	xample.com			0
+getAny	example.com			0
+get	example.org			0
+add	.com		true	0
+add	sub.example.org		true	0
+add			true	0
+delAll	sub.example.org		2	0
+set	例え.jp	Base		0
+set	ample.com	p2		0
+has	.example.com		false	0
+set	xample.com	wg01		0
+get	xample.com		wg01	0
+has	ample.com		true	0
+has	ample.com		true	0
+getAny	a			0
+getAny	.a			0
+len			5	0
+getAny	xample.com		wg01	0
+getAny	xn--bcher-kva.example			0
+getAny	b.a.example.com			0
+set				0
+add	例え.jp		false	0
+getAnyPanics	xn--bcher-kva.example			0
+del	xn--bcher-kva.example		false	0
+getAny	a.example.com			0
+getAnyPanics	.jp			0
+add	a		true	0
+del	b.a.example.com		false	0
+getAny	xample.com		wg01	0
+len			7	0
+delAll	.org		2	0
+del	example.org		false	0
+has	com		false	0
+getAny	ample.com		p2	0
+hasAny	example.org		false	0
+add	sub.example.org		true	0
+delAll	xn--bcher-kva.example		0	0
+del	b.a		false	0
+getAny	com			0
+set	xample.com	p1		0
+get	a.example.com			0
+has	例え.jp		true	0
+set	xample.com	Exit		0
+len			6	0
+del	xample.com		true	0
+getAny	b.a			0
+getAny				0
+delAll	.org		1	0
+has	.com		true	0
+hasAny	b.a		false	0
+getAny	.example.com			0
+delAll	b.a		0	0
+hasAny	ample.com		true	0
+del	.org		false	0
+del	b.a		false	0
+getAny	ample.com		p2	0
+hasAny	a		true	0
+get	sub.example.org			0
+getAny	.org			0
+set	.jp			0
+getAny	com			0
+set	example.com	Exit		0
+get	example.org			0
+hasAny	xn--bcher-kva.example		false	0
+len			6	0
+has	example.com		true	0
+len			6	0
+len			6	0
+getAny	example.com		Exit	0
+set		x1		0
+del	b.a		false	0
+len			7	0
+hasAny	例え.jp		true	0
+len			7	0
+get	example.com		Exit	0
+len			7	0
+set		p		0
+add	sub.example.org		true	0
+len			8	0
+has	a.example.com		false	0
+set	sub.example.org	wg0		0
+get	example.org			0
+getAny	.example.com			0
+add	.com		false	0
+hasAnyPanics	example.org			0
+set	example.org	p1		0
+delAll	.example.com		1	0
+del	xample.com		false	0
+set	.jp	Exit		0
+delAll			8	0
+getAny	com			0
+set	.com	Exit		0
+len			1	0
+add	example.com		true	0
+getAny	b.a			0
+getAny	a.example.com			0
+get	ample.com			0
+hasAny	例え.jp		false	0
+len			2	0
+getAny	.a			0
+len			2	0
+del	com		false	0
+add	ample.com		true	0
+delAll	xn--bcher-kva.example		0	0
+has	example.com		true	0
+len			3	0
+set	sub.example.org	Exit		0
+hasAny	xample.com		false	0
+getAny	例え.jp			0
+getAny	.a			0
+del	a		false	0
+delAll	xn--bcher-kva.example		0	0
+hasAny	example.org		false	0
+hasAny	.a		false	0
+delAll	xample.com		1	0
+getAny	com			0
+len			3	0
+del	b.a		false	0
+has			false	0
+add	b.a.example.com		true	0
+add	a.example.com		true	0
+has	a.example.com		true	0
+get	ample.com			0
+del	a		false	0
+delAll	.org		1	0
+hasAny	xn--bcher-kva.example		false	0
+len			4	0
+del	ample.com		true	0
+del	ample.com		false	0
+len			3	0
+getAny	.example.com		Exit	0
+set	.jp	wg0		0
+get				0
+getAny	b.a			0
+getAny	.jp		wg0	0
+add	.jp		false	0
+get	例え.jp			0
+getAny	com			0
+len			4	0
+len			4	0
+len			4	0
+set	.a			0
+del	example.com		false	0
+getAny	b.a.example.com			0
+set	.example.com	wg01		0
+get	example.com			0
+has	b.a.example.com		true	0
+has	a		false	0
+hasAny	.jp		true	0
+add	.a		false	0
+delAll	.example.com		3	0
+getAny	.example.com		Exit	0
+del	.org		false	0
+set	ample.com	p2		0
+del			false	0
+delAll	.example.com		0	0
+getAny	.org			0
+add	xn--bcher-kva.example		true	0
+set		x1		0
+add	a.example.com		true	0
+new	14			0
+delAll	b.a.example.com		0	0
+delAll	.jp		0	0
+del	b.a		false	0
+del	a.example.com		false	0
+hasAny	.example.com		false	0
+getAny	.com			0
+len			0	0
+delAll	.jp		0	0
+has	xn--bcher-kva.example		false	0
+add			true	0
+set	example.org	wg01		0
+del	.org		false	0
+set		x1		0
+getAnyPanics	.org			0
+getAny	example.org		wg01	0
+get	ample.com			0
+len			2	0
+hasAnyPanics	xample.com			0
+del	.com		false	0
+hasAnyPanics	b.a.example.com			0
+add	.com		true	0
+delAll	.com		2	0
+getAny	.jp			0
+set	b.a.example.com	p		0
+set	sub.example.org			0
+has	sub.example.org		true	0
+set	example.com	p1		0
+add	.a		true	0
+delAll	a.example.com		1	0
+del	b.a		false	0
+set	xn--bcher-kva.example			0
+add	example.org		false	0
+get	example.com		p1	0
+hasAny	.com		false	0
+get	b.a.example.com			0
+getAny	com			0
+hasAny	com		false	0
+getAny	example.org		wg01	0
+delAll	.com		1	0
+get	a.example.com			0
+getAny	a.example.com			0
+add	example.org		false	0
+getAny	example.org		wg01	0
+set	b.a.example.com	wg01		0
+set	example.org	Exit		0
+del	例え.jp		false	0
+has			false	0
+len			5	0
+getAny	b.a.example.com		wg01	0
+len			5	0
+len			5	0
+get	例え.jp			0
+len			5	0
+len			5	0
+delAll	a.example.com		1	0
+set	xn--bcher-kva.example	p1,p2		0
+add	sub.example.org		false	0
+len			4	0
+get	xn--bcher-kva.example		p1,p2	0
+len			4	0
+getAny	ample.com			0
+getAny	example.com			0
+len			4	0
+has	b.a		false	0
+hasAny	.org		false	0
+has	.com		false	0
+getAny	b.a.example.com			0
+hasAny	.jp		false	0
+len			4	0
+getAny	xample.com			0
+getAny	.org			0
+has	例え.jp		false	0
+del	.org		false	0
+getAny	.com			0
+hasAny	sub.example.org		true	0
+hasAny	.jp		false	0
+getAny	xn--bcher-kva.example		p1,p2	0
+hasAny	.example.com		false	0
+add	.example.com		true	0
+add	.example.com		false	0
+delAll	b.a		0	0
+len			5	0
+get	.a			0
+has	example.com		false	0
+get	.com			0
+add	.a		false	0
+getAny	.com			0
+set	sub.example.org	Base		0
+add	.org		true	0
+has	.org		true	0
+del	xample.com		false	0
+add	example.com		true	0
+len			7	0
+add	xn--bcher-kva.example		false	0
+getAny	xample.com			0
+del	xample.com		false	0
+hasAny	.a		true	0
+has	.com		false	0
+len			7	0
+get	例え.jp			0
+set	example.com	Base		0
+has	b.a.example.com		false	0
+len			7	0
+getAny	com			0
+len			7	0
+get	.org			0
+has	.com		false	0
+get	.com			0
+getAny	com			0
+has	example.org		true	0
+len			7	0
+len			7	0
+add	xample.com		true	0
+del	a		false	0
+getAny	com			0
+set	sub.example.org	x1		0
+add	.com		true	0
+getAny	a			0
+del	.a		true	0
+set	例え.jp	wg0		0
+add	sub.example.org		false	0
+getAny	例え.jp		wg0	0
+getAny	sub.example.org		x1	0
+len			9	0
+del	b.a.example.com		false	0
+hasAny	a		false	0
+getAny	b.a			0
+getAny	xn--bcher-kva.example		p1,p2	0
+hasAny	example.com		true	0
+getAny	a.example.com			0
+get	sub.example.org		x1	0
+get	.jp			0
+del	.example.com		true	0
+set	.example.com	p1,p2		0
+getAny	a			0
+hasAny	xn--bcher-kva.example		true	0
+len			9	0
+len			9	0
+get	xn--bcher-kva.example		p1,p2	0
+get	a.example.com			0
+has	example.com		true	0
+len			9	0
+has	example.com		true	0
+delAll	example.org		2	0
+delAll	ample.com		3	0
+getAny	a			0
+getAny	b.a			0
+getAny	example.com			0
+delAll	xn--bcher-kva.example		1	0
+delAll	.com		1	0
+delAll	例え.jp		1	0
+getAny	.org			0
+add	xample.com		true	0
+set	.com	p1		0
+getAny	b.a			0
+hasAny	example.org		true	0
+has	b.a		false	0
+add	.com		false	0
+hasAny	.com		true	0
+hasAny	a.example.com		false	0
+set	com	p1,p2		0
+set		wg0		0
+set	example.org	p1		0
+add	xn--bcher-kva.example		true	0
+del	a.example.com		false	0
+len			7	0
+set	a	p		0
+has	xn--bcher-kva.example		true	0
+get	b.a.example.com			0
+set	.com	p1		0
+del	b.a		false	0
+len			8	0
+len			8	0
+len			8	0
+len			8	0
+get	com		p1,p2	0
+set	b.a	wg01		0
+add	a.example.com		true	0
+get	.com		p1	0
+len			10	0
+add	xn--bcher-kva.example		false	0
+set	b.a.example.com	p		0
+add	example.org		false	0
+delAll	xample.com		4	0
+add	例え.jp		true	0
+get				0
+delAll	b.a.example.com		0	0
+len			8	0
+getAny	b.a.example.com		p1	0
+delAll	b.a.example.com		0	0
+get	ample.com			0
+hasAny	.a		false	0
+getAny	a.example.com		p1	0
+getAny	xn--bcher-kva.example			0
+hasAny	.jp		false	0
+hasAny	.example.com		true	0
+hasAny	例え.jp		true	0
+delAll	xn--bcher-kva.example		1	0
+hasAny	a		true	0
+hasAny	a.example.com		true	0
+new	15			0
+add	example.com		true	0
+get	a.example.com			0
+hasAny	例え.jp		false	0
+get	example.com			0
+del	.com		false	0
+add			true	0
+delAll	example.com		2	0
+get	b.a.example.com			0
+get	.jp			0
+set	a.example.com	p		0
+hasAny	com		false	0
+set	.a	wg0		0
+has	b.a.example.com		false	0
+delAll	a.example.com		1	0
+get	b.a.example.com			0
+del			false	0
+get	a			0
+add	a		true	0
+delAll	.org		0	0
+del	.a		true	0
+add			true	0
+len			2	0
+has	.jp		false	0
+getAnyPanics	例え.jp			0
+has	.a		false	0
+del	.jp		false	0
+has	.example.com		false	0
+del			true	0
+getAny	sub.example.org			0
+hasAny	example.org		false	0
+delAll	ample.com		0	0
+del	ample.com		false	0
+len			1	0
+del	b.a		false	0
+add	ample.com		true	0
+del	.example.com		false	0
+get	com			0
+getAny	.com			0
+getAny	.jp			0
+set	a	wg01		0
+del			false	0
+set	a	wg01		0
+hasAny	xn--bcher-kva.example		false	0
+delAll	.org		0	0
+set	.a	wg0		0
+add	sub.example.org		true	0
+hasAny	xn--bcher-kva.example		false	0
+getAny	example.com			0
+get				0
+delAll	sub.example.org		1	0
+getAny	.org			0
+has	.com		false	0
+hasAny	example.org		false	0
+del	b.a		false	0
+delAll	.org		0	0
+delAll	b.a.example.com		0	0
+add	example.com		true	0
+getAny	b.a.example.com			0
+delAll	a		2	0
+getAny	.com			0
+del	xn--bcher-kva.example		false	0
+set	.org	Exit		0
+has	com		false	0
+delAll	com		2	0
+get	.com			0
+get	b.a			0
+delAll	xn--bcher-kva.example		0	0
+add	例え.jp		true	0
+delAll	例え.jp		1	0
+add	com		true	0
+set	com	wg01		0
+getAny				0
+len			2	0
+delAll	.example.com		0	0
+hasAny	.jp		false	0
+has	b.a		false	0
+get	sub.example.org			0
+get				0
+set	b.a	p		0
+has	a		false	0
+has	sub.example.org		false	0
+getAny	sub.example.org		Exit	0
+set	a.example.com	p1,p2		0
+del	com		true	0
+len			3	0
+del	b.a		true	0
+hasAny	b.a.example.com		false	0
+set		Exit		0
+hasAnyPanics	ample.com			0
+delAll	.org		2	0
+getAny				0
+hasAny	example.org		false	0
+getAny	xample.com			0
+getAny	example.com			0
+delAll	example.com		1	0
+delAll	例え.jp		0	0
+len			0	0
+get	.a			0
+set	a	wg0		0
+delAll	xn--bcher-kva.example		0	0
+add	.com		true	0
+delAll			2	0
+hasAny			false	0
+set		wg01		0
+getAnyPanics	sub.example.org			0
+delAll	xample.com		1	0
+get	例え.jp			0
+getAny	b.a			0
+del	ample.com		false	0
+del	example.org		false	0
+add	.a		true	0
+del	com		false	0
+add	ample.com		true	0
+has	example.com		false	0
+set	xample.com	p1,p2		0
+set	example.com	p1,p2		0
+get	.jp			0
+len			4	0
+hasAny	sub.example.org		false	0
+add			true	0
+getAnyPanics	.com			0
+del	com		false	0
+add	a		true	0
+has	sub.example.org		false	0
+get	b.a			0
+get	a.example.com			0
+hasAnyPanics	com			0
+hasAny	a		true	0
+getAny	a.example.com			0
+getAny	.example.com			0
+set	.example.com	wg0		0
+get	.a			0
+getAny	example.com		p1,p2	0
+len			7	0
+len			7	0
+has	xn--bcher-kva.example		false	0
+add	xample.com		false	0
+set	.com	p1,p2		0
+del	b.a		false	0
+len			8	0
+add	.example.com		false	0
+set	a.example.com	p1		0
+add	a.example.com		false	0
+len			9	0
+add	.a		false	0
+set	.example.com	p2		0
+has	b.a		false	0
+hasAny	.a		true	0
+del	sub.example.org		false	0
+add	.com		false	0
+delAll	xn--bcher-kva.example		1	0
+add	a.example.com		false	0
+hasAny	.example.com		true	0
+get	com			0
+add	a.example.com		false	0
+delAll	sub.example.org		0	0
+has	example.com		true	0
+delAll	com		6	0
+delAll	.example.com		0	0
+getAny	xn--bcher-kva.example			0
+del	.a		true	0
+get	example.com			0
+del	xn--bcher-kva.example		false	0
+del			false	0
+delAll	.example.com		0	0
+hasAny			false	0
+has	a.example.com		false	0
+delAll	sub.example.org		0	0
+del	.jp		false	0
+del	xn--bcher-kva.example		false	0
+getAny	.com			0
+del	a.example.com		false	0
+len			1	0
+del	com		false	0
+has	.a		false	0
+has	a		true	0
+hasAny	example.com		false	0
+getAny	com			0
+del	xample.com		false	0
+len			1	0
+has	xample.com		false	0
+get	xample.com			0
+has			false	0
+delAll	sub.example.org		0	0
+hasAny	example.org		false	0
+hasAny	例え.jp		false	0
+set	b.a			0
+len			2	0
+delAll	sub.example.org		0	0
+set	.example.com	wg01		0
+get	com			0
+delAll	sub.example.org		0	0
+get	sub.example.org			0
+getAny	example.org			0
+del	a.example.com		false	0
+has	.com		false	0
+delAll	example.org		0	0
+len			3	0
+delAll	.com		1	0
+getAny	.com			0
+new	16			0
+getAny	com			0
+len			0	0
+len			0	0
+len			0	0
+add	b.a		true	0
+get	example.com			0
+getAny	.com			0
+len			1	0
+add	xample.com		true	0
+hasAny	.com		false	0
+hasAny	b.a.example.com		false	0
+add	.example.com		true	0
+getAny	xample.com			0
+getAny	b.a			0
+hasAny	b.a.example.com		true	0
+add	example.com		true	0
+add	.a		true	0
+add	.example.com		false	0
+get	a			0
+del	sub.example.org		false	0
+len			5	0
+del	.jp		false	0
+get	a			0
+has	.example.com		true	0
+delAll	b.a.example.com		0	0
+len			5	0
+set	.jp	wg0		0
+len			6	0
+delAll	a		2	0
+del	.com		false	0
+getAny	.org			0
+get	.example.com			0
+del	example.com		true	0
+set	b.a	Exit		0
+getAny	xample.com			0
+set	example.org	Base		0
+get	a			0
+len			5	0
+len			5	0
+getAny	ample.com			0
+del	com		false	0
+set	ample.com	x1		0
+del	.example.com		true	0
+delAll	ample.com		2	0
+hasAny	.jp		true	0
+add	b.a		false	0
+set	example.com	p		0
+delAll	.org		1	0
+get	example.com		p	0
+add	sub.example.org		true	0
+has	example.org		false	0
+has	example.com		true	0
+getAny	.jp		wg0	0
+hasAny	a		false	0
+hasAny	sub.example.org		true	0
+set	b.a	Base		0
+set				0
+add	b.a		false	0
+len			5	0
+getAnyPanics	.org			0
+set	.example.com	p		0
+len			6	0
+delAll	.org		2	0
+getAny	.com			0
+del	.jp		true	0
+getAny	.jp			0
+len			3	0
+delAll	ample.com		2	0
+get	example.com			0
+getAny	.jp			0
+delAll	.example.com		0	0
+len			1	0
+del	ample.com		false	0
+hasAny	b.a		true	0
+get	com			0
+get	a.example.com			0
+set		wg01		0
+hasAnyPanics	sub.example.org			0
+has	.a		false	0
+add			false	0
+has	b.a		true	0
+delAll	a		2	0
+get	example.com			0
+get	ample.com			0
+set	example.com	Exit		0
+delAll	.com		1	0
+hasAny	example.com		false	0
+has	example.com		false	0
+len			0	0
+getAny	sub.example.org			0
+len			0	0
+getAny	sub.example.org			0
+has	.com		false	0
+delAll	b.a.example.com		0	0
+add	xn--bcher-kva.example		true	0
+hasAny	example.com		false	0
+getAny	xample.com			0
+getAny	.example.com			0
+len			1	0
+getAny	xn--bcher-kva.example			0
+add	例え.jp		true	0
+get	example.com			0
+has			false	0
+del	a.example.com		false	0
+hasAny	xample.com		false	0
+add	example.org		true	0
+has	ample.com		false	0
+getAny	例え.jp			0
+getAny	a.example.com			0
+get	xample.com			0
+set	example.com	x1		0
+len			4	0
+get	.com			0
+del	xample.com		false	0
+hasAny	sub.example.org		false	0
+hasAny	.a		false	0
+has	例え.jp		true	0
+set	b.a.example.com	p2		0
+get	b.a.example.com		p2	0
+get	example.com		x1	0
+getAny	example.org			0
+getAny	例え.jp			0
+hasAny	.org		false	0
+add	.example.com		true	0
+del			false	0
+getAny	xn--bcher-kva.example			0
+len			6	0
+add	a.example.com		true	0
+hasAny	example.org		true	0
+del	a		false	0
+set	.com	wg01		0
+len			8	0
+has	example.com		true	0
+get	example.org			0
+del	xample.com		false	0
+getAny				0
+del	sub.example.org		false	0
+delAll	a.example.com		2	0
+getAny	a			0
+get	.jp			0
+add	.jp		true	0
+del	xn--bcher-kva.example		true	0
+add	ample.com		true	0
+del	a.example.com		false	0
+del	xn--bcher-kva.example		false	0
+set	com	Exit		0
+getAny	.example.com			0
+del	example.com		true	0
+set	xample.com			0
+get	.a			0
+hasAny			false	0
+add	例え.jp		false	0
+hasAny	com		true	0
+has	例え.jp		true	0
+hasAny	example.com		false	0
+getAny	com		Exit	0
+getAny	.org			0
+del	sub.example.org		false	0
+get	b.a.example.com			0
+getAny	xn--bcher-kva.example			0
+add	b.a.example.com		true	0
+set	example.com	x1		0
+getAny	example.com		x1	0
+getAny	xn--bcher-kva.example			0
+del	a		false	0
+set	xn--bcher-kva.example	p1,p2		0
+get	b.a.example.com			0
+hasAny	.org		false	0
+hasAny	a.example.com		true	0
+delAll	.example.com		2	0
+get	b.a			0
+get	.example.com			0
+del	b.a		false	0
+delAll	xample.com		2	0
+get	com		Exit	0
+has	example.org		true	0
+delAll	sub.example.org		0	0
+add	xn--bcher-kva.example		false	0
+get	a.example.com			0
+getAny	a.example.com			0
+delAll	.jp		2	0
+delAll	.org		1	0
+getAny	b.a			0
+getAny	.example.com			0
+getAny	a.example.com			0
+getAny	b.a.example.com			0
+has	xample.com		false	0
+len			4	0
+add	xn--bcher-kva.example		false	0
+getAny	b.a.example.com			0
+get	sub.example.org			0
+add	a		true	0
+hasAny	.example.com		false	0
+del	com		true	0
+len			4	0
+hasAny	.org		false	0
+getAny	.a			0
+add	b.a		true	0
+set	com			0
+set	example.com	wg0		0
+new	17			0
+set	example.org	Base		0
+set				0
+delAll	xample.com		1	0
+del	.org		false	0
+has	.example.com		false	0
+set	com	Base		0
+del	b.a		false	0
+getAny	b.a			0
+add	例え.jp		true	0
+has	example.com		false	0
+get	b.a			0
+delAll	example.org		1	0
+has	com		true	0
+get	b.a.example.com			0
+hasAny	例え.jp		true	0
+set	xn--bcher-kva.example	Exit		0
+add	com		false	0
+add	.a		true	0
+set	.example.com	p1		0
+getAny	sub.example.org			0
+getAny	a.example.com		p1	0
+del	example.org		false	0
+hasAny	b.a		true	0
+getAny	.org			0
+set	ample.com	x1		0
+add	a.example.com		true	0
+getAny	sub.example.org			0
+delAll	sub.example.org		0	0
+get	a.example.com			0
+getAny	.example.com		p1	0
+len			7	0
+len			7	0
+getAny	.com			0
+del	.a		true	0
+add	a		true	0
+has	a.example.com		true	0
+set	xn--bcher-kva.example	x1		0
+add	xn--bcher-kva.example		false	0
+getAny	.example.com		p1	0
+len			7	0
+add			true	0
+getAny	xample.com			0
+add	sub.example.org		true	0
+len			9	0
+del	.example.com		true	0
+has	ample.com		true	0
+hasAny			true	0
+delAll	a		2	0
+add	.jp		true	0
+set	例え.jp			0
+del	com		true	0
+get	ample.com		x1	0
+get				0
+add	.com		true	0
+len			7	0
+getAny	.example.com			0
+add	b.a.example.com		true	0
+delAll	a.example.com		2	0
+get	ample.com		x1	0
+del	.org		false	0
+len			6	0
+add	example.org		true	0
+get	a.example.com			0
+set	example.org	p1		0
+has	a.example.com		false	0
+len			7	0
+get	xn--bcher-kva.example		x1	0
+len			7	0
+hasAny	example.com		false	0
+delAll	xample.com		0	0
+del	com		false	0
+set				0
+has	example.org		true	0
+get				0
+len			8	0
+getAny	例え.jp			0
+set	xample.com			0
+del	b.a		false	0
+delAll	xample.com		2	0
+set		wg0		0
+has	.jp		true	0
+get	例え.jp			0
+getAny			wg0	0
+has	sub.example.org		true	0
+hasAny	a.example.com		false	0
+getAnyPanics	b.a			0
+add	com		true	0
+add	ample.com		false	0
+delAll	例え.jp		2	0
+hasAny	com		true	0
+has	.com		true	0
+has	.example.com		false	0
+add	example.org		false	0
+getAny	.a			0
+delAll	.jp		1	0
+len			6	0
+delAll	.org		2	0
+delAll	example.org		0	0
+len			4	0
+del	a.example.com		false	0
+getAny				0
+getAny	a.example.com			0
+add	example.com		true	0
+has	.example.com		false	0
+get	.com			0
+has	example.com		true	0
+has	.com		true	0
+get				0
+getAny	com			0
+delAll	.jp		0	0
+add	xample.com		true	0
+delAll	b.a.example.com		0	0
+has	b.a.example.com		false	0
+getAny	.org			0
+get	.com			0
+get	.jp			0
+hasAny	.org		false	0
+has	b.a		false	0
+delAll	a.example.com		0	0
+del	.jp		false	0
+getAny	.a			0
+getAny	xn--bcher-kva.example		x1	0
+set	com	Exit		0
+len			6	0
+get	.org			0
+getAny	b.a			0
+set	.example.com	x1		0
+getAny	example.com			0
+get	b.a			0
+delAll	sub.example.org		0	0
+del	xn--bcher-kva.example		true	0
+len			6	0
+has	.org		false	0
+get	a.example.com			0
+hasAny	例え.jp		false	0
+hasAny	com		true	0
+add	ample.com		false	0
+get	example.org			0
+hasAny	b.a		false	0
+len			6	0
+get	例え.jp			0
+has	sub.example.org		false	0
+len			6	0
+set	example.org	p1		0
+len			7	0
+getAny	.a			0
+has	sub.example.org		false	0
+has	example.com		true	0
+hasAny	ample.com		true	0
+delAll	.org		1	0
+set	.com			0
+hasAny	.jp		false	0
+set	xample.com	p		0
+get	com		Exit	0
+getAny	ample.com		x1	0
+del	xn--bcher-kva.example		false	0
+delAll	b.a.example.com		0	0
+delAll	ample.com		4	0
+delAll	b.a		0	0
+getAny	b.a.example.com			0
+del	xample.com		false	0
+delAll	b.a		0	0
+add	a.example.com		true	0
+get	ample.com			0
+set	xample.com	p1		0
+del	example.org		false	0
+len			4	0
+delAll	.example.com		1	0
+delAll	.jp		0	0
+hasAny	sub.example.org		false	0
+delAll	example.org		0	0
+len			3	0
+add	.a		true	0
+getAny				0
+add	sub.example.org		true	0
+delAll	.com		2	0
+hasAny	example.org		false	0
+del	.jp		false	0
+del			false	0
+getAny				0
+del			false	0
+len			3	0
+get	xample.com			0
+hasAny	ample.com		false	0
+add	example.com		true	0
+del			false	0
+get	b.a.example.com			0
+len			4	0
+len			4	0
+getAny	example.org			0
+has			false	0
+get	a.example.com			0
+delAll	.jp		0	0
+getAny	com		Exit	0
+getAny	sub.example.org			0
+has	a.example.com		false	0
+get	example.com			0
+getAny	.a			0
+get	example.org			0
+delAll			4	0
+new	18			0
+del	sub.example.org		false	0
+add	.org		true	0
+getAny	example.com			0
+len			1	0
+add	a.example.com		true	0
+delAll	xample.com		1	0
+getAny	xample.com			0
+hasAny	example.org		true	0
+has	.org		true	0
+getAny	sub.example.org			0
+set	b.a.example.com	p		0
+get	example.com			0
+delAll	example.org		0	0
+hasAny	a.example.com		false	0
+len			2	0
+get	sub.example.org			0
+get	xn--bcher-kva.example			0
+has	com		false	0
+set	ample.com	Exit		0
+del	.org		true	0
+getAny	xn--bcher-kva.example			0
+getAny	ample.com		Exit	0
+hasAny	ample.com		true	0
+hasAny			false	0
+set	.com	wg0		0
+getAny	.com		wg0	0
+getAny	.a			0
+has	xn--bcher-kva.example		false	0
+set	example.org	wg01		0
+del	com		false	0
+set	xample.com	wg01		0
+getAny	a.example.com			0
+get	example.com			0
+set	example.org	wg01		0
+has	例え.jp		false	0
+getAny	.example.com			0
+set	xample.com	p1,p2		0
+del	.org		false	0
+getAny	example.org		wg01	0
+add	a.example.com		true	0
+set	.a	x1		0
+get	example.com			0
+getAny	.a		x1	0
+has	b.a		false	0
+set	b.a.example.com	Base		0
+get	.example.com			0
+len			7	0
+set	a.example.com	wg0		0
+len			7	0
+hasAny	sub.example.org		false	0
+hasAny	example.com		false	0
+hasAny	ample.com		true	0
+has	example.org		true	0
+del	xample.com		true	0
+getAny	b.a.example.com		Base	0
+add	.a		false	0
+hasAny	xn--bcher-kva.example		false	0
+hasAny			false	0
+hasAny	example.org		true	0
+add	b.a		true	0
+has	example.com		false	0
+get	.example.com			0
+len			7	0
+del	b.a.example.com		true	0
+set	.example.com	x1		0
+set	.jp	p1,p2		0
+delAll	example.com		2	0
+delAll	b.a		1	0
+len			5	0
+len			5	0
+delAll	.example.com		0	0
+has	.org		false	0
+set	sub.example.org	p1		0
+delAll	b.a		0	0
+has	例え.jp		false	0
+getAny	.jp		p1,p2	0
+hasAny	a.example.com		false	0
+hasAny	xn--bcher-kva.example		false	0
+set	sub.example.org			0
+len			6	0
+del	com		false	0
+getAny	.org			0
+delAll			6	0
+get	.org			0
+delAll	example.org		0	0
+has	.org		false	0
+getAny	example.org			0
+del			false	0
+delAll	.org		0	0
+delAll	.a		0	0
+del	example.org		false	0
+del	ample.com		false	0
+getAny	b.a			0
+len			0	0
+get	sub.example.org			0
+add	xample.com		true	0
+delAll	sub.example.org		0	0
+get	xample.com			0
+getAny	.com			0
+getAny	b.a.example.com			0
+getAny	b.a.example.com			0
+hasAny	xample.com		true	0
+add	xn--bcher-kva.example		true	0
+getAny	.org			0
+hasAny	.com		false	0
+set	.a			0
+delAll	com		1	0
+del	.jp		false	0
+has	.com		false	0
+getAny	例え.jp			0
+getAny	a			0
+has			false	0
+getAny	xample.com			0
+delAll	com		0	0
+has	a		false	0
+get	.com			0
+hasAny			false	0
+set	b.a	p1,p2		0
+getAny	sub.example.org			0
+set	example.com	p2		0
+set	a.example.com	Base		0
+has	.org		false	0
+hasAny	例え.jp		false	0
+get	例え.jp			0
+get				0
+set	example.org	p1,p2		0
+get				0
+add	example.org		false	0
+getAny	.com			0
+getAny	xample.com			0
+set	.org	Base		0
+delAll	.org		2	0
+add	.a		false	0
+del	a.example.com		true	0
+has	.jp		false	0
+get	sub.example.org			0
+has	.org		false	0
+add	b.a.example.com		true	0
+get	.org			0
+add	sub.example.org		true	0
+getAny	sub.example.org			0
+del			false	0
+delAll			6	0
+hasAny	sub.example.org		false	0
+has	ample.com		false	0
+getAny	.a			0
+has	xample.com		false	0
+get	xample.com			0
+getAny	.com			0
+set	com	p		0
+get	ample.com			0
+set	.example.com	Base		0
+del	example.org		false	0
+getAny	a			0
+getAny	.com			0
+len			2	0
+hasAny	.a		false	0
+del	.a		false	0
+getAny	xample.com			0
+del	.a		false	0
+has	com		true	0
+get	xample.com			0
+delAll	xn--bcher-kva.example		0	0
+has	com		true	0
+len			2	0
+add			true	0
+add	.a		true	0
+hasAny	.com		false	0
+hasAny	.com		false	0
+len			4	0
+add	.com		true	0
+set	.org	p1		0
+get	.com			0
+has	.jp		false	0
+get	.a			0
+getAny	.com			0
+delAll	b.a.example.com		1	0
+has	b.a		false	0
+getAny	例え.jp			0
+set	example.org	wg01		0
+getAny	xample.com			0
+delAll			6	0
+getAny	b.a.example.com			0
+get	a			0
+getAny				0
+delAll	xn--bcher-kva.example		0	0
+del	.jp		false	0
+del	b.a.example.com		false	0
+len			0	0
+getAny	.a			0
+len			0	0
+add	a.example.com		true	0
+add	example.org		true	0
+set	.example.com	wg0		0
+delAll	.com		2	0
+getAny	例え.jp			0
+get	xample.com			0
+getAny				0
+len			1	0
+del	com		false	0
+new	19			0
+del	b.a		false	0
+hasAny	.a		false	0
+hasAny	xn--bcher-kva.example		false	0
+delAll	example.org		0	0
+delAll	ample.com		0	0
+delAll	xn--bcher-kva.example		0	0
+getAny	.org			0
+add	xample.com		true	0
+getAny	com			0
+getAny	.com			0
+get	例え.jp			0
+len			1	0
+add	example.com		true	0
+add	.com		true	0
+get	.a			0
+hasAny	ample.com		true	0
+len			3	0
+getAny	b.a.example.com			0
+len			3	0
+get	b.a			0
+has	sub.example.org		false	0
+get	com			0
+del	a.example.com		false	0
+hasAny	.com		true	0
+has	.jp		false	0
+delAll	b.a.example.com		0	0
+set	xn--bcher-kva.example	p2		0
+del	com		false	0
+delAll	.org		0	0
+del	.com		true	0
+get	sub.example.org			0
+add	b.a.example.com		true	0
+del	example.com		true	0
+add	.a		true	0
+has	example.org		false	0
+get	.com			0
+hasAny	example.com		false	0
+len			4	0
+getAny	com			0
+getAny	a			0
+delAll	.example.com		1	0
+get	example.org			0
+add	a		true	0
+add	sub.example.org		true	0
+getAny	.a			0
+getAny	com			0
+add	ample.com		true	0
+getAny				0
+getAny	example.com			0
+delAll	a.example.com		0	0
+set	.example.com	p1,p2		0
+delAll	example.com		1	0
+getAny	b.a			0
+hasAny	xn--bcher-kva.example		true	0
+getAny	例え.jp			0
+del	a		true	0
+hasAny	.a		true	0
+del	例え.jp		false	0
+add	.a		false	0
+len			5	0
+hasAny	xample.com		true	0
+hasAny	xample.com		true	0
+getAny	b.a			0
+getAny	com			0
+len			5	0
+add	sub.example.org		false	0
+get	.org			0
+getAny	.example.com			0
+add	xn--bcher-kva.example		false	0
+del	.a		true	0
+getAny	example.org			0
+delAll	a		0	0
+get	.a			0
+has			false	0
+getAny				0
+getAny	.a			0
+get	com			0
+set	.com	wg0		0
+add	.example.com		true	0
+hasAny			false	0
+hasAny	xample.com		true	0
+del	.org		false	0
+set	com	wg0		0
+has	com		true	0
+hasAny	例え.jp		false	0
+del	例え.jp		false	0
+getAny	例え.jp			0
+has	.jp		false	0
+add	example.com		true	0
+add	a		true	0
+del	b.a		false	0
+delAll	a		1	0
+len			8	0
+len			8	0
+has	.com		true	0
+hasAny	.com		true	0
+getAny	.jp			0
+add	.a		true	0
+getAny	example.org			0
+getAny	.com		wg0	0
+del	example.org		false	0
+get	xn--bcher-kva.example		p2	0
+delAll	.jp		0	0
+set	例え.jp	Exit		0
+del	sub.example.org		true	0
+set	.jp	Exit		0
+set	.a	wg01		0
+set	.jp	p		0
+delAll	例え.jp		1	0
+get	xample.com			0
+add	b.a		true	0
+add	b.a.example.com		true	0
+del	a		false	0
+len			11	0
+has	a.example.com		false	0
+set	.org			0
+del	example.com		true	0
+hasAny	a		false	0
+add	example.org		true	0
+getAny	a.example.com			0
+len			12	0
+add	.a		false	0
+getAny	xn--bcher-kva.example		p2	0
+has	xn--bcher-kva.example		true	0
+len			12	0
+del	com		true	0
+set	.jp	x1		0
+del	例え.jp		false	0
+has	example.com		false	0
+add	xn--bcher-kva.example		false	0
+getAny	例え.jp		x1	0
+set	com	wg01		0
+getAny	.a		wg01	0
+getAny	ample.com			0
+getAny	例え.jp		x1	0
+delAll	.a		2	0
+set	b.a.example.com	Base		0
+hasAny	example.org		true	0
+getAny	例え.jp		x1	0
+len			10	0
+add			true	0
+add	b.a		true	0
+set	.com	p1		0
+add	a		true	0
+has	example.org		true	0
+hasAny	com		true	0
+hasAny	xample.com		true	0
+del	sub.example.org		false	0
+del	ample.com		true	0
+add	sub.example.org		true	0
+del	a.example.com		false	0
+set	b.a	Base		0
+delAll	xample.com		4	0
+len			9	0
+hasAny	a		true	0
+len			9	0
+getAny	sub.example.org			0
+getAny	.com		p1	0
+hasAny	xn--bcher-kva.example		true	0
+set	a	p2		0
+hasAny	sub.example.org		true	0
+del	ample.com		false	0
+get	b.a.example.com			0
+add	.org		false	0
+delAll	.org		3	0
+len			6	0
+getAny	.com		p1	0
+set	xn--bcher-kva.example	p1		0
+getAny	xample.com		p1	0
+len			6	0
+len			6	0
+len			6	0
+len			6	0
+getAny	example.com		p1	0
+getAny	a.example.com		p1	0
+len			6	0
+get	example.com			0
+get	ample.com			0
+has	.com		true	0
+getAny	xn--bcher-kva.example		p1	0
+hasAny			false	0
+len			6	0
+add			true	0
+getAny	.jp		x1	0
+add	b.a.example.com		true	0
+hasAny	a.example.com		true	0
+delAll	com		4	0
+hasAny	.jp		true	0
+getAny	example.org			0
+del	.jp		true	0
+get	com			0
+getAny	b.a		Base	0
+len			3	0
+getAny	b.a		Base	0
+set	a	wg0		0
+add	xn--bcher-kva.example		false	0
+hasAny	.jp		false	0
+hasAny	a		true	0
+hasAny	a.example.com		false	0
+get	.jp			0
+new	20			0
+set		p2		0
+has	example.org		false	0
+add	.com		true	0
+delAll	.com		2	0
+getAny	a			0
+set	xample.com	p		0
+del			false	0
+hasAny	example.com		false	0
+getAny	com			0
+hasAny			false	0
+add	.jp		true	0
+getAny	com			0
+getAny	ample.com			0
+delAll	.example.com		0	0
+del	ample.com		false	0
+set	ample.com			0
+has	example.com		false	0
+getAny	b.a.example.com			0
+add	例え.jp		true	0
+len			4	0
+add	com		true	0
+set		x1		0
+has	example.org		false	0
+getAnyPanics	sub.example.org			0
+has	.jp		true	0
+get	ample.com			0
+del	.a		false	0
+get	a			0
+hasAnyPanics	sub.example.org			0
+del	.com		false	0
+set	example.com	p2		0
+del			true	0
+set	b.a.example.com	p		0
+has	a.example.com		false	0
+add	例え.jp		false	0
+getAny	xn--bcher-kva.example			0
+hasAny			false	0
+len			7	0
+len			7	0
+has	a.example.com		false	0
+set	.jp	Base		0
+set	example.org	Base		0
+getAny	xample.com		p	0
+delAll	com		5	0
+getAny				0
+delAll	.example.com		0	0
+has	example.org		true	0
+del	.jp		true	0
+getAny	xn--bcher-kva.example			0
+delAll	ample.com		0	0
+add	例え.jp		false	0
+has	.com		false	0
+set	xample.com	p2		0
+set	.com	p		0
+add	com		true	0
+get	.a			0
+has	.org		false	0
+add	a.example.com		true	0
+set	.jp	p1,p2		0
+has	b.a.example.com		false	0
+delAll	例え.jp		1	0
+add	.jp		false	0
+getAny	example.org		Base	0
+delAll	ample.com		2	0
+getAny	例え.jp		p1,p2	0
+getAny	xample.com		p	0
+getAny	a.example.com		p	0
+add	b.a		true	0
+del	a		false	0
+getAny	example.com		p	0
+len			5	0
+set	b.a	Base		0
+hasAny	b.a		true	0
+get	sub.example.org			0
+len			5	0
+getAny	.org			0
+has	b.a		true	0
+getAny	b.a		Base	0
+hasAny	例え.jp		true	0
+delAll			5	0
+hasAny	example.org		false	0
+delAll	example.org		0	0
+len			0	0
+hasAny	a		false	0
+set	com	Base		0
+getAny				0
+has	example.org		false	0
+len			1	0
+get	xample.com			0
+has	xample.com		false	0
+add	com		false	0
+set	.a	p		0
+delAll	example.com		0	0
+del	sub.example.org		false	0
+has	b.a.example.com		false	0
+len			2	0
+del	b.a		false	0
+get	a			0
+getAny	com		Base	0
+has	com		true	0
+get	a			0
+set	.jp	wg0		0
+get	example.com			0
+has	.a		true	0
+add	.jp		false	0
+get				0
+del	ample.com		false	0
+getAny	ample.com			0
+set	例え.jp	Base		0
+del	.a		true	0
+del	.jp		true	0
+del	.jp		false	0
+delAll	a.example.com		0	0
+set		p1		0
+get	com		Base	0
+get	xample.com			0
+del	a		false	0
+getAnyPanics	.jp			0
+get			p1	0
+getAnyPanics	sub.example.org			0
+has	xample.com		false	0
+getAny	ample.com			0
+getAnyPanics	example.org			0
+del	example.com		false	0
+get	sub.example.org			0
+get	xn--bcher-kva.example			0
+add	xample.com		true	0
+get	.com			0
+getAny	ample.com			0
+len			4	0
+set	.example.com	Exit		0
+has	ample.com		false	0
+add	sub.example.org		true	0
+getAny	a.example.com		Exit	0
+set	a.example.com	x1		0
+add	sub.example.org		false	0
+set				0
+get	a.example.com		x1	0
+set	.jp	Exit		0
+has	example.org		false	0
+hasAny	xample.com		true	0
+del	.org		false	0
+hasAnyPanics	xn--bcher-kva.example			0
+set	example.com			0
+del	example.com		true	0
+getAny	.example.com		Exit	0
+add	a.example.com		false	0
+del	.a		false	0
+hasAnyPanics	xn--bcher-kva.example			0
+add			false	0
+get	ample.com			0
+add	.com		true	0
+delAll	com		6	0
+add	com		true	0
+del	xn--bcher-kva.example		false	0
+delAll	例え.jp		1	0
+len			3	0
+set	example.com	p1		0
+delAll	example.org		1	0
+len			3	0
+delAll	.example.com		0	0
+getAny	example.com		p1	0
+delAll	.org		0	0
+len			3	0
+add	b.a		true	0
+getAny	.jp		Exit	0
+add			true	0
+add			false	0
+getAnyPanics	a			0
+getAny				0
+getAny	a.example.com			0
+del	sub.example.org		false	0
+del	com		true	0
+del	b.a.example.com		false	0
+set	ample.com	wg01		0
+del	b.a		true	0
+delAll	.org		1	0
+getAny	com			0
+has	.a		false	0
+add	example.org		true	0
+len			4	0
+get	例え.jp			0
+hasAny	xn--bcher-kva.example		false	0
+get	example.com		p1	0
+len			4	0
+getAny	例え.jp		Exit	0
+set	.org	p		0
+has	com		false	0
+set	b.a.example.com	p1,p2		0
+get	ample.com		wg01	0
+del	a.example.com		false	0
+hasAny	xample.com		false	0
+delAll	ample.com		3	0
+add	xn--bcher-kva.example		true	0
+add	a		true	0
+del	com		false	0
+get	example.org			0
+del	.a		false	0
+len			5	0
+getAny	example.com			0
+new	21			0
+get	xn--bcher-kva.example			0
+getAny	.org			0
+getAny				0
+hasAny	com		false	0
+delAll			0	0
+has	example.org		false	0
+add	.jp		true	0
+get	.jp			0
+del	a.example.com		false	0
+getAny	b.a			0
+getAny	例え.jp			0
+delAll	.org		0	0
+del	a		false	0
+getAny	.jp			0
+get	a			0
+hasAny	.jp		true	0
+set	.a			0
+delAll	sub.example.org		0	0
+len			2	0
+len			2	0
+hasAny	xample.com		false	0
+getAny	xn--bcher-kva.example			0
+has	xn--bcher-kva.example		false	0
+getAny	ample.com			0
+len			2	0
+delAll	.example.com		0	0
+get	b.a.example.com			0
+del	com		false	0
+del	xample.com		false	0
+delAll	.org		0	0
+set	a	p		0
+del	sub.example.org		false	0
+del	例え.jp		false	0
+getAny	example.com			0
+len			3	0
+getAny	.com			0
+getAny	.jp			0
+len			3	0
+has	.org		false	0
+add	example.com		true	0
+delAll	a		2	0
+has	example.org		false	0
+delAll	example.org		0	0
+get	.org			0
+has	b.a		false	0
+getAny	.example.com			0
+getAny	a			0
+getAny	.com			0
+getAny	a			0
+getAny	xample.com			0
+has	.a		false	0
+getAny	example.com			0
+delAll	.example.com		0	0
+has	example.org		false	0
+delAll	.com		1	0
+del	ample.com		false	0
+has	.example.com		false	0
+add	example.org		true	0
+getAny	.a			0
+len			2	0
+get				0
+del	com		false	0
+set	.example.com	p		0
+hasAny	b.a.example.com		true	0
+hasAny	.a		false	0
+hasAny	sub.example.org		false	0
+set	ample.com	p2		0
+getAny	.org			0
+del	例え.jp		false	0
+getAny	ample.com		p2	0
+del	a.example.com		false	0
+add	xn--bcher-kva.example		true	0
+set	xn--bcher-kva.example	Base		0
+has	ample.com		true	0
+has	.com		false	0
+add	com		true	0
+hasAny	b.a.example.com		true	0
+get	example.org			0
+delAll	xn--bcher-kva.example		1	0
+get	example.org			0
+getAny	例え.jp			0
+hasAny	b.a		false	0
+hasAny	.com		false	0
+getAny	.com			0
+getAny	.com			0
+delAll	xn--bcher-kva.example		0	0
+add	xample.com		true	0
+len			6	0
+getAny	example.org			0
+getAny	.a			0
+len			6	0
+set	.a	Base		0
+set		p1,p2		0
+del	ample.com		true	0
+add	例え.jp		true	0
+add	.org		true	0
+getAnyPanics	a			0
+getAny			p1,p2	0
+has	例え.jp		true	0
+del	com		true	0
+get	b.a.example.com			0
+del	b.a.example.com		false	0
+getAny	.org			0
+has	.a		true	0
+getAny	sub.example.org			0
+getAny	.jp			0
+get	例え.jp			0
+getAny	.jp			0
+delAll	.com		3	0
+get	sub.example.org			0
+add	example.org		false	0
+get	sub.example.org			0
+getAny	xn--bcher-kva.example			0
+getAny	xample.com			0
+len			5	0
+add	xn--bcher-kva.example		true	0
+hasAny	com		false	0
+delAll	xn--bcher-kva.example		1	0
+set	.jp	wg0		0
+getAny	xample.com			0
+has	.org		true	0
+len			5	0
+get	b.a.example.com			0
+del	example.org		true	0
+getAny	example.org			0
+getAny	.com			0
+get	b.a			0
+set	example.com	wg0		0
+hasAny	.jp		true	0
+add	example.com		false	0
+delAll			5	0
+len			0	0
+has	sub.example.org		false	0
+getAny	example.com			0
+delAll	.a		0	0
+has	example.com		false	0
+has	example.org		false	0
+len			0	0
+set	xn--bcher-kva.example	p		0
+hasAny	sub.example.org		false	0
+add	com		true	0
+hasAny	.com		false	0
+len			2	0
+getAny	a			0
+hasAny	.com		false	0
+del	xn--bcher-kva.example		true	0
+len			1	0
+get	a.example.com			0
+len			1	0
+get	.org			0
+delAll	.org		0	0
+del	.com		false	0
+hasAny	b.a		false	0
+getAny	com			0
+get	sub.example.org			0
+add	.com		true	0
+get	.example.com			0
+hasAny	a.example.com		true	0
+get	a.example.com			0
+has	xn--bcher-kva.example		false	0
+has	.com		true	0
+add	.org		true	0
+delAll			3	0
+len			0	0
+hasAny	a		false	0
+del	a		false	0
+get	example.com			0
+delAll	com		0	0
+set	b.a			0
+getAny	.example.com			0
+has	.com		false	0
+del	com		false	0
+add	a		true	0
+delAll	.a		1	0
+hasAny	a.example.com		false	0
+len			1	0
+getAny	b.a			0
+has	.a		false	0
+del	.com		false	0
+add	a		false	0
+get	b.a.example.com			0
+get	xample.com			0
+getAny	example.org			0
+get	sub.example.org			0
+len			1	0
+add			true	0
+getAnyPanics	.jp			0
+getAnyPanics	.example.com			0
+set	b.a.example.com	wg01		0
+hasAnyPanics	.com			0
+set	a.example.com	p1,p2		0
+len			4	0
+get	example.com			0
+getAnyPanics	example.com			0
+del	com		false	0
+add	.com		true	0
+delAll	例え.jp		1	0
+get	.a			0
+get	例え.jp			0
+len			4	0
+new	22			0
+add	example.org		true	0
+set	.com	p1,p2		0
+add	b.a		true	0
+del	ample.com		false	0
+set	b.a.example.com	Base		0
+delAll	.org		1	0
+delAll			3	0
+delAll	.jp		0	0
+get				0
+set	sub.example.org	Exit		0
+has	a		false	0
+getAny	sub.example.org		Exit	0
+has	xn--bcher-kva.example		false	0
+get				0
+get	example.org			0
+add	b.a.example.com		true	0
+len			2	0
+getAny	.example.com			0
+set	a			0
+len			3	0
+getAny				0
+getAny	.example.com			0
+delAll	.example.com		1	0
+add	.a		true	0
+hasAny	xn--bcher-kva.example		false	0
+hasAny	a.example.com		false	0
+hasAny	.example.com		false	0
+del			false	0
+has	example.org		false	0
+getAny	.jp			0
+add	ample.com		true	0
+delAll	xample.com		0	0
+getAny	sub.example.org		Exit	0
+set	b.a.example.com	p1,p2		0
+getAny	com			0
+has	a.example.com		false	0
+del	例え.jp		false	0
+del	b.a		false	0
+add	a.example.com		true	0
+delAll	example.org		1	0
+add	a		false	0
+has	ample.com		true	0
+set	.example.com	p2		0
+add	.a		false	0
+has	xn--bcher-kva.example		false	0
+len			6	0
+hasAny	a.example.com		true	0
+has	.jp		false	0
+delAll	sub.example.org		0	0
+del	ample.com		true	0
+has	a.example.com		true	0
+hasAny	xample.com		false	0
+add	sub.example.org		true	0
+del	sub.example.org		true	0
+len			5	0
+set	com	Exit		0
+len			6	0
+hasAny	ample.com		false	0
+get	xn--bcher-kva.example			0
+delAll	a.example.com		2	0
+len			4	0
+delAll	xn--bcher-kva.example		0	0
+getAny	xn--bcher-kva.example			0
+len			4	0
+get	.jp			0
+getAny	.org			0
+add	a.example.com		true	0
+hasAny	a.example.com		true	0
+hasAny	a		true	0
+delAll	ample.com		2	0
+get	a			0
+add	b.a.example.com		true	0
+delAll	xn--bcher-kva.example		0	0
+delAll			4	0
+has	a		false	0
+getAny	a			0
+set	b.a	Base		0
+len			1	0
+len			1	0
+get	.com			0
+has	example.org		false	0
+has	b.a.example.com		false	0
+delAll	example.com		0	0
+set	.com	x1		0
+getAny	.com		x1	0
+getAny	.jp			0
+hasAny	com		false	0
+get	例え.jp			0
+len			2	0
+set	.example.com	p1		0
+getAny	a			0
+add	xn--bcher-kva.example		true	0
+hasAny	a.example.com		true	0
+del	.com		true	0
+del	.example.com		true	0
+getAny	.jp			0
+has	.org		false	0
+del	sub.example.org		false	0
+getAny	a.example.com			0
+del	xample.com		false	0
+get	.a			0
+getAny	.a			0
+getAny	例え.jp			0
+get	example.com			0
+add	.com		true	0
+del			false	0
+len			3	0
+getAny	ample.com			0
+getAny	.jp			0
+get	com			0
+del	b.a		true	0
+hasAny	xn--bcher-kva.example		true	0
+set	example.com	p1,p2		0
+len			3	0
+get	example.com		p1,p2	0
+del	b.a.example.com		false	0
+getAny	.a			0
+set	com	p		0
+getAny	.jp			0
+has			false	0
+hasAny	example.org		false	0
+hasAny	example.org		false	0
+get				0
+delAll	com		3	0
+add	example.com		true	0
+add			true	0
+get	com			0
+del	例え.jp		false	0
+add	.org		true	0
+del	b.a.example.com		false	0
+delAll	com		2	0
+get	xn--bcher-kva.example			0
+has	example.org		false	0
+getAny				0
+getAny	sub.example.org			0
+len			2	0
+has	.jp		false	0
+getAny	xample.com			0
+hasAny			false	0
+del	sub.example.org		false	0
+del	com		false	0
+get	b.a			0
+delAll	.example.com		0	0
+has	.com		false	0
+has	a.example.com		false	0
+getAny	.example.com			0
+getAny	例え.jp			0
+get	example.com			0
+del	a		false	0
+get	.a			0
+has	ample.com		false	0
+delAll	例え.jp		0	0
+has	xample.com		false	0
+getAny	b.a			0
+getAny	example.com			0
+has			false	0
+del	ample.com		false	0
+has	sub.example.org		false	0
+getAny	a.example.com			0
+len			2	0
+hasAny	ample.com		false	0
+add	ample.com		true	0
+hasAny	.org		true	0
+add	example.com		true	0
+len			4	0
+has	.jp		false	0
+del	xample.com		false	0
+add	com		true	0
+getAny	xn--bcher-kva.example			0
+delAll	b.a.example.com		0	0
+getAny	xample.com			0
+len			5	0
+has	example.com		true	0
+getAny	example.com			0
+del	ample.com		true	0
+set	xample.com	Base		0
+getAny	ample.com			0
+add			true	0
+hasAnyPanics	.jp			0
+hasAny	xn--bcher-kva.example		true	0
+len			6	0
+delAll	com		4	0
+hasAny	.a		false	0
+get				0
+get	com			0
+get				0
+getAny	a			0
+has	例え.jp		false	0
+get	.example.com			0
+getAny	例え.jp			0
+getAny	.com			0
+get	.example.com			0
+hasAny	example.com		false	0
+getAny	a			0
+add	xample.com		true	0
+has	b.a		false	0
+len			3	0
+getAny	.example.com			0
+getAny	.a			0
+add	.a		true	0
+new	23			0
+get	例え.jp			0
+add	.example.com		true	0
+has	b.a		false	0
+getAny	com			0
+set	example.org	Exit		0
+getAny	.com			0
+set	b.a.example.com			0
+del	.org		false	0
+getAny	com			0
+delAll	.example.com		2	0
+getAny	.example.com			0
+set	ample.com	p1,p2		0
+hasAny	ample.com		true	0
+get	.a			0
+delAll	example.org		1	0
+hasAny	.jp		false	0
+get	com			0
+set	b.a	p2		0
+add	example.org		true	0
+del	xn--bcher-kva.example		false	0
+get	.jp			0
+hasAny	example.com		false	0
+getAny	ample.com		p1,p2	0
+hasAny			false	0
+has	.com		false	0
+del	xample.com		false	0
+delAll			3	0
+hasAny	com		false	0
+hasAny	.example.com		false	0
+getAny	xn--bcher-kva.example			0
+has	xn--bcher-kva.example		false	0
+delAll	xn--bcher-kva.example		0	0
+hasAny	b.a		false	0
+add	xample.com		true	0
+add	例え.jp		true	0
+set	a	wg01		0
+delAll	com		1	0
+delAll	b.a		0	0
+hasAny	b.a.example.com		false	0
+getAny	a.example.com			0
+add	com		true	0
+del	.example.com		false	0
+delAll	xample.com		0	0
+get	.a			0
+hasAny	ample.com		false	0
+add	.com		true	0
+delAll	.example.com		0	0
+get	b.a.example.com			0
+get	例え.jp			0
+add	.org		true	0
+has	.org		true	0
+get	例え.jp			0
+del	a		true	0
+add	example.com		true	0
+add	a		true	0
+hasAny	example.com		true	0
+has	xample.com		false	0
+getAny	a			0
+add	.a		true	0
+set	例え.jp	wg01		0
+del	example.org		false	0
+has	com		true	0
+getAny	.jp			0
+getAny	xample.com			0
+delAll	.jp		1	0
+len			6	0
+del	.example.com		false	0
+hasAny	.jp		false	0
+hasAny	xn--bcher-kva.example		false	0
+del	.jp		false	0
+getAny	.org			0
+getAny	b.a.example.com			0
+getAny	例え.jp			0
+hasAny	.example.com		false	0
+add	a.example.com		true	0
+has	.example.com		false	0
+getAny	b.a			0
+del	example.com		true	0
+del	a		true	0
+del	example.com		false	0
+add	b.a.example.com		true	0
+len			6	0
+len			6	0
+getAny	example.org			0
+delAll	example.org		0	0
+delAll	a		1	0
+getAny	a.example.com			0
+delAll			5	0
+getAny	sub.example.org			0
+len			0	0
+set	.org	Exit		0
+get	b.a.example.com			0
+set	.example.com	wg01		0
+len			2	0
+set	a.example.com	p1		0
+getAny	sub.example.org		Exit	0
+hasAny	sub.example.org		true	0
+delAll	.jp		0	0
+get	a.example.com		p1	0
+getAny	.a			0
+getAny	sub.example.org		Exit	0
+delAll	a		0	0
+add	a.example.com		false	0
+add	.a		true	0
+delAll	.jp		0	0
+hasAny	例え.jp		false	0
+delAll	.jp		0	0
+getAny	sub.example.org		Exit	0
+set	xn--bcher-kva.example	p1		0
+has	com		false	0
+hasAny	例え.jp		false	0
+hasAny	b.a.example.com		false	0
+len			5	0
+del			false	0
+del	.jp		false	0
+hasAny	example.com		false	0
+set	b.a	p1		0
+del	ample.com		false	0
+delAll	.com		2	0
+getAny	com			0
+get	.org		Exit	0
+set	.jp			0
+del	example.com		false	0
+has	.example.com		false	0
+len			5	0
+hasAny	example.com		false	0
+hasAny	.jp		true	0
+delAll	com		0	0
+getAny	xample.com			0
+del	b.a		true	0
+delAll	xample.com		0	0
+add	a		true	0
+getAny	a			0
+has	.org		true	0
+len			5	0
+getAny	.a			0
+getAny	例え.jp			0
+has	example.org		false	0
+add	ample.com		true	0
+get	sub.example.org			0
+has	com		false	0
+hasAny	xample.com		false	0
+has			false	0
+getAny	example.com			0
+hasAny	com		false	0
+getAny				0
+has	example.org		false	0
+len			6	0
+get	.com			0
+delAll	.com		1	0
+delAll	sub.example.org		0	0
+delAll	xample.com		0	0
+delAll	com		0	0
+len			5	0
+get	.org		Exit	0
+getAny	.a			0
+len			5	0
+len			5	0
+delAll	.a		1	0
+getAny	ample.com			0
+hasAny	.example.com		false	0
+hasAny	a.example.com		false	0
+del	.example.com		false	0
+getAny	a.example.com			0
+del	b.a.example.com		false	0
+delAll	.example.com		0	0
+set	example.org	Base		0
+has	ample.com		false	0
+del			false	0
+del	xn--bcher-kva.example		true	0
+has	com		false	0
+set		wg0		0
+del	.jp		true	0
+getAnyPanics	.jp			0
+has	b.a.example.com		false	0
+has	a.example.com		false	0
+getAny	example.org		Base	0
+add	例え.jp		true	0
+getAnyPanics	xample.com			0
+get	a			0
+getAnyPanics	xample.com			0
+del	xample.com		false	0
+hasAnyPanics	a.example.com			0
+len			5	0
+hasAny	b.a		false	0
+len			5	0
+len			5	0
+delAll	a.example.com		1	0
+getAny	b.a.example.com			0
+delAll			4	0
+has	ample.com		false	0
+getAny	sub.example.org			0
+delAll	.example.com		0	0
+len			0	0
+hasAny	.org		false	0
+getAny	.example.com			0
+has	.example.com		false	0
+getAny	.example.com			0
+hasAny	.example.com		false	0
+get				0
+new	24			0
+len			0	0
+len			0	0
+delAll	.a		0	0
+getAny	b.a			0
+set	sub.example.org	Exit		0
+delAll	.a		0	0
+add	ample.com		true	0
+getAny	b.a.example.com			0
+add	example.com		true	0
+has	sub.example.org		true	0
+get	com			0
+get	example.com			0
+add	com		true	0
+delAll	xample.com		1	0
+has	a		false	0
+delAll	.example.com		0	0
+delAll			3	0
+del	.a		false	0
+set	例え.jp	p2		0
+len			1	0
+getAny	b.a			0
+getAny	.org			0
+delAll	example.com		0	0
+len			1	0
+add	com		true	0
+del			false	0
+len			2	0
+delAll	.com		0	0
+add	例え.jp		false	0
+delAll	.example.com		0	0
+set	b.a.example.com			0
+add			true	0
+add	.a		true	0
+getAnyPanics	.jp			0
+len			5	0
+del	.jp		false	0
+get	example.com			0
+delAll	sub.example.org		1	0
+delAll	ample.com		1	0
+get	.example.com			0
+del	example.org		false	0
+delAll	sub.example.org		0	0
+has			false	0
+len			3	0
+set	.jp	wg0		0
+len			4	0
+delAll	ample.com		0	0
+len			4	0
+getAny	example.org			0
+getAny	.a			0
+getAny	example.com			0
+set	b.a			0
+set	xample.com	x1		0
+get	xn--bcher-kva.example			0
+delAll	例え.jp		1	0
+add	.jp		false	0
+get	.example.com			0
+len			5	0
+getAny	a			0
+get	a			0
+hasAny	.jp		true	0
+del	a.example.com		false	0
+del	.org		false	0
+getAny	.org			0
+hasAny	.example.com		false	0
+len			5	0
+getAny	example.com			0
+del	b.a.example.com		false	0
+del	b.a		true	0
+len			4	0
+set	ample.com	p1		0
+del	例え.jp		false	0
+len			5	0
+getAny	xn--bcher-kva.example			0
+add	.com		true	0
+delAll	.com		3	0
+getAny	例え.jp		wg0	0
+has	sub.example.org		false	0
+set	xample.com	x1		0
+delAll	b.a.example.com		0	0
+hasAny	example.org		false	0
+getAny	.com			0
+len			4	0
+has	b.a		false	0
+set	ample.com	wg01		0
+delAll	xample.com		1	0
+has	a		false	0
+hasAny	b.a.example.com		false	0
+len			4	0
+set		p2		0
+delAll	b.a		1	0
+add	example.org		true	0
+getAny	com			0
+len			5	0
+len			5	0
+get				0
+has	a		false	0
+has	.a		true	0
+has	.a		true	0
+getAny	sub.example.org			0
+getAny	.jp		wg0	0
+add	.org		true	0
+add	a.example.com		true	0
+add	example.org		false	0
+del	com		true	0
+getAny	example.org			0
+get				0
+len			6	0
+getAny	.example.com			0
+has	.example.com		false	0
+hasAny	.example.com		false	0
+add	.com		true	0
+len			7	0
+len			7	0
+len			7	0
+hasAny	.example.com		false	0
+has	ample.com		true	0
+add			true	0
+delAll	xn--bcher-kva.example		1	0
+add	example.com		true	0
+len			8	0
+set	a.example.com	p1,p2		0
+add	a.example.com		false	0
+delAll	xn--bcher-kva.example		0	0
+get	.example.com			0
+getAny	b.a.example.com			0
+getAny	b.a			0
+hasAny			false	0
+del	example.org		true	0
+set		p1,p2		0
+getAny	b.a.example.com			0
+set	.example.com	wg01		0
+add	xn--bcher-kva.example		true	0
+get	b.a.example.com			0
+getAny	ample.com		wg01	0
+getAny	a.example.com		p1,p2	0
+set		p2		0
+has	xample.com		false	0
+hasAny	.org		true	0
+add	.example.com		false	0
+getAny	例え.jp		wg0	0
+del	.a		true	0
+hasAnyPanics	a			0
+add	example.org		true	0
+del	ample.com		true	0
+hasAny	xn--bcher-kva.example		true	0
+set	.a	p2		0
+get	xample.com			0
+len			10	0
+has	.com		true	0
+getAny	.jp		wg0	0
+get	b.a			0
+getAnyPanics	com			0
+hasAny	.com		true	0
+set	b.a	Base		0
+getAny	b.a		Base	0
+add	ample.com		true	0
+getAny	.jp		wg0	0
+del	.jp		true	0
+delAll	xample.com		4	0
+del	com		false	0
+getAny	.org			0
+get	.a		p2	0
+len			7	0
+del	xample.com		false	0
+getAny	xn--bcher-kva.example			0
+getAny	example.org			0
+hasAny	.org		true	0
+add	.jp		true	0
+has			false	0
+add	sub.example.org		true	0
+getAny				0
+has	例え.jp		false	0
+getAny	例え.jp			0
+has	xn--bcher-kva.example		true	0
+getAny	.example.com			0
+len			9	0
+get	.jp			0
+add	example.com		true	0
+delAll	.org		3	0
+set	例え.jp			0
+get	.a		p2	0
+hasAny	.com		true	0
+delAll	例え.jp		1	0
+get	例え.jp			0
+get	b.a.example.com			0
+del	b.a.example.com		false	0
+get				0
+del	.org		false	0
+getAny	xn--bcher-kva.example			0
+set	xample.com	wg01		0
+get	a.example.com			0
+set	b.a			0
+getAny	a.example.com			0
+set	.jp	p1,p2		0
+delAll	a.example.com		0	0
+set	.example.com	Base		0
+has	.jp		true	0
+get	b.a			0
+getAny	xample.com		wg01	0
+new	25			0
+len			0	0
+getAny	.org			0
+set	b.a.example.com	p1		0
+set	.com	p2		0
+delAll	.com		2	0
+getAny	.org			0
+add	a.example.com		true	0
+hasAny	.jp		false	0
+delAll	.org		0	0
+add	example.org		true	0
+del	xample.com		false	0
+delAll	a.example.com		1	0
+len			1	0
+delAll	com		0	0
+set	example.com	wg01		0
+len			2	0
+set	xample.com	wg01		0
+getAny	例え.jp			0
+set	.example.com	p1		0
+len			4	0
+has	.example.com		true	0
+set	xn--bcher-kva.example	Exit		0
+get	ample.com			0
+delAll	xample.com		3	0
+del	com		false	0
+add	ample.com		true	0
+len			3	0
+hasAny			false	0
+len			3	0
+set	sub.example.org	Exit		0
+len			4	0
+add	b.a.example.com		true	0
+getAny	.org			0
+len			5	0
+delAll	sub.example.org		1	0
+getAny	.jp			0
+get	a			0
+delAll	sub.example.org		0	0
+delAll	b.a.example.com		1	0
+hasAny	ample.com		true	0
+hasAny	a.example.com		false	0
+getAny	.jp			0
+len			3	0
+hasAny	b.a		false	0
+delAll	.com		1	0
+add	.org		true	0
+del			false	0
+delAll	example.org		1	0
+has	a		false	0
+del	b.a.example.com		false	0
+has	sub.example.org		false	0
+len			2	0
+has	example.org		false	0
+getAny	例え.jp			0
+getAny				0
+getAny	xample.com			0
+getAny	xample.com			0
+get	ample.com			0
+add	例え.jp		true	0
+delAll			3	0
+delAll	.org		0	0
+delAll	com		0	0
+delAll			0	0
+has	.a		false	0
+add	example.com		true	0
+add	.jp		true	0
+del	xn--bcher-kva.example		false	0
+hasAny	b.a		false	0
+del	.org		false	0
+delAll	例え.jp		0	0
+has	.org		false	0
+get	xample.com			0
+getAny	xn--bcher-kva.example			0
+has			false	0
+len			2	0
+get	.a			0
+getAny	ample.com			0
+get	.org			0
+len			2	0
+delAll	ample.com		1	0
+add	b.a		true	0
+len			2	0
+del			false	0
+getAny	a			0
+delAll			2	0
+len			0	0
+set		wg01		0
+getAnyPanics	xample.com			0
+getAnyPanics	a.example.com			0
+get	a.example.com			0
+set	ample.com	p2		0
+getAnyPanics	例え.jp			0
+get			wg01	0
+add	xn--bcher-kva.example		true	0
+len			3	0
+hasAny	.example.com		false	0
+len			3	0
+add	.jp		true	0
+getAny	xample.com			0
+del	xample.com		false	0
+hasAnyPanics	sub.example.org			0
+add	b.a		true	0
+hasAny	b.a		true	0
+hasAny	b.a.example.com		false	0
+delAll	b.a		2	0
+getAny	com			0
+add	例え.jp		true	0
+add	.org		true	0
+get	.example.com			0
+getAny	com			0
+has	example.org		false	0
+has	.example.com		false	0
+getAny	.jp			0
+del	example.org		false	0
+getAny	com			0
+add	sub.example.org		true	0
+set	xn--bcher-kva.example	wg01		0
+get	com			0
+getAny	b.a			0
+add	a		true	0
+has	example.org		false	0
+len			7	0
+get	b.a			0
+getAny	b.a.example.com			0
+getAny	b.a.example.com			0
+del	sub.example.org		true	0
+hasAny	example.com		false	0
+add	a.example.com		true	0
+len			7	0
+del	b.a.example.com		false	0
+hasAny			false	0
+getAny	com			0
+get	例え.jp			0
+getAny	.org			0
+len			7	0
+add	ample.com		false	0
+getAny	例え.jp			0
+len			7	0
+delAll	.jp		2	0
+has	b.a		false	0
+get	a			0
+get	.example.com			0
+len			5	0
+has	ample.com		true	0
+delAll	b.a		0	0
+add	sub.example.org		true	0
+get	com			0
+len			6	0
+set	b.a.example.com	p1,p2		0
+getAny	xn--bcher-kva.example		wg01	0
+getAny	b.a			0
+len			7	0
+len			7	0
+hasAny	xn--bcher-kva.example		true	0
+add	.a		true	0
+getAny	example.com			0
+getAny	a			0
+len			8	0
+hasAny	a.example.com		true	0
+getAny	.jp			0
+delAll	例え.jp		0	0
+set	.org			0
+del	com		false	0
+get	.a			0
+len			8	0
+delAll	ample.com		3	0
+hasAny	例え.jp		false	0
+set	com	wg01		0
+delAll	.org		2	0
+add	example.org		true	0
+get	a			0
+hasAny	.jp		false	0
+delAll	b.a		0	0
+get	xn--bcher-kva.example		wg01	0
+set	example.org	x1		0
+get	example.org		x1	0
+getAny	b.a.example.com			0
+add	a		false	0
+del			false	0
+hasAny	.jp		false	0
+hasAny			false	0
+hasAny	example.org		true	0
+len			5	0
+delAll	.a		1	0
+get	sub.example.org			0
+hasAny	.jp		false	0
+has	a.example.com		false	0
+len			4	0
+len			4	0
+has	xn--bcher-kva.example		true	0
+delAll	example.org		1	0
+getAny	.org			0
+has	例え.jp		false	0
+set	com			0
+set	a.example.com	p1		0
+hasAny			false	0
+getAny	例え.jp			0
+has	a		true	0
+hasAny	example.org		false	0
+get	a.example.com		p1	0
+new	26			0
+hasAny	b.a		false	0
+has	example.com		false	0
+get	.example.com			0
+del	.org		false	0
+has	.a		false	0
+get	xample.com			0
+set	例え.jp	p1,p2		0
+del	xn--bcher-kva.example		false	0
+getAny	.a			0
+del	com		false	0
+has	a		false	0
+del	sub.example.org		false	0
+getAny	a			0
+getAny	ample.com			0
+delAll	b.a		0	0
+has	com		false	0
+has	.com		false	0
+hasAny	ample.com		false	0
+getAny	a.example.com			0
+add	例え.jp		false	0
+has	a.example.com		false	0
+set	ample.com	p2		0
+getAny	xample.com			0
+has	b.a.example.com		false	0
+get	.com			0
+get	com			0
+set	xample.com	Exit		0
+del	com		false	0
+getAny	a			0
+get	xn--bcher-kva.example			0
+len			3	0
+del	sub.example.org		false	0
+len			3	0
+delAll	例え.jp		1	0
+del	xn--bcher-kva.example		false	0
+delAll	b.a.example.com		0	0
+hasAny	.a		false	0
+has	b.a.example.com		false	0
+len			2	0
+getAny	xample.com		Exit	0
+del	example.com		false	0
+getAny	sub.example.org			0
+getAny	a			0
+getAny	b.a.example.com			0
+delAll	b.a		0	0
+get				0
+delAll	a.example.com		0	0
+has	ample.com		true	0
+set	example.com			0
+add	a.example.com		true	0
+getAny	.a			0
+hasAny	xn--bcher-kva.example		false	0
+len			4	0
+getAny	xn--bcher-kva.example			0
+del	example.org		false	0
+del	例え.jp		false	0
+delAll	例え.jp		0	0
+getAny	b.a			0
+set	ample.com	wg0		0
+get	.a			0
+set	a.example.com	p2		0
+getAny	a			0
+get	b.a			0
+add	b.a.example.com		true	0
+get	a.example.com		p2	0
+hasAny			false	0
+del	b.a		false	0
+has	sub.example.org		false	0
+del	a		false	0
+getAny	.example.com			0
+del	b.a.example.com		true	0
+len			4	0
+set	example.com	x1		0
+del	a		false	0
+has	example.org		false	0
+getAny	a			0
+getAny	xn--bcher-kva.example			0
+getAny	a			0
+add	a		true	0
+hasAny	sub.example.org		false	0
+hasAny	example.org		false	0
+getAny	example.org			0
+get	a.example.com		p2	0
+del	ample.com		true	0
+set	.jp	Exit		0
+getAny	b.a.example.com			0
+add	example.com		false	0
+has			false	0
+add	com		true	0
+has	b.a		false	0
+delAll	b.a.example.com		0	0
+len			6	0
+set	ample.com	wg0		0
+len			7	0
+getAny	例え.jp		Exit	0
+del	a.example.com		true	0
+has	.org		false	0
+get	.a			0
+add	a		false	0
+getAny	com			0
+delAll	example.org		0	0
+delAll	sub.example.org		0	0
+has	.jp		true	0
+get	a			0
+del	a		true	0
+delAll	.a		0	0
+get	b.a			0
+len			5	0
+set	example.org			0
+getAny	b.a.example.com			0
+len			6	0
+getAny	sub.example.org			0
+add	example.org		false	0
+delAll	.com		3	0
+delAll	xample.com		0	0
+getAny	.org			0
+has	example.org		true	0
+get	.jp		Exit	0
+get				0
+len			3	0
+set	a.example.com	wg01		0
+add	.com		true	0
+del	xample.com		false	0
+delAll	com		3	0
+set	xample.com	p1,p2		0
+getAny	b.a			0
+hasAny	com		false	0
+getAny	example.com			0
+getAny	例え.jp		Exit	0
+getAny	example.com			0
+del	a.example.com		false	0
+hasAny	.jp		true	0
+get	.com			0
+del	example.com		false	0
+delAll	b.a.example.com		0	0
+hasAny	.a		false	0
+len			3	0
+getAny	.org			0
+del	a		false	0
+getAny	.a			0
+get	.com			0
+del	.example.com		false	0
+hasAny	.com		false	0
+getAny	.jp		Exit	0
+set	.a	x1		0
+del	xample.com		true	0
+delAll	.com		0	0
+get	example.com			0
+getAny	example.com			0
+getAny				0
+len			3	0
+hasAny	a.example.com		false	0
+hasAny	.org		false	0
+set	a.example.com	x1		0
+add	example.org		false	0
+has	xn--bcher-kva.example		false	0
+get	.jp		Exit	0
+get	.a		x1	0
+del			false	0
+delAll	xn--bcher-kva.example		0	0
+del	.com		false	0
+hasAny	.org		false	0
+add	.example.com		true	0
+get	.jp		Exit	0
+add	.a		false	0
+delAll	ample.com		2	0
+getAny	xample.com			0
+delAll	com		0	0
+getAny				0
+delAll	sub.example.org		0	0
+has	.com		false	0
+add	.org		true	0
+len			4	0
+del	.a		true	0
+getAny	xample.com			0
+len			3	0
+getAny	xn--bcher-kva.example			0
+hasAny	xn--bcher-kva.example		false	0
+get	example.com			0
+delAll	.org		2	0
+delAll	example.org		0	0
+del	.org		false	0
+delAll	b.a		0	0
+get	.a			0
+del	example.com		false	0
+hasAny	b.a		false	0
+add	com		true	0
+del	com		true	0
+len			1	0
+add	example.com		true	0
+has	a		false	0
+get	example.org			0
+len			2	0
+has	sub.example.org		false	0
+len			2	0
+hasAny	sub.example.org		false	0
+has	xn--bcher-kva.example		false	0
+del	例え.jp		false	0
+has	.com		false	0
+hasAny	a		false	0
+new	27			0
+hasAny	例え.jp		false	0
+set	com	wg01		0
+has	a.example.com		false	0
+del	example.org		false	0
+del	a.example.com		false	0
+set	sub.example.org	p1		0
+delAll	example.com		0	0
+del	.jp		false	0
+get	.a			0
+del	sub.example.org		true	0
+getAny	.a			0
+has	b.a		false	0
+set	com	Base		0
+add	example.com		true	0
+getAny	a.example.com			0
+hasAny	com		true	0
+del	sub.example.org		false	0
+hasAny	.org		false	0
+len			2	0
+has	xn--bcher-kva.example		false	0
+add	.a		true	0
+has	xn--bcher-kva.example		false	0
+add	.org		true	0
+getAny	.jp			0
+get	.org			0
+getAny	example.com			0
+del	.a		true	0
+len			3	0
+getAny	.jp			0
+del	sub.example.org		false	0
+set	example.org	p1,p2		0
+getAny	example.org		p1,p2	0
+hasAny	xn--bcher-kva.example		false	0
+hasAny	xn--bcher-kva.example		false	0
+getAny	.example.com			0
+del	例え.jp		false	0
+getAny	.com			0
+len			4	0
+hasAny	.jp		false	0
+get	.a			0
+add	xample.com		true	0
+getAny	.org			0
+hasAny	xample.com		true	0
+delAll	.org		2	0
+hasAny	com		true	0
+set	b.a.example.com	p		0
+getAny	.a			0
+set	.example.com	p		0
+get	b.a.example.com		p	0
+getAny	com		Base	0
+del	.a		false	0
+delAll	a		0	0
+getAny				0
+getAny	sub.example.org			0
+hasAny	ample.com		false	0
+getAny	.a			0
+len			5	0
+get	.example.com		p	0
+get	xample.com			0
+del	example.org		false	0
+hasAny	.jp		false	0
+getAny	example.org			0
+delAll	ample.com		4	0
+getAny	a			0
+getAny	example.org			0
+len			1	0
+set		p		0
+set	example.org	p2		0
+hasAnyPanics	xn--bcher-kva.example			0
+getAny	a.example.com			0
+getAny	.com			0
+len			3	0
+set	xn--bcher-kva.example	Exit		0
+len			4	0
+get	example.org		p2	0
+len			4	0
+has	例え.jp		false	0
+len			4	0
+delAll	example.com		1	0
+del	xample.com		false	0
+add	b.a		true	0
+getAny	example.org		p2	0
+del	sub.example.org		false	0
+delAll	.jp		0	0
+del	xample.com		false	0
+delAll	sub.example.org		0	0
+set		p		0
+getAny	.com			0
+len			5	0
+getAnyPanics	a			0
+get	.com			0
+len			5	0
+delAll	ample.com		1	0
+set	.jp	Base		0
+getAny	b.a.example.com			0
+del	com		true	0
+set	example.com	Base		0
+add	.example.com		true	0
+getAny	.com			0
+del	example.org		true	0
+has	.org		false	0
+len			5	0
+getAny	b.a.example.com			0
+len			5	0
+getAny	b.a			0
+delAll	a.example.com		0	0
+len			5	0
+hasAny	.a		false	0
+del	.jp		true	0
+getAny	example.org			0
+set	.com	Exit		0
+add	.a		true	0
+get	b.a.example.com			0
+add	com		true	0
+delAll	ample.com		2	0
+set	example.com	Base		0
+has	b.a		true	0
+hasAny	b.a		true	0
+add	.jp		true	0
+del	.example.com		false	0
+del	example.org		false	0
+del	example.com		true	0
+del	.org		false	0
+delAll	ample.com		0	0
+hasAny	xample.com		true	0
+add	.jp		false	0
+len			6	0
+get	example.org			0
+getAny	example.com		Exit	0
+len			6	0
+getAny	ample.com		Exit	0
+get	.example.com			0
+get				0
+add	xample.com		true	0
+add	com		false	0
+getAny	ample.com		Exit	0
+len			7	0
+delAll	b.a.example.com		0	0
+getAny	.org			0
+get	b.a			0
+has	b.a.example.com		false	0
+getAny	ample.com		Exit	0
+has	ample.com		false	0
+has	a.example.com		false	0
+getAny	a			0
+has	b.a.example.com		false	0
+set	.org	p		0
+has	ample.com		false	0
+get	a			0
+set	b.a.example.com			0
+delAll	a.example.com		1	0
+add			true	0
+add	example.org		true	0
+getAny	a.example.com			0
+add	xn--bcher-kva.example		false	0
+len			10	0
+delAll	xample.com		2	0
+get	xn--bcher-kva.example		Exit	0
+has	example.org		true	0
+add	.org		false	0
+getAny	b.a.example.com		Exit	0
+has	a.example.com		false	0
+set	a	Exit		0
+get	com			0
+has	xample.com		false	0
+set	example.com	Exit		0
+getAny	.com		Exit	0
+set	ample.com	Base		0
+hasAny	com		true	0
+has	b.a		true	0
+del	sub.example.org		false	0
+set	example.org	p		0
+set	ample.com	x1		0
+has	sub.example.org		false	0
+del	a		true	0
+getAny	example.org		p	0
+getAny	example.com		Exit	0
+del	example.org		true	0
+has	例え.jp		false	0
+getAny	例え.jp			0
+del			false	0
+hasAny	example.com		true	0
+len			9	0
+has	ample.com		true	0
+get	example.com		Exit	0
+del			false	0
+get	a			0
+getAny				0
+getAny	xn--bcher-kva.example		Exit	0
+len			9	0
+add	.org		false	0
+delAll	a		2	0
+len			7	0
+get	.jp			0
+delAll	a.example.com		0	0
+getAny	example.org		p	0
+getAny	a			0
+len			7	0
+getAny	example.com		Exit	0
+getAny	com			0
+new	28			0
+getAny	com			0
+has	.org		false	0
+len			0	0
+hasAny	.org		false	0
+get	com			0
+delAll	a.example.com		0	0
+getAny	a.example.com			0
+delAll	com		0	0
+get	.example.com			0
+getAny	sub.example.org			0
+get	.a			0
+getAny	example.com			0
+delAll	.com		0	0
+del	a.example.com		false	0
+has	a		false	0
+set	.org	p1		0
+has	b.a.example.com		false	0
+get	example.com			0
+delAll	ample.com		0	0
+getAny	.jp			0
+set	sub.example.org	p		0
+delAll	b.a		0	0
+getAny	b.a.example.com			0
+len			2	0
+delAll	.org		2	0
+len			0	0
+getAny	ample.com			0
+hasAny	xn--bcher-kva.example		false	0
+get	com			0
+getAny	b.a			0
+getAny	example.org			0
+add	a		true	0
+has	b.a.example.com		false	0
+delAll	xample.com		0	0
+add	b.a		true	0
+has	b.a.example.com		false	0
+getAny	.org			0
+add	example.com		true	0
+delAll	.jp		0	0
+hasAny	.a		false	0
+getAny	ample.com			0
+get	a.example.com			0
+hasAny	.jp		false	0
+del	xample.com		false	0
+getAny	example.com			0
+has	xn--bcher-kva.example		false	0
+add	xample.com		true	0
+getAny	b.a			0
+hasAny			false	0
+getAny	.org			0
+getAny	a			0
+getAny	b.a			0
+getAny	.a			0
+getAny	a			0
+getAny	例え.jp			0
+get	例え.jp			0
+has	com		false	0
+get	.a			0
+has	ample.com		false	0
+getAny	.example.com			0
+getAny	.com			0
+has	.jp		false	0
+getAny	.com			0
+getAny	ample.com			0
+has	b.a.example.com		false	0
+set	xn--bcher-kva.example	wg01		0
+getAny	xn--bcher-kva.example		wg01	0
+len			5	0
+add	例え.jp		true	0
+has	example.com		true	0
+has	example.org		false	0
+getAny	.org			0
+hasAny	xample.com		true	0
+hasAny	com		false	0
+del	.a		false	0
+get	com			0
+del	example.org		false	0
+get	sub.example.org			0
+set	xn--bcher-kva.example	wg0		0
+hasAny	a.example.com		false	0
+getAny	ample.com			0
+get	.com			0
+set	xn--bcher-kva.example	p1		0
+get	ample.com			0
+get	sub.example.org			0
+delAll	.jp		1	0
+del	b.a		true	0
+has	.org		false	0
+add	.example.com		true	0
+del	b.a		false	0
+hasAny	.com		false	0
+getAny	b.a			0
+getAny	example.com			0
+getAny	.example.com			0
+hasAny	xn--bcher-kva.example		true	0
+getAny	sub.example.org			0
+delAll	xample.com		3	0
+hasAny	sub.example.org		false	0
+del	.jp		false	0
+delAll	sub.example.org		0	0
+delAll	a		1	0
+get	.jp			0
+get	b.a.example.com			0
+len			1	0
+getAny	example.com			0
+set	.example.com	p1		0
+del	.com		false	0
+has	example.org		false	0
+hasAny	.org		false	0
+delAll	.a		0	0
+set	a	p1		0
+getAny	例え.jp			0
+del	.jp		false	0
+len			3	0
+getAny	.org			0
+len			3	0
+get	a		p1	0
+len			3	0
+has	xn--bcher-kva.example		true	0
+getAny	a		p1	0
+has	example.org		false	0
+set	b.a.example.com	wg0		0
+getAny	b.a.example.com		wg0	0
+getAny	.example.com		p1	0
+set	例え.jp			0
+add	example.com		true	0
+add	.a		true	0
+len			7	0
+set	example.org	p1,p2		0
+delAll	b.a.example.com		1	0
+len			7	0
+add	xample.com		true	0
+has	xample.com		true	0
+delAll	a.example.com		0	0
+getAny	例え.jp			0
+getAny	例え.jp			0
+has	b.a		false	0
+set	xample.com			0
+del	例え.jp		true	0
+del	.jp		false	0
+add	example.com		false	0
+getAny	xample.com			0
+add	example.org		false	0
+set	.a	x1		0
+delAll	.com		3	0
+getAny				0
+getAny	sub.example.org			0
+getAny	.example.com			0
+getAny	example.com			0
+set	.a	p2		0
+getAny				0
+getAny	.org			0
+getAny	sub.example.org			0
+set	xn--bcher-kva.example	p1		0
+has	xample.com		false	0
+has	例え.jp		false	0
+hasAny	b.a		true	0
+getAny	ample.com			0
+len			4	0
+add	example.com		true	0
+getAny	a		p1	0
+get				0
+hasAny	b.a		true	0
+get	a		p1	0
+get	.org			0
+getAny	com			0
+hasAny	a.example.com		false	0
+len			5	0
+get	xn--bcher-kva.example		p1	0
+getAny	example.org		p1,p2	0
+getAny	com			0
+getAny	xample.com			0
+delAll	b.a		0	0
+del	.com		false	0
+has	ample.com		false	0
+set	com	p1,p2		0
+set	a.example.com	Exit		0
+getAny	sub.example.org			0
+del	a.example.com		true	0
+delAll	com		2	0
+set	sub.example.org	p1		0
+has			false	0
+add	ample.com		true	0
+set	b.a.example.com	p1		0
+get	ample.com			0
+set	.example.com	p1		0
+getAny	.com			0
+getAny				0
+getAny	example.com			0
+del	.example.com		true	0
+get	xn--bcher-kva.example		p1	0
+get	.com			0
+len			7	0
+getAny	xn--bcher-kva.example		p1	0
+len			7	0
+get	xn--bcher-kva.example		p1	0
+len			7	0
+getAny	com			0
+delAll	b.a		0	0
+get	example.com			0
+new	29			0
+set	.jp			0
+has	xn--bcher-kva.example		false	0
+add	.jp		false	0
+get	xample.com			0
+getAny	example.com			0
+hasAny	.com		false	0
+set	.a	Exit		0
+get	b.a			0
+get	a			0
+del	.jp		true	0
+get	例え.jp			0
+len			1	0
+add	xample.com		true	0
+add	xample.com		false	0
+getAny	.example.com			0
+has	a		false	0
+set	sub.example.org	p2		0
+add	b.a		true	0
+has	example.org		false	0
+set	b.a.example.com			0
+getAny	a.example.com			0
+set		Exit		0
+len			6	0
+len			6	0
+len			6	0
+del	.jp		false	0
+set	com	wg01		0
+add	xample.com		false	0
+set	com	p2		0
+len			7	0
+del	xn--bcher-kva.example		false	0
+add	a.example.com		true	0
+add	xn--bcher-kva.example		true	0
+get	.org			0
+has	a		false	0
+add	.org		true	0
+hasAny	.org		true	0
+has	b.a.example.com		true	0
+delAll	.a		3	0
+hasAny	example.com		false	0
+add	例え.jp		true	0
+delAll			8	0
+getAny	.com			0
+get	example.org			0
+get	ample.com			0
+len			0	0
+set	sub.example.org	wg01		0
+set	.org	wg01		0
+add	com		true	0
+getAny	xn--bcher-kva.example			0
+add	.example.com		true	0
+del	ample.com		false	0
+has	.jp		false	0
+has	.jp		false	0
+get	.a			0
+set	com			0
+get	example.org			0
+len			4	0
+has	com		true	0
+set	.com	wg0		0
+delAll	example.com		1	0
+get	a.example.com			0
+getAny	a.example.com		wg0	0
+add	sub.example.org		false	0
+getAny	ample.com		wg0	0
+getAny	a.example.com		wg0	0
+hasAny	a		false	0
+set	example.com	p1,p2		0
+len			5	0
+getAny	b.a.example.com			0
+hasAny	ample.com		true	0
+getAny	例え.jp			0
+has	ample.com		false	0
+set	com	p1,p2		0
+has	a.example.com		false	0
+get	.jp			0
+getAny	.org		wg01	0
+delAll	b.a.example.com		0	0
+len			5	0
+getAny	.com		wg0	0
+set	com	p2		0
+del	.org		true	0
+getAny	.example.com			0
+add	sub.example.org		false	0
+delAll	com		3	0
+del	xample.com		false	0
+del	ample.com		false	0
+len			1	0
+get	sub.example.org		wg01	0
+delAll	xample.com		0	0
+del	.example.com		false	0
+len			1	0
+hasAny	例え.jp		false	0
+add	xample.com		true	0
+hasAny	example.org		false	0
+has	xample.com		true	0
+getAny	.example.com			0
+getAny	a			0
+has	xn--bcher-kva.example		false	0
+del	.com		false	0
+set	com	x1		0
+add	b.a		true	0
+set	.org	p1		0
+delAll	b.a.example.com		0	0
+delAll	例え.jp		0	0
+has	sub.example.org		true	0
+get	.a			0
+get	xample.com			0
+has	ample.com		false	0
+get	.org		p1	0
+delAll	xample.com		1	0
+get	例え.jp			0
+getAny	xample.com			0
+set	a.example.com	p		0
+len			5	0
+getAny	例え.jp			0
+getAny	a.example.com		p	0
+set	example.com	wg01		0
+delAll	例え.jp		0	0
+del	例え.jp		false	0
+add	例え.jp		true	0
+set	a.example.com	x1		0
+getAny	example.org		p1	0
+len			7	0
+len			7	0
+getAny	sub.example.org		wg01	0
+delAll	com		3	0
+getAny	example.org		p1	0
+set	com	Exit		0
+set	a	wg0		0
+len			6	0
+set	com	Base		0
+del	a		true	0
+getAny	ample.com			0
+del	xample.com		false	0
+get	b.a.example.com			0
+del	sub.example.org		true	0
+getAny	b.a			0
+has	.example.com		false	0
+getAny	.com			0
+get	.jp			0
+get	.a			0
+hasAny	.a		false	0
+hasAny	ample.com		false	0
+len			4	0
+get	b.a.example.com			0
+set	example.com	wg0		0
+getAny	sub.example.org		p1	0
+has	sub.example.org		false	0
+has	.jp		false	0
+delAll	xn--bcher-kva.example		0	0
+getAny	a.example.com			0
+del	sub.example.org		false	0
+hasAny	.org		true	0
+len			5	0
+del	xample.com		false	0
+hasAny	xample.com		false	0
+get	com		Base	0
+hasAny	ample.com		false	0
+hasAny	xn--bcher-kva.example		false	0
+hasAny	.example.com		false	0
+add	com		false	0
+delAll	xn--bcher-kva.example		0	0
+del	sub.example.org		false	0
+getAny	example.org		p1	0
+getAny	.com			0
+get	xample.com			0
+get	example.com		wg0	0
+set	xn--bcher-kva.example	p1,p2		0
+get	a.example.com			0
+getAny	a.example.com			0
+getAny	.example.com			0
+getAny				0
+getAny	example.com		wg0	0
+getAny	com		Base	0
+len			6	0
+get	.org		p1	0
+len			6	0
+set	example.com	wg0		0
+set	a.example.com	p1		0
+has	.org		true	0
+del	example.com		true	0
+has	.com		false	0
+hasAny	xample.com		false	0
+hasAny	xn--bcher-kva.example		true	0
+has	ample.com		false	0
+add	.jp		true	0
+delAll	sub.example.org		0	0
+getAny	xn--bcher-kva.example		p1,p2	0
+del	.org		true	0
+hasAny	.org		false	0
+set	a	p		0
+hasAny	.jp		true	0
+set	.a	Exit		0
+has	b.a.example.com		false	0
+set	.jp	p		0
+getAny	example.org			0
+delAll	example.org		0	0
+add	b.a.example.com		true	0
+set	b.a	p2		0
+new	30			0
+add	xample.com		true	0
+len			1	0
+has	xample.com		true	0
+get	sub.example.org			0
+delAll	.org		0	0
+set		Exit		0
+del	.a		false	0
+set		x1		0
+hasAnyPanics	b.a			0
+delAll	xample.com		2	0
+hasAny	xn--bcher-kva.example		false	0
+len			0	0
+delAll	.org		0	0
+len			0	0
+delAll	.jp		0	0
+has	a		false	0
+add	例え.jp		true	0
+hasAny	com		false	0
+len			1	0
+del	.example.com		false	0
+set	例え.jp	wg0		0
+getAny				0
+hasAny	xample.com		false	0
+get	.jp			0
+len			1	0
+add			true	0
+has	.com		false	0
+add	.com		true	0
+delAll	.org		1	0
+getAny	a			0
+set	.org	wg01		0
+len			3	0
+set	ample.com	wg01		0
+len			4	0
+has	.example.com		false	0
+add	sub.example.org		true	0
+add	xample.com		true	0
+len			6	0
+del	xn--bcher-kva.example		false	0
+set	.example.com	p2		0
+getAny	example.org		wg01	0
+getAny	.org		wg01	0
+add	.org		false	0
+getAny	xn--bcher-kva.example			0
+get	.a			0
+add	xample.com		false	0
+set	例え.jp	wg01		0
+hasAny	xn--bcher-kva.example		false	0
+set	sub.example.org	wg0		0
+set	.org	p1,p2		0
+getAny	a			0
+set	example.org	Exit		0
+getAny	com			0
+set	例え.jp	wg01		0
+set	a.example.com	Base		0
+get	例え.jp		wg01	0
+get	xn--bcher-kva.example			0
+delAll	a		0	0
+get	example.com			0
+delAll	.a		0	0
+del	a.example.com		true	0
+has	.org		true	0
+set	example.com	Exit		0
+delAll	xn--bcher-kva.example		0	0
+get				0
+getAny	ample.com		wg01	0
+del	.jp		false	0
+getAny	xn--bcher-kva.example			0
+set	sub.example.org	Base		0
+getAny	b.a			0
+set	b.a	p1,p2		0
+add	ample.com		false	0
+getAny	.example.com		p2	0
+getAny	a.example.com		p2	0
+has	a.example.com		false	0
+getAny	a.example.com		p2	0
+getAny	example.com		Exit	0
+getAny	b.a.example.com		p2	0
+getAny	.a			0
+add	xn--bcher-kva.example		true	0
+set	sub.example.org	p2		0
+getAny	sub.example.org		p2	0
+delAll	.example.com		1	0
+hasAny	.org		true	0
+len			10	0
+get	b.a		p1,p2	0
+getAny	ample.com		wg01	0
+delAll	sub.example.org		1	0
+add	.a		true	0
+del	.a		true	0
+has	.com		true	0
+add	xn--bcher-kva.example		false	0
+delAll	xample.com		2	0
+get	b.a.example.com			0
+get	a			0
+hasAny	example.org		true	0
+len			7	0
+delAll			7	0
+len			0	0
+hasAny	com		false	0
+delAll	.a		0	0
+has	.com		false	0
+len			0	0
+hasAny	ample.com		false	0
+set	b.a.example.com	Exit		0
+get	.a			0
+delAll	com		1	0
+get	com			0
+len			0	0
+delAll	.org		0	0
+set	.example.com	p1,p2		0
+getAny				0
+set	xn--bcher-kva.example	p		0
+getAny	a			0
+len			2	0
+getAny				0
+set		wg0		0
+has	example.org		false	0
+len			3	0
+get	a			0
+set	sub.example.org	p1		0
+set	.org	Exit		0
+hasAnyPanics	xample.com			0
+getAny	.example.com		p1,p2	0
+del	example.org		false	0
+get	sub.example.org		p1	0
+getAnyPanics	example.com			0
+delAll			5	0
+getAny	例え.jp			0
+get	xn--bcher-kva.example			0
+delAll	.org		0	0
+has	例え.jp		false	0
+len			0	0
+delAll	.example.com		0	0
+delAll	sub.example.org		0	0
+hasAny	例え.jp		false	0
+delAll	.a		0	0
+getAny	.org			0
+has	xample.com		false	0
+delAll	例え.jp		0	0
+delAll	a.example.com		0	0
+len			0	0
+set	.com	Exit		0
+hasAny	sub.example.org		false	0
+add	.jp		true	0
+del	xample.com		false	0
+del	sub.example.org		false	0
+get				0
+getAny	example.org			0
+hasAny	a.example.com		true	0
+set	b.a.example.com	p1		0
+hasAny	com		false	0
+get	a.example.com			0
+getAny	.org			0
+delAll	.jp		1	0
+has	例え.jp		false	0
+delAll	.jp		0	0
+del	.org		false	0
+getAny	b.a			0
+has	a.example.com		false	0
+hasAny	例え.jp		false	0
+has	.jp		false	0
+delAll	example.com		1	0
+hasAny	xample.com		true	0
+del	ample.com		false	0
+set	a.example.com	p1,p2		0
+del	.com		true	0
+len			1	0
+add	例え.jp		true	0
+get	example.com			0
+add	.jp		true	0
+has	例え.jp		true	0
+del	a		false	0
+getAny	.jp			0
+add	example.com		true	0
+delAll	b.a		0	0
+get	.jp			0
+hasAny	example.org		false	0
+set	.com	Exit		0
+get	a			0
+has	example.org		false	0
+set		p2		0
+set	sub.example.org	Base		0
+set	example.org			0
+has	example.org		true	0
+delAll	xn--bcher-kva.example		1	0
+del	xn--bcher-kva.example		false	0
+delAll	例え.jp		1	0
+getAny	com			0
+add	例え.jp		true	0
+add			true	0
+getAny	sub.example.org		Base	0
+getAny	ample.com		Exit	0
+set	com	Exit		0
+len			9	0
+get	xn--bcher-kva.example			0
+has			true	0
+has	com		true	0
+getAnyPanics	b.a			0
+del	b.a		false	0
+new	31			0
+getAny	xample.com			0
+hasAny	example.org		false	0
+has	example.com		false	0
+delAll	com		0	0
+len			0	0
+del	a.example.com		false	0
+del	.jp		false	0
+len			0	0
+set	example.org	wg01		0
+add	xn--bcher-kva.example		true	0
+add	a		true	0
+len			3	0
+del	.com		false	0
+len			3	0
+del	b.a		false	0
+hasAny	.example.com		false	0
+del	.a		false	0
+has	b.a.example.com		false	0
+get	sub.example.org			0
+add	com		true	0
+delAll	sub.example.org		0	0
+get	xn--bcher-kva.example			0
+hasAny	.example.com		false	0
+getAny	.a			0
+hasAny	.org		false	0
+del	com		true	0
+getAny	例え.jp			0
+set	example.com	Exit		0
+get	xample.com			0
+has	.org		false	0
+getAny	例え.jp			0
+len			4	0
+add	example.org		false	0
+hasAny	xample.com		false	0
+getAny	.example.com			0
+del	a.example.com		false	0
+len			4	0
+del	.com		false	0
+delAll	a.example.com		0	0
+getAny	example.org		wg01	0
+hasAny	.jp		false	0
+set	xn--bcher-kva.example	p1		0
+has	b.a		false	0
+add	a.example.com		true	0
+has	.org		false	0
+get	xample.com			0
+delAll	a		1	0
+has			false	0
+get	例え.jp			0
+len			4	0
+getAny	.com			0
+getAny	xample.com			0
+set	ample.com	Base		0
+has	xample.com		false	0
+set	example.com			0
+set	xample.com	x1		0
+has	xn--bcher-kva.example		true	0
+add	b.a.example.com		true	0
+set	sub.example.org	p1		0
+getAny	ample.com		Base	0
+delAll	example.com		3	0
+set	.example.com	p1,p2		0
+hasAny	.a		false	0
+set	xn--bcher-kva.example	wg0		0
+add	例え.jp		true	0
+len			7	0
+set	xample.com	wg0		0
+del	com		false	0
+getAny	.com			0
+set	.example.com	x1		0
+getAny	xn--bcher-kva.example		wg0	0
+getAny	ample.com		Base	0
+get	例え.jp			0
+getAny	com			0
+getAny	.com			0
+delAll	.org		2	0
+getAny	.org			0
+delAll	.a		0	0
+hasAny	.a		false	0
+getAny	例え.jp			0
+hasAny	com		false	0
+hasAny	.jp		false	0
+getAny	.example.com		x1	0
+add	com		true	0
+len			6	0
+get	.a			0
+has	.jp		false	0
+getAny	.org			0
+len			6	0
+del	sub.example.org		false	0
+delAll	com		4	0
+add	example.org		true	0
+len			3	0
+add	xample.com		true	0
+del	.example.com		false	0
+get	xample.com			0
+delAll	xn--bcher-kva.example		1	0
+getAny	a			0
+len			3	0
+getAny	.example.com			0
+add	example.org		false	0
+delAll	example.com		0	0
+len			3	0
+del	a		false	0
+getAny	.jp			0
+getAny	xample.com			0
+has	xn--bcher-kva.example		false	0
+get	com			0
+delAll	example.com		0	0
+len			3	0
+set	xample.com			0
+len			3	0
+has	.example.com		false	0
+getAny	.example.com			0
+has	example.com		false	0
+len			3	0
+delAll	xample.com		1	0
+delAll	.org		1	0
+del	.example.com		false	0
+len			1	0
+getAny	com			0
+getAny	sub.example.org			0
+has	.org		false	0
+has	.jp		false	0
+delAll	ample.com		0	0
+getAny	xn--bcher-kva.example			0
+getAny	xn--bcher-kva.example			0
+set	a	p1		0
+hasAny	xn--bcher-kva.example		false	0
+len			2	0
+has	example.org		false	0
+add	com		true	0
+set	a.example.com	wg0		0
+add	com		false	0
+get	sub.example.org			0
+del	example.com		false	0
+hasAny	xn--bcher-kva.example		false	0
+len			4	0
+add	b.a.example.com		true	0
+getAny	.jp			0
+delAll	b.a.example.com		1	0
+set	.jp	Exit		0
+getAny	ample.com			0
+add	b.a		true	0
+set	.com	wg01		0
+add	example.org		true	0
+getAny	例え.jp			0
+set	a	p1,p2		0
+has	b.a.example.com		false	0
+delAll	com		3	0
+getAny	.example.com			0
+getAny	sub.example.org			0
+set	xn--bcher-kva.example	Exit		0
+getAny	b.a			0
+del	a		true	0
+hasAny	sub.example.org		false	0
+len			5	0
+has	ample.com		false	0
+getAny	a.example.com			0
+hasAny	b.a		true	0
+has	b.a.example.com		false	0
+set	b.a.example.com	Base		0
+set	xample.com	p1,p2		0
+add	xample.com		false	0
+add	b.a.example.com		false	0
+delAll	例え.jp		1	0
+len			6	0
+delAll	.a		1	0
+set	.jp	p		0
+has	a.example.com		false	0
+getAny	b.a.example.com		Base	0
+add	a.example.com		true	0
+hasAny	.example.com		false	0
+del	xn--bcher-kva.example		true	0
+get	例え.jp			0
+add	example.com		true	0
+getAny	sub.example.org			0
+get				0
+getAny	a			0
+hasAny	ample.com		false	0
+getAny	.a			0
+add	.com		true	0
+get	.com			0
+has	example.org		true	0
+len			7	0
+getAny				0
+len			7	0
+has	sub.example.org		false	0
+get	example.org			0
+getAny				0
+get	a			0
+add	.jp		false	0
+delAll	xample.com		4	0
+getAny	ample.com			0
+get	.com			0
+hasAny	ample.com		true	0
+set	sub.example.org			0
+len			4	0
+len			4	0
+get	.com			0
+new	32			0
+getAny	com			0
+getAny				0
+add	xample.com		true	0
+add	.com		true	0
+has	.org		false	0
+get				0
+get	.com			0
+set	xample.com	p		0
+hasAny	例え.jp		false	0
+has	a		false	0
+add	例え.jp		true	0
+len			3	0
+add	ample.com		true	0
+del	com		false	0
+has	.jp		false	0
+getAny	.com			0
+getAny	xn--bcher-kva.example			0
+has	.jp		false	0
+getAny	b.a.example.com			0
+add	xample.com		false	0
+set	.jp	p1,p2		0
+get	例え.jp			0
+getAny	例え.jp			0
+hasAny			false	0
+get				0
+getAny	a			0
+get	com			0
+hasAny	a		false	0
+get	example.org			0
+delAll	xn--bcher-kva.example		0	0
+getAny	b.a			0
+getAny	example.org			0
+getAny	例え.jp			0
+get	b.a.example.com			0
+set		p1,p2		0
+set	.jp	p		0
+del	例え.jp		true	0
+get	.a			0
+has	b.a		false	0
+add	.jp		false	0
+del	ample.com		true	0
+has	a.example.com		false	0
+len			4	0
+getAnyPanics	b.a			0
+delAll	ample.com		2	0
+del	a.example.com		false	0
+get	ample.com			0
+add			true	0
+set	.org	p1,p2		0
+delAll	example.com		1	0
+has	例え.jp		false	0
+delAll	.org		1	0
+getAny	com			0
+getAny	.example.com			0
+getAny	example.org			0
+delAll	xn--bcher-kva.example		0	0
+set	sub.example.org	p1,p2		0
+hasAny	.a		false	0
+del	example.org		false	0
+getAny				0
+delAll	例え.jp		0	0
+get	.example.com			0
+get	b.a			0
+set	.example.com	wg01		0
+getAny	.example.com		wg01	0
+getAny				0
+add	b.a		true	0
+getAny	a.example.com		wg01	0
+len			5	0
+delAll	b.a.example.com		0	0
+set	.com	Base		0
+has	b.a		true	0
+get	.jp		p	0
+get	xn--bcher-kva.example			0
+add	a.example.com		true	0
+hasAny	.a		false	0
+has	example.com		false	0
+set	com	p2		0
+has	b.a		true	0
+set	sub.example.org	p1		0
+has	b.a.example.com		false	0
+hasAny	a		false	0
+add	sub.example.org		false	0
+set	example.org	p1,p2		0
+get	sub.example.org		p1	0
+has	.example.com		true	0
+add	a.example.com		false	0
+len			8	0
+getAny	b.a.example.com			0
+has	example.org		true	0
+len			8	0
+get	.jp		p	0
+hasAny	.org		false	0
+hasAny	.jp		true	0
+delAll	sub.example.org		1	0
+len			7	0
+del	com		true	0
+has	.com		true	0
+has	b.a		true	0
+len			6	0
+del	b.a		true	0
+getAny	a			0
+get	sub.example.org			0
+set	b.a	Base		0
+delAll	.org		1	0
+has	example.com		false	0
+set	xn--bcher-kva.example	wg0		0
+get	.a			0
+add	.example.com		false	0
+delAll	.jp		1	0
+delAll	.org		0	0
+getAny	.org			0
+get	.jp			0
+delAll	例え.jp		0	0
+has	com		false	0
+set	.jp	p1,p2		0
+getAny	sub.example.org			0
+len			6	0
+set	.example.com	Exit		0
+add	.org		true	0
+add	xn--bcher-kva.example		false	0
+has	a.example.com		true	0
+has	a.example.com		true	0
+has	a		false	0
+hasAny	b.a		true	0
+get	a			0
+delAll	example.com		2	0
+delAll	com		1	0
+set	.jp	wg01		0
+delAll	com		0	0
+has	sub.example.org		false	0
+add	.jp		false	0
+get	com			0
+get	a.example.com			0
+getAny	example.org			0
+add	com		true	0
+add	b.a.example.com		true	0
+get	.example.com			0
+len			6	0
+delAll	.jp		1	0
+len			5	0
+hasAny	.example.com		false	0
+len			5	0
+len			5	0
+len			5	0
+has	xample.com		false	0
+get	例え.jp			0
+add	a		true	0
+add			true	0
+getAny	.example.com			0
+getAny	b.a		Base	0
+get	sub.example.org			0
+getAny	.a			0
+delAll			7	0
+len			0	0
+getAny	.example.com			0
+get	.jp			0
+add	xn--bcher-kva.example		true	0
+len			1	0
+hasAny	.a		false	0
+add	sub.example.org		true	0
+set	xn--bcher-kva.example	p1		0
+len			2	0
+getAny	.example.com			0
+has	.a		false	0
+getAny	.jp			0
+get	xn--bcher-kva.example		p1	0
+delAll	ample.com		0	0
+del	xn--bcher-kva.example		true	0
+delAll	a.example.com		0	0
+add	.com		true	0
+len			2	0
+delAll	.com		1	0
+get	com			0
+del	xn--bcher-kva.example		false	0
+has	.jp		false	0
+del	.a		false	0
+getAny	a			0
+delAll	b.a.example.com		0	0
+del	xn--bcher-kva.example		false	0
+set	ample.com	Exit		0
+hasAny			false	0
+getAny	.com			0
+del	xn--bcher-kva.example		false	0
+hasAny	.a		false	0
+getAny	com			0
+add	xample.com		true	0
+add	b.a		true	0
+set		wg0		0
+getAnyPanics	example.org			0
+delAll	ample.com		3	0
+add	a.example.com		true	0
+delAll	b.a		1	0
+hasAny	b.a		false	0
+add	.example.com		true	0
+getAny	.com			0
+hasAny	b.a		false	0
+delAll	sub.example.org		1	0
+add	b.a		true	0
+del	a.example.com		true	0
+new	33			0
+getAny	.example.com			0
+getAny	.example.com			0
+get	com			0
+len			0	0
+del	sub.example.org		false	0
+get	.example.com			0
+hasAny	com		false	0
+len			0	0
+len			0	0
+hasAny			false	0
+hasAny	ample.com		false	0
+len			0	0
+getAny	example.org			0
+get	b.a			0
+delAll	b.a		0	0
+del	example.org		false	0
+set	b.a	p2		0
+has	b.a.example.com		false	0
+get	a.example.com			0
+add	.jp		true	0
+delAll	a		1	0
+set	.com	Exit		0
+getAny				0
+add	a.example.com		true	0
+has	b.a		false	0
+len			3	0
+del	b.a.example.com		false	0
+hasAny	ample.com		true	0
+set	xn--bcher-kva.example	p1		0
+delAll	example.org		0	0
+delAll	.org		0	0
+del	.com		true	0
+del	.example.com		false	0
+get	b.a.example.com			0
+getAny	.com			0
+getAny	xn--bcher-kva.example		p1	0
+get	xn--bcher-kva.example		p1	0
+hasAny	b.a.example.com		false	0
+get	.example.com			0
+del	ample.com		false	0
+add	.example.com		true	0
+add	sub.example.org		true	0
+has	a		false	0
+getAny	b.a.example.com			0
+has	.com		false	0
+hasAny	sub.example.org		true	0
+len			5	0
+delAll	xample.com		2	0
+del	.org		false	0
+hasAny	example.org		false	0
+len			3	0
+has	b.a.example.com		false	0
+delAll	例え.jp		0	0
+getAny				0
+add	xample.com		true	0
+delAll	ample.com		1	0
+has	a		false	0
+hasAny			false	0
+getAny	xn--bcher-kva.example		p1	0
+len			3	0
+delAll	example.com		0	0
+get				0
+add	b.a.example.com		true	0
+has	.jp		true	0
+delAll			4	0
+get	com			0
+add	b.a		true	0
+set	.a			0
+getAny	a			0
+set	.example.com	p2		0
+delAll			3	0
+len			0	0
+del	.org		false	0
+getAny				0
+set	b.a	wg01		0
+has			false	0
+getAny	a			0
+getAny	xample.com			0
+len			1	0
+del	b.a.example.com		false	0
+get	.jp			0
+getAny	a.example.com			0
+del	例え.jp		false	0
+delAll	.com		0	0
+delAll	a		1	0
+set	例え.jp	p1		0
+len			1	0
+len			1	0
+del	com		false	0
+get	.jp			0
+set	a.example.com	p1		0
+delAll	.org		0	0
+del	example.com		false	0
+add	a.example.com		false	0
+len			2	0
+len			2	0
+hasAny	example.org		false	0
+delAll	example.org		0	0
+delAll	example.org		0	0
+hasAny	.org		false	0
+get	sub.example.org			0
+del			false	0
+len			2	0
+del	sub.example.org		false	0
+has	example.org		false	0
+hasAny	b.a.example.com		false	0
+set		p1,p2		0
+hasAnyPanics	xample.com			0
+hasAnyPanics	b.a			0
+delAll	sub.example.org		1	0
+getAny	example.com			0
+set	.example.com			0
+has	a		false	0
+len			3	0
+set	.org	p1		0
+getAny	xample.com			0
+add	com		true	0
+hasAny	b.a		false	0
+get	xample.com			0
+len			5	0
+add	a		true	0
+has	b.a		false	0
+add	xn--bcher-kva.example		true	0
+getAny	.a			0
+del	example.com		false	0
+getAny				0
+del	xample.com		false	0
+len			7	0
+delAll	例え.jp		1	0
+del	.org		true	0
+getAny	a.example.com		p1	0
+has	sub.example.org		false	0
+delAll			5	0
+add	example.org		true	0
+add	example.com		true	0
+set	a.example.com	Base		0
+add	a.example.com		false	0
+len			3	0
+set	ample.com	x1		0
+del	com		false	0
+getAny	a.example.com		Base	0
+get				0
+get	xample.com			0
+set	.org	p1,p2		0
+has	com		false	0
+set		p1		0
+len			6	0
+has	example.com		true	0
+getAny	.org		p1,p2	0
+get	.org		p1,p2	0
+getAny	.org		p1,p2	0
+del	example.org		true	0
+getAnyPanics	a			0
+add			false	0
+len			5	0
+add	.a		true	0
+hasAnyPanics	com			0
+del	b.a.example.com		false	0
+get	例え.jp			0
+getAny	example.com			0
+getAnyPanics	com			0
+delAll	.example.com		2	0
+getAny	example.com			0
+getAny	例え.jp			0
+del	.a		true	0
+has	.org		true	0
+add			true	0
+has	com		false	0
+delAll	例え.jp		1	0
+delAll	ample.com		2	0
+getAny	xn--bcher-kva.example			0
+set	com	p1		0
+delAll	.a		0	0
+del	example.com		false	0
+has	xn--bcher-kva.example		false	0
+add	sub.example.org		true	0
+hasAny	.org		true	0
+add	.org		false	0
+getAny	.org		p1,p2	0
+set	a.example.com	x1		0
+delAll	.jp		0	0
+delAll	.a		0	0
+getAny	a			0
+get	sub.example.org			0
+has	b.a		false	0
+del	ample.com		false	0
+delAll	xample.com		1	0
+set	sub.example.org	Exit		0
+getAny	b.a.example.com			0
+has	b.a.example.com		false	0
+del	例え.jp		false	0
+delAll	a		0	0
+has	.jp		false	0
+del	.a		false	0
+hasAny	xample.com		false	0
+add	.com		true	0
+set	.org	Exit		0
+getAny	例え.jp			0
+add	.jp		true	0
+getAny	.a			0
+new	34			0
+getAny	.jp			0
+hasAny	a.example.com		false	0
+getAny	.org			0
+delAll	sub.example.org		0	0
+len			0	0
+getAny	com			0
+add	b.a.example.com		true	0
+hasAny	.jp		false	0
+delAll	b.a		0	0
+getAny	.com			0
+hasAny	xample.com		false	0
+del	例え.jp		false	0
+len			1	0
+get	sub.example.org			0
+get	xample.com			0
+getAny	a			0
+getAny	.org			0
+add	.a		true	0
+set	sub.example.org	p1,p2		0
+getAny	a			0
+getAny	com			0
+getAny	xn--bcher-kva.example			0
+getAny	b.a.example.com			0
+delAll	com		1	0
+get	a			0
+delAll	.com		0	0
+getAny	a.example.com			0
+getAny	.org			0
+add	.jp		true	0
+delAll	xample.com		0	0
+getAny	.a			0
+has	xample.com		false	0
+add	xample.com		true	0
+add	b.a		true	0
+has	.com		false	0
+set	xample.com	p1		0
+getAny	example.com			0
+delAll	example.com		0	0
+getAny	.a			0
+len			5	0
+len			5	0
+has	b.a		true	0
+del	a.example.com		false	0
+delAll	com		1	0
+delAll	a.example.com		0	0
+getAny	sub.example.org		p1,p2	0
+has	example.org		false	0
+add	com		true	0
+get	b.a.example.com			0
+getAny	.com			0
+getAny	.org			0
+has	example.com		false	0
+hasAny	example.com		false	0
+get	b.a			0
+has	a.example.com		false	0
+get	example.com			0
+delAll	sub.example.org		1	0
+delAll	com		1	0
+getAny	.org			0
+hasAny	ample.com		false	0
+del	a		false	0
+hasAny	a		false	0
+has	a		false	0
+hasAny			false	0
+len			3	0
+hasAny	.a		true	0
+hasAny	b.a.example.com		false	0
+has	sub.example.org		false	0
+len			3	0
+len			3	0
+getAny	a.example.com			0
+hasAny	b.a.example.com		false	0
+getAny	.example.com			0
+getAny	xn--bcher-kva.example			0
+getAny				0
+delAll	.example.com		0	0
+has	com		false	0
+del	b.a		true	0
+len			2	0
+getAny	xample.com			0
+delAll	a		1	0
+get	.org			0
+getAny	.jp			0
+set	example.com	p1		0
+hasAny	.org		false	0
+len			2	0
+del	b.a		false	0
+del	.com		false	0
+len			2	0
+hasAny	b.a		false	0
+add	.org		true	0
+hasAny	com		false	0
+getAny	b.a			0
+getAny	b.a			0
+add	.com		true	0
+set	sub.example.org	Base		0
+getAny	example.com		p1	0
+has	b.a		false	0
+has			false	0
+getAny	b.a.example.com			0
+getAny	a			0
+len			5	0
+has	sub.example.org		true	0
+add	a.example.com		true	0
+getAny	例え.jp			0
+has			false	0
+delAll	a.example.com		1	0
+len			5	0
+hasAny	.example.com		false	0
+len			5	0
+hasAny	example.org		true	0
+len			5	0
+len			5	0
+get	example.com		p1	0
+set	.a	p1,p2		0
+delAll	b.a.example.com		0	0
+set	.example.com	Base		0
+del	a		false	0
+set	xn--bcher-kva.example	wg01		0
+add	.org		false	0
+getAny	com			0
+get	example.org			0
+del	com		false	0
+has	例え.jp		false	0
+getAny	sub.example.org		Base	0
+hasAny	b.a.example.com		true	0
+getAny	example.com		p1	0
+delAll	a.example.com		0	0
+delAll	xn--bcher-kva.example		1	0
+get	b.a			0
+has	com		false	0
+getAny	com			0
+get	.a		p1,p2	0
+getAny	example.org			0
+set	b.a.example.com	Exit		0
+del	例え.jp		false	0
+get	.com			0
+getAny	例え.jp			0
+getAny	ample.com			0
+set	com	p1		0
+get	.example.com		Base	0
+len			9	0
+has	xn--bcher-kva.example		false	0
+get	a			0
+delAll	.jp		1	0
+get	.com			0
+get	a			0
+get	a			0
+getAny	b.a		p1,p2	0
+set	.org	p1,p2		0
+getAny	.org		p1,p2	0
+hasAny	b.a		true	0
+getAny				0
+delAll	.a		1	0
+hasAny	sub.example.org		true	0
+del	.jp		false	0
+add	example.com		false	0
+getAny	example.com		p1	0
+hasAny	.a		false	0
+getAny	b.a.example.com		Exit	0
+del	xample.com		false	0
+getAny	xample.com			0
+add	.org		false	0
+delAll	例え.jp		0	0
+len			7	0
+hasAny	例え.jp		false	0
+getAny	xample.com			0
+set	xample.com	p2		0
+add			true	0
+set	a	p2		0
+delAll	b.a		1	0
+set	xample.com	p1,p2		0
+add	.a		true	0
+get	ample.com			0
+add	xample.com		false	0
+len			10	0
+delAll	a		2	0
+getAny	例え.jp			0
+add			true	0
+set	b.a.example.com	Base		0
+get	example.com		p1	0
+get	.org		p1,p2	0
+len			9	0
+getAny	sub.example.org		Base	0
+getAnyPanics	.a			0
+getAnyPanics	a			0
+getAnyPanics	xn--bcher-kva.example			0
+del	xn--bcher-kva.example		false	0
+del	.a		false	0
+has			true	0
+getAny				0
+get	example.com		p1	0
+set	例え.jp	Exit		0
+add	xample.com		false	0
+hasAnyPanics	a			0
+getAny	example.com		p1	0
+getAny	com		p1	0
+set	xn--bcher-kva.example	p2		0
+delAll	example.com		4	0
+get	ample.com			0
+new	35			0
+getAny	例え.jp			0
+getAny	sub.example.org			0
+getAny	xample.com			0
+getAny	example.org			0
+del	b.a.example.com		false	0
+add	例え.jp		true	0
+len			1	0
+del	xample.com		false	0
+get	sub.example.org			0
+del	例え.jp		true	0
+delAll	b.a		0	0
+has	xn--bcher-kva.example		false	0
+delAll	.org		0	0
+getAny	.a			0
+set	a	wg01		0
+hasAny			false	0
+getAny	.example.com			0
+add	com		true	0
+add	com		false	0
+has	xn--bcher-kva.example		false	0
+has	b.a.example.com		false	0
+getAny	b.a			0
+getAny	b.a.example.com			0
+add	.example.com		true	0
+get	.jp			0
+set	example.org	p2		0
+add	sub.example.org		true	0
+add	a		false	0
+get	a		wg01	0
+del	.org		false	0
+getAny	.org			0
+getAny	.org			0
+add	com		false	0
+delAll	a.example.com		0	0
+delAll	example.org		2	0
+hasAny	a		true	0
+set	example.com			0
+hasAny	a		true	0
+set	.a	wg0		0
+getAny	sub.example.org			0
+has	xample.com		false	0
+getAny	example.org			0
+getAny	.org			0
+len			5	0
+get	a		wg01	0
+getAny	example.org			0
+add	.org		true	0
+del	xample.com		false	0
+del	.example.com		true	0
+hasAny	sub.example.org		true	0
+getAny	xn--bcher-kva.example			0
+hasAny	.a		true	0
+getAny	ample.com			0
+getAny	example.org			0
+hasAny	xample.com		false	0
+set	例え.jp	Exit		0
+has	com		true	0
+set	b.a.example.com	Exit		0
+len			7	0
+has	example.org		false	0
+add	ample.com		true	0
+delAll	sub.example.org		0	0
+getAny	.example.com			0
+set	xn--bcher-kva.example	p1		0
+del	example.org		false	0
+getAny	a		wg01	0
+has	.org		true	0
+delAll	com		4	0
+delAll	com		0	0
+del	ample.com		false	0
+hasAny	a.example.com		false	0
+has	example.com		false	0
+hasAny	.example.com		false	0
+delAll	a		2	0
+get	xample.com			0
+add	.jp		true	0
+len			4	0
+hasAny	com		false	0
+getAny	b.a.example.com			0
+len			4	0
+add	example.org		true	0
+getAny	b.a.example.com			0
+add	.example.com		true	0
+getAny	example.org			0
+add	xample.com		true	0
+getAny				0
+getAny	xample.com			0
+getAny	a			0
+getAny	例え.jp		Exit	0
+delAll	xample.com		2	0
+getAny	example.org			0
+len			5	0
+add	.jp		false	0
+get	.com			0
+has	b.a		false	0
+getAny	.jp			0
+add	.jp		false	0
+set	com	Exit		0
+add	a.example.com		true	0
+getAny	ample.com			0
+get	.com			0
+getAny	example.com			0
+has	a.example.com		true	0
+len			7	0
+has			false	0
+add	a.example.com		false	0
+add	.com		true	0
+has	a		false	0
+get	com		Exit	0
+getAny	xample.com			0
+getAny	.com			0
+has	example.org		true	0
+len			8	0
+add	xample.com		true	0
+getAny	sub.example.org			0
+hasAny	b.a.example.com		false	0
+has	sub.example.org		false	0
+delAll	.jp		2	0
+len			7	0
+has	ample.com		false	0
+get	b.a.example.com			0
+delAll	.jp		0	0
+delAll	com		4	0
+set	example.org	Base		0
+add	xample.com		true	0
+len			4	0
+del	例え.jp		false	0
+del	.a		false	0
+get	.jp			0
+delAll	b.a.example.com		0	0
+getAny	b.a.example.com			0
+hasAny	ample.com		false	0
+set	b.a.example.com	p		0
+del	xn--bcher-kva.example		true	0
+getAny	b.a.example.com		p	0
+set	xn--bcher-kva.example	Exit		0
+has	例え.jp		false	0
+has	xample.com		true	0
+getAny	example.com			0
+set	b.a	p2		0
+getAny	例え.jp			0
+del	xample.com		true	0
+get	.example.com			0
+set	b.a.example.com	p1		0
+hasAny	xn--bcher-kva.example		true	0
+del	b.a.example.com		true	0
+set	com	x1		0
+has	ample.com		false	0
+delAll	xample.com		0	0
+has	ample.com		false	0
+add	example.com		true	0
+add	xn--bcher-kva.example		false	0
+getAny	a			0
+getAny	.org			0
+set	com	Base		0
+get	b.a.example.com			0
+getAny	例え.jp			0
+getAny	a.example.com			0
+len			6	0
+hasAny	example.com		true	0
+set	.org			0
+has	com		true	0
+get	例え.jp			0
+del	com		true	0
+getAny	a			0
+get	xn--bcher-kva.example		Exit	0
+del	.jp		false	0
+getAny	example.org		Base	0
+has	.jp		false	0
+len			5	0
+add	.a		true	0
+set	ample.com	x1		0
+getAny	xn--bcher-kva.example		Exit	0
+set	.com	p1,p2		0
+len			8	0
+hasAny	xn--bcher-kva.example		true	0
+get	.com		p1,p2	0
+get	xn--bcher-kva.example		Exit	0
+getAny	example.org		Base	0
+del	example.org		true	0
+getAny	example.com			0
+getAny	ample.com		x1	0
+getAny	com			0
+has	xn--bcher-kva.example		true	0
+len			7	0
+del	example.com		true	0
+has	xn--bcher-kva.example		true	0
+add	example.com		true	0
+getAny	例え.jp			0
+getAny	b.a.example.com			0
+getAny	.jp			0
+del	example.com		true	0
+hasAny			false	0
+getAny	xn--bcher-kva.example		Exit	0
+len			6	0
+add	.a		false	0
+getAny	ample.com		x1	0
+get	xample.com			0
+getAny	sub.example.org			0
+delAll	a		2	0
+new	36			0
+len			0	0
+delAll	example.com		0	0
+getAny	.com			0
+set	xn--bcher-kva.example	p1		0
+set	sub.example.org	wg0		0
+delAll	.jp		0	0
+len			2	0
+has	a.example.com		false	0
+del	b.a.example.com		false	0
+has	.jp		false	0
+set	ample.com	Base		0
+getAny	xn--bcher-kva.example		p1	0
+hasAny			false	0
+len			3	0
+hasAny	xample.com		false	0
+delAll			3	0
+set	example.org	Base		0
+set		Exit		0
+add	b.a.example.com		true	0
+get	.a			0
+getAnyPanics	b.a			0
+delAll			3	0
+has	example.org		false	0
+add	a.example.com		true	0
+getAny	b.a.example.com			0
+hasAny	sub.example.org		false	0
+has	.com		false	0
+len			1	0
+set	.a			0
+hasAny	.example.com		false	0
+get	b.a			0
+len			2	0
+get	a			0
+has	.a		true	0
+get	.jp			0
+len			2	0
+del	.org		false	0
+del	a.example.com		true	0
+has	.org		false	0
+get	.org			0
+delAll	com		0	0
+set	sub.example.org	wg0		0
+add	example.com		true	0
+len			3	0
+has	b.a.example.com		false	0
+set	.org	Base		0
+getAny	.example.com			0
+getAny	.example.com			0
+set	例え.jp	Base		0
+set	.jp	Base		0
+set	.com	p1		0
+del	.a		true	0
+add	b.a		true	0
+set	xn--bcher-kva.example	Base		0
+delAll	example.org		1	0
+add	ample.com		true	0
+len			8	0
+has	.jp		true	0
+len			8	0
+get	a.example.com			0
+getAny	.com		p1	0
+delAll	.com		3	0
+len			5	0
+set	例え.jp	p1		0
+get	.example.com			0
+getAny	b.a.example.com			0
+len			5	0
+getAny	a			0
+del	a		false	0
+hasAny	b.a.example.com		false	0
+has	b.a.example.com		false	0
+set	xample.com			0
+getAny				0
+len			6	0
+getAny	sub.example.org		Base	0
+add	b.a.example.com		true	0
+del	b.a.example.com		true	0
+get	com			0
+hasAny	example.org		true	0
+getAny	xample.com			0
+getAny	b.a			0
+getAny	b.a			0
+len			6	0
+get	example.com			0
+delAll	a		1	0
+len			5	0
+del	xample.com		true	0
+getAny	ample.com			0
+getAny				0
+has	example.org		false	0
+get	.example.com			0
+delAll	b.a.example.com		0	0
+len			4	0
+delAll	.jp		2	0
+getAny	b.a.example.com			0
+hasAny	.com		false	0
+delAll	.a		0	0
+set		wg0		0
+getAnyPanics	b.a.example.com			0
+hasAny	example.org		true	0
+del	.a		false	0
+hasAnyPanics	b.a.example.com			0
+hasAnyPanics	a.example.com			0
+add	.jp		true	0
+delAll	.com		1	0
+get	a.example.com			0
+getAny	b.a.example.com			0
+add			true	0
+get	example.com			0
+getAnyPanics	.a			0
+len			4	0
+del	b.a.example.com		false	0
+getAny	sub.example.org		Base	0
+set	.a	wg01		0
+len			5	0
+delAll	xn--bcher-kva.example		2	0
+getAny	b.a		wg01	0
+add	a		true	0
+getAny	.jp			0
+delAll	com		0	0
+get	example.com			0
+del	a.example.com		false	0
+get	xample.com			0
+len			4	0
+getAny	a.example.com			0
+getAny				0
+has	.com		false	0
+len			4	0
+delAll	a.example.com		0	0
+del	b.a.example.com		false	0
+delAll	sub.example.org		0	0
+getAny	.a		wg01	0
+has	b.a.example.com		false	0
+get	xample.com			0
+hasAny	ample.com		false	0
+get				0
+getAny	b.a		wg01	0
+has	a.example.com		false	0
+hasAny	.a		true	0
+del	b.a		false	0
+hasAny	.example.com		false	0
+len			4	0
+set	.jp	p		0
+del	example.org		false	0
+del	.a		true	0
+get	a			0
+hasAny	xn--bcher-kva.example		false	0
+len			3	0
+len			3	0
+add	example.com		true	0
+get	xample.com			0
+del	sub.example.org		false	0
+has	例え.jp		false	0
+hasAny	xn--bcher-kva.example		false	0
+len			4	0
+len			4	0
+get	sub.example.org			0
+hasAny	.jp		true	0
+getAny	.a			0
+delAll	.a		0	0
+has	.com		false	0
+set	b.a	p1,p2		0
+set	.example.com	Base		0
+get	sub.example.org			0
+set	.example.com			0
+delAll	.example.com		1	0
+hasAny	example.org		true	0
+get	.a			0
+hasAny	ample.com		false	0
+get	ample.com			0
+has	b.a.example.com		false	0
+get	.jp		p	0
+getAny	ample.com			0
+delAll	b.a.example.com		0	0
+del	com		false	0
+len			5	0
+has	sub.example.org		false	0
+set	xn--bcher-kva.example	p1		0
+delAll	sub.example.org		0	0
+has	b.a		true	0
+del	例え.jp		false	0
+del	sub.example.org		false	0
+getAny	a			0
+len			6	0
+set	b.a.example.com	wg01		0
+del	xn--bcher-kva.example		true	0
+add	a		false	0
+set	a.example.com	wg01		0
+get	xample.com			0
+len			7	0
+hasAny			false	0
+has	a		true	0
+getAny	.jp		p	0
+getAny				0
+get	b.a.example.com		wg01	0
+getAny	example.org		Base	0
+has	.org		true	0
+delAll	b.a		1	0
+add	com		true	0
+getAny	a.example.com		wg01	0
+new	37			0
+len			0	0
+delAll	ample.com		0	0
+len			0	0
+getAny	xample.com			0
+getAny	xn--bcher-kva.example			0
+getAny	example.org			0
+hasAny	例え.jp		false	0
+getAny	a			0
+del	.org		false	0
+len			0	0
+has	.a		false	0
+getAny	example.com			0
+has	.org		false	0
+getAny	com			0
+add	.org		true	0
+len			1	0
+delAll	com		0	0
+len			1	0
+hasAny	.jp		false	0
+del	ample.com		false	0
+add	example.org		true	0
+getAny	.org			0
+has	.com		false	0
+set	b.a.example.com	wg01		0
+hasAny			false	0
+set	com	p		0
+getAny	b.a.example.com		wg01	0
+delAll	xample.com		1	0
+add	b.a.example.com		true	0
+getAny	b.a			0
+set	a.example.com	p2		0
+get	xample.com			0
+delAll	b.a		0	0
+getAny	xample.com			0
+hasAny	a.example.com		true	0
+del	example.com		false	0
+delAll	.jp		0	0
+delAll	a.example.com		2	0
+len			3	0
+hasAny			false	0
+set	.com	p1		0
+add	example.org		false	0
+set	.a	x1		0
+getAny	例え.jp			0
+len			5	0
+len			5	0
+has	.org		true	0
+getAny	example.com		p1	0
+del	example.org		true	0
+getAny	a.example.com		p1	0
+getAny	ample.com		p1	0
+set	a.example.com	Exit		0
+set	b.a.example.com	Base		0
+getAny	xn--bcher-kva.example			0
+get	example.org			0
+add	com		false	0
+getAny	b.a		x1	0
+getAny	sub.example.org			0
+len			6	0
+getAny	xample.com		p1	0
+set	.org	wg0		0
+hasAny	com		true	0
+hasAny	ample.com		true	0
+set	example.org	wg01		0
+set	example.com	Base		0
+hasAny	b.a		true	0
+has	ample.com		false	0
+has	.jp		false	0
+getAny	b.a.example.com		Base	0
+delAll	xn--bcher-kva.example		0	0
+hasAny	b.a.example.com		true	0
+hasAny	b.a.example.com		true	0
+has	sub.example.org		false	0
+delAll	.a		1	0
+len			7	0
+del	a.example.com		true	0
+getAny	.com		p1	0
+get				0
+getAny	a			0
+set	.com	p1,p2		0
+has	b.a.example.com		true	0
+hasAny	a.example.com		false	0
+set	a	wg0		0
+len			7	0
+add	b.a.example.com		false	0
+len			7	0
+getAny	ample.com		p1,p2	0
+len			7	0
+has	xn--bcher-kva.example		false	0
+get	.com		p1,p2	0
+getAny	.jp			0
+set	xn--bcher-kva.example	Base		0
+delAll	com		4	0
+hasAny	.jp		false	0
+getAny	example.org		wg01	0
+has	a.example.com		false	0
+getAny	xn--bcher-kva.example		Base	0
+hasAny	a.example.com		false	0
+len			4	0
+get	a		wg0	0
+add	xn--bcher-kva.example		false	0
+len			4	0
+has	.example.com		false	0
+set	ample.com	p		0
+set	.org			0
+getAny	xample.com			0
+delAll	xn--bcher-kva.example		1	0
+get	a		wg0	0
+getAny	.a			0
+hasAny	sub.example.org		false	0
+getAny	example.org		wg01	0
+hasAny	.com		false	0
+del	sub.example.org		false	0
+getAny	.jp			0
+getAny	example.org		wg01	0
+delAll	b.a.example.com		0	0
+del	xample.com		false	0
+has	.org		true	0
+delAll	xample.com		0	0
+len			4	0
+delAll	.com		1	0
+has	sub.example.org		false	0
+set	example.com			0
+has	com		false	0
+get	xn--bcher-kva.example			0
+del	.jp		false	0
+set	example.com	p1		0
+delAll	例え.jp		0	0
+get	com			0
+add	a		false	0
+get	例え.jp			0
+get	例え.jp			0
+add	b.a		true	0
+hasAny	sub.example.org		false	0
+add	example.com		false	0
+get				0
+getAny	b.a.example.com			0
+delAll	.com		1	0
+del	.com		false	0
+len			4	0
+hasAny	xample.com		false	0
+set	xample.com	p1		0
+add	b.a		false	0
+getAny	xn--bcher-kva.example			0
+del	.com		false	0
+has	com		false	0
+get				0
+getAny	xample.com		p1	0
+getAny	.org			0
+getAny	b.a.example.com			0
+getAny	ample.com			0
+delAll	example.com		0	0
+get	com			0
+get	example.com			0
+has	.com		false	0
+add	xample.com		false	0
+del	example.com		false	0
+hasAny	example.org		true	0
+hasAny	b.a		true	0
+add	example.org		false	0
+set	example.org	p1,p2		0
+getAny	.com			0
+add	xn--bcher-kva.example		true	0
+set	a.example.com	p		0
+has	例え.jp		false	0
+delAll	.jp		0	0
+getAny	ample.com			0
+has	.a		false	0
+len			7	0
+getAny				0
+hasAny	com		false	0
+hasAny	example.com		false	0
+hasAny	.org		true	0
+get	example.com			0
+add	.a		true	0
+delAll	.org		2	0
+has	.com		false	0
+del	.com		false	0
+set	b.a	p1,p2		0
+getAny	b.a		p1,p2	0
+get	b.a		p1,p2	0
+getAny	example.com			0
+has	b.a		true	0
+has	example.org		false	0
+getAny	xn--bcher-kva.example			0
+hasAny	a.example.com		true	0
+delAll	a.example.com		1	0
+delAll	.example.com		0	0
+get	.a			0
+has	.com		false	0
+has	.example.com		false	0
+add	.org		true	0
+del	例え.jp		false	0
+getAny	a.example.com			0
+add			true	0
+del	example.com		false	0
+delAll			7	0
+hasAny	b.a.example.com		false	0
+has	ample.com		false	0
+getAny	example.org			0
+new	38			0
+del	b.a		false	0
+hasAny	b.a		false	0
+set	.com	wg0		0
+del	.org		false	0
+get	example.org			0
+add	.org		true	0
+len			2	0
+del	.example.com		false	0
+getAny	example.org			0
+getAny	.jp			0
+add	xn--bcher-kva.example		true	0
+len			3	0
+add	ample.com		true	0
+add	ample.com		false	0
+has	.example.com		false	0
+add	.org		false	0
+len			4	0
+getAny	example.org			0
+hasAny	ample.com		true	0
+getAny	.com		wg0	0
+del	a		false	0
+set	xn--bcher-kva.example	p2		0
+getAny	.com		wg0	0
+len			4	0
+add			true	0
+getAny	ample.com			0
+get	example.org			0
+getAnyPanics	.jp			0
+getAny	example.org			0
+delAll	xn--bcher-kva.example		2	0
+add	b.a.example.com		true	0
+add	b.a.example.com		false	0
+get	.example.com			0
+get	.example.com			0
+getAny	.org			0
+getAny	xn--bcher-kva.example			0
+len			4	0
+del	.jp		false	0
+hasAny	.org		true	0
+getAny	.jp			0
+set	sub.example.org	p1,p2		0
+get	.a			0
+getAny	.example.com			0
+del	.a		false	0
+add	.com		false	0
+len			5	0
+set	ample.com	Exit		0
+getAny	a.example.com			0
+getAny	.jp			0
+len			5	0
+delAll	例え.jp		0	0
+get	.example.com			0
+hasAny	.a		false	0
+hasAny	b.a.example.com		true	0
+add	.com		false	0
+del	a.example.com		false	0
+getAny	.org			0
+has	example.com		false	0
+get	例え.jp			0
+add	.org		false	0
+hasAny	例え.jp		false	0
+getAny				0
+len			5	0
+set	ample.com	wg01		0
+getAny	.example.com			0
+set	.a	p1		0
+set	ample.com	x1		0
+has	example.com		false	0
+del	ample.com		true	0
+hasAny	com		false	0
+getAny	xample.com		wg0	0
+len			5	0
+add	sub.example.org		false	0
+delAll	.com		2	0
+hasAny	sub.example.org		true	0
+get	a			0
+set	a	Exit		0
+getAny	a		Exit	0
+delAll	xample.com		0	0
+delAll	.org		2	0
+has	xn--bcher-kva.example		false	0
+getAny	xample.com			0
+hasAny	.com		false	0
+delAll			2	0
+has	com		false	0
+get	b.a			0
+delAll	ample.com		0	0
+getAny	a			0
+has	例え.jp		false	0
+get	a.example.com			0
+len			0	0
+get	例え.jp			0
+getAny	.example.com			0
+delAll	xn--bcher-kva.example		0	0
+getAny	.com			0
+getAny				0
+getAny	com			0
+getAny	例え.jp			0
+getAny	ample.com			0
+getAny	.example.com			0
+getAny	ample.com			0
+del	ample.com		false	0
+getAny	xample.com			0
+get	example.com			0
+len			0	0
+len			0	0
+add	.example.com		true	0
+set	例え.jp	wg0		0
+add	ample.com		true	0
+get	.example.com			0
+del	a		false	0
+add	b.a		true	0
+hasAny	b.a		true	0
+len			4	0
+set	a	wg0		0
+del	a		true	0
+getAny	例え.jp		wg0	0
+get	.org			0
+getAny	example.com			0
+add	com		true	0
+get	.jp			0
+get	.jp			0
+getAny	.a			0
+get	example.com			0
+getAny	ample.com			0
+delAll	例え.jp		1	0
+getAny	b.a.example.com			0
+add	example.org		true	0
+getAny	sub.example.org			0
+hasAny	.com		false	0
+getAny	xample.com			0
+del			false	0
+hasAny	.com		false	0
+len			5	0
+get	例え.jp			0
+add	xn--bcher-kva.example		true	0
+hasAny	.org		false	0
+getAny	b.a			0
+len			6	0
+del	b.a.example.com		false	0
+len			6	0
+get	.jp			0
+getAny	b.a			0
+hasAny	com		true	0
+set	com	x1		0
+len			6	0
+len			6	0
+set	com	p		0
+get	example.com			0
+get	.example.com			0
+get	example.com			0
+add	xn--bcher-kva.example		false	0
+len			6	0
+len			6	0
+del	ample.com		true	0
+has	sub.example.org		false	0
+get	.example.com			0
+add	a.example.com		true	0
+set	例え.jp	wg0		0
+del	ample.com		false	0
+len			7	0
+add	b.a.example.com		true	0
+getAny	.com			0
+get	example.org			0
+del	a		false	0
+getAny	a			0
+add	com		false	0
+delAll	.jp		1	0
+del	ample.com		false	0
+has	ample.com		false	0
+set	com	p2		0
+getAny	a			0
+has	a.example.com		true	0
+del			false	0
+delAll	example.com		3	0
+get	xample.com			0
+getAny	example.com			0
+get	.a			0
+len			4	0
+getAny	.org			0
+delAll	b.a		1	0
+add	ample.com		true	0
+del	.jp		false	0
+set	.example.com	wg0		0
+set	sub.example.org	Exit		0
+getAny	xn--bcher-kva.example			0
+del	example.org		true	0
+len			5	0
+getAny	.com			0
+add	a		true	0
+getAny	.jp			0
+get	a			0
+delAll			6	0
+hasAny	example.com		false	0
+len			0	0
+get	例え.jp			0
+del	com		false	0
+getAny	example.com			0
+len			0	0
+get	ample.com			0
+new	39			0
+hasAny	a.example.com		false	0
+set	.example.com	p2		0
+get	xample.com			0
+hasAny	.a		false	0
+delAll	.example.com		1	0
+hasAny	.example.com		false	0
+getAny	a			0
+len			0	0
+add	.com		true	0
+getAny	.jp			0
+get	a			0
+hasAny	a.example.com		true	0
+get	例え.jp			0
+set	.example.com	Base		0
+len			2	0
+set	b.a.example.com	p1,p2		0
+get	b.a.example.com		p1,p2	0
+del	.com		true	0
+add	com		true	0
+getAny	xn--bcher-kva.example			0
+delAll	xample.com		2	0
+has	.a		false	0
+delAll	xn--bcher-kva.example		0	0
+getAny	sub.example.org			0
+del	.jp		false	0
+add	.com		true	0
+getAny	a			0
+delAll	xn--bcher-kva.example		0	0
+hasAny	.jp		false	0
+getAny	.example.com			0
+add	xn--bcher-kva.example		true	0
+del	例え.jp		false	0
+del	example.org		false	0
+hasAny	b.a		false	0
+add			true	0
+getAny	xn--bcher-kva.example			0
+getAny	b.a.example.com			0
+getAny	b.a.example.com			0
+add	.org		true	0
+hasAny	com		true	0
+hasAny	xample.com		true	0
+has	.org		true	0
+hasAny	xn--bcher-kva.example		true	0
+len			5	0
+len			5	0
+del	.com		true	0
+len			4	0
+has	example.com		false	0
+getAny	com			0
+hasAny	sub.example.org		true	0
+add	.jp		true	0
+add	.org		false	0
+delAll	a		1	0
+has	b.a.example.com		false	0
+del	xample.com		false	0
+del	例え.jp		false	0
+len			4	0
+add	.com		true	0
+get	example.org			0
+len			5	0
+get	xn--bcher-kva.example			0
+get	xample.com			0
+delAll	xample.com		0	0
+getAny	sub.example.org			0
+del	.org		true	0
+get	.org			0
+hasAny	.jp		true	0
+set	.a	Exit		0
+getAny	例え.jp			0
+len			5	0
+add	xn--bcher-kva.example		false	0
+add	xn--bcher-kva.example		false	0
+getAny	b.a.example.com			0
+has	xample.com		false	0
+delAll	例え.jp		0	0
+hasAny	.a		true	0
+del	b.a		false	0
+hasAny	b.a.example.com		true	0
+hasAny	.example.com		true	0
+getAny	a.example.com			0
+del			false	0
+getAny	.example.com			0
+get	example.com			0
+has	.a		true	0
+add	a.example.com		true	0
+getAny	example.com			0
+add	b.a.example.com		true	0
+del			false	0
+set	a	x1		0
+add	com		false	0
+set	.com	p1		0
+get	ample.com			0
+getAny	.jp			0
+add	.jp		false	0
+delAll			8	0
+del	ample.com		false	0
+get	ample.com			0
+len			0	0
+delAll	a		0	0
+add	.jp		true	0
+len			1	0
+getAny	example.com			0
+has	.example.com		false	0
+set	例え.jp	Exit		0
+set	.a	Base		0
+len			3	0
+getAny	a.example.com			0
+delAll	.org		0	0
+del	a.example.com		false	0
+has	xample.com		false	0
+set	xn--bcher-kva.example	p		0
+set	.example.com	Exit		0
+len			5	0
+has	b.a.example.com		false	0
+len			5	0
+set	ample.com	p		0
+hasAny	a.example.com		true	0
+add	com		true	0
+set	.example.com			0
+add	.jp		false	0
+getAny	b.a.example.com			0
+set	xample.com	wg01		0
+delAll	sub.example.org		0	0
+set	sub.example.org	x1		0
+set	.org	Base		0
+del	.a		true	0
+delAll	例え.jp		1	0
+set	example.com	wg0		0
+getAny	.a			0
+hasAny	example.org		true	0
+set	.org	x1		0
+delAll	例え.jp		0	0
+delAll	例え.jp		0	0
+add	a.example.com		true	0
+len			10	0
+set	例え.jp	p1		0
+getAny	ample.com		p	0
+hasAny	例え.jp		true	0
+len			11	0
+hasAny	sub.example.org		true	0
+get				0
+delAll	a		0	0
+has	.a		false	0
+getAny	b.a			0
+getAny				0
+delAll	xample.com		4	0
+set	.example.com	wg0		0
+has	example.org		false	0
+set	ample.com			0
+getAny	a			0
+len			8	0
+delAll	sub.example.org		1	0
+del	com		true	0
+add	xample.com		true	0
+delAll	xample.com		2	0
+len			5	0
+hasAny	ample.com		true	0
+add	.a		true	0
+delAll	xn--bcher-kva.example		1	0
+set	a.example.com	wg01		0
+get	ample.com			0
+del	com		false	0
+getAny	xample.com			0
+has	.jp		true	0
+getAny	xample.com			0
+has	com		false	0
+set	a			0
+delAll			7	0
+getAny	.org			0
+getAny				0
+del	例え.jp		false	0
+len			0	0
+getAny	.a			0
+set	xample.com	p		0
+set		p1,p2		0
+getAny	xample.com		p	0
+add	sub.example.org		true	0
+get	xample.com		p	0
+getAnyPanics	.com			0
+hasAnyPanics	com			0
+get	.org			0
+delAll	.example.com		1	0
+del	a.example.com		false	0
+getAny	a.example.com			0
+set	例え.jp	Exit		0
+delAll	.example.com		0	0
+get	例え.jp		Exit	0
+set	.a	p1,p2		0
+get	.example.com			0
+getAny	a.example.com			0
+getAny	.com			0
+set	.jp	Base		0
+has	com		false	0
+getAny	.example.com			0
+hasAny	sub.example.org		true	0
+getAny	sub.example.org			0
+set	ample.com	p2		0
+getAny	.com			0
+len			6	0
+getAny				0
+new	40			0
+getAny	example.com			0
+add	.a		true	0
+del	ample.com		false	0
+has	xn--bcher-kva.example		false	0
+getAny	example.com			0
+len			1	0
+hasAny	xn--bcher-kva.example		false	0
+get	b.a			0
+add	b.a		true	0
+get	a.example.com			0
+add	a		true	0
+del	b.a.example.com		false	0
+len			3	0
+len			3	0
+hasAny			false	0
+len			3	0
+add	com		true	0
+set	sub.example.org	p1,p2		0
+getAny	ample.com			0
+add	sub.example.org		false	0
+delAll	a		3	0
+getAny	.org			0
+has	example.com		false	0
+len			2	0
+len			2	0
+set	b.a	x1		0
+del	ample.com		false	0
+len			3	0
+add	.jp		true	0
+delAll	a.example.com		0	0
+getAny	a			0
+del	例え.jp		false	0
+getAny	xample.com			0
+len			4	0
+has	sub.example.org		true	0
+getAny	.example.com			0
+set	sub.example.org	Exit		0
+set	xample.com			0
+set	.a	wg01		0
+set	a.example.com	wg01		0
+get	b.a.example.com			0
+set	.org	Exit		0
+len			8	0
+get	ample.com			0
+getAny	b.a.example.com			0
+len			8	0
+delAll	xample.com		2	0
+getAny	sub.example.org		Exit	0
+getAny	a			0
+del	.org		true	0
+delAll	example.com		0	0
+set	b.a	x1		0
+len			5	0
+len			5	0
+getAny	b.a.example.com			0
+add	b.a.example.com		true	0
+del	a		false	0
+add	.example.com		true	0
+getAny	ample.com			0
+hasAny	b.a.example.com		true	0
+del	例え.jp		false	0
+delAll	example.org		1	0
+getAny	xn--bcher-kva.example			0
+getAny	xample.com			0
+set	例え.jp	p		0
+getAny	b.a		x1	0
+getAny	a.example.com			0
+delAll	.example.com		2	0
+getAny	b.a.example.com			0
+delAll	ample.com		0	0
+set		p1,p2		0
+len			6	0
+get	.org			0
+del	sub.example.org		false	0
+len			6	0
+delAll	.jp		3	0
+len			3	0
+add	xample.com		true	0
+get	b.a.example.com			0
+delAll	a.example.com		0	0
+set		wg0		0
+add			false	0
+has	例え.jp		false	0
+getAnyPanics	sub.example.org			0
+set	.a	wg01		0
+set	a.example.com	p2		0
+has	sub.example.org		false	0
+getAny	example.com			0
+len			6	0
+add	ample.com		true	0
+delAll	b.a.example.com		1	0
+getAny	.a		wg01	0
+hasAny			false	0
+get	a.example.com		p2	0
+del			false	0
+del	a.example.com		true	0
+delAll	example.com		0	0
+del	a.example.com		false	0
+has	sub.example.org		false	0
+get	.com			0
+set	.org	wg01		0
+add	.com		true	0
+hasAny	example.com		false	0
+del	.org		true	0
+has	a		false	0
+getAny	sub.example.org			0
+has	.com		true	0
+delAll	a		2	0
+delAll	xn--bcher-kva.example		0	0
+getAny	.jp			0
+getAny	xn--bcher-kva.example			0
+getAny	example.org			0
+len			4	0
+hasAny	example.org		false	0
+add	com		false	0
+has	a.example.com		false	0
+has	.example.com		false	0
+getAny	.org			0
+get	.a			0
+hasAny	.a		false	0
+add	a.example.com		true	0
+get	sub.example.org			0
+hasAny	xample.com		true	0
+add			true	0
+has	b.a.example.com		false	0
+hasAnyPanics	.a			0
+add	.com		false	0
+del	.a		false	0
+delAll	ample.com		4	0
+get	b.a.example.com			0
+getAny	xample.com			0
+set	.jp	Exit		0
+getAny	.org			0
+getAny	xample.com			0
+len			3	0
+add	.com		false	0
+add	example.org		true	0
+set	a.example.com	Base		0
+len			5	0
+getAny	b.a.example.com			0
+delAll	b.a.example.com		0	0
+has	sub.example.org		false	0
+del	.jp		true	0
+add	xample.com		true	0
+get	example.com			0
+set	ample.com	wg01		0
+get	.example.com			0
+has	b.a		false	0
+del	a		false	0
+hasAny	com		true	0
+getAny	xample.com			0
+hasAny	com		true	0
+getAny	a.example.com		Base	0
+set	b.a	p		0
+add	example.com		true	0
+getAny	.a			0
+has	sub.example.org		false	0
+get	a			0
+has	.example.com		false	0
+has	.a		false	0
+del	例え.jp		false	0
+has	.a		false	0
+getAny	.a			0
+del	.example.com		false	0
+getAny	.org			0
+has	例え.jp		false	0
+has			false	0
+has	example.com		true	0
+get	b.a		p	0
+hasAny	.a		false	0
+len			8	0
+get	例え.jp			0
+add	xample.com		false	0
+del	.com		true	0
+hasAny	.jp		false	0
+getAny	sub.example.org			0
+getAny	sub.example.org			0
+hasAny	.example.com		false	0
+getAny	.org			0
+has	a.example.com		true	0
+del	.jp		false	0
+get	.com			0
+hasAny	xample.com		true	0
+del	example.org		true	0
+hasAny	xample.com		true	0
+set	.jp	p		0
+has	.example.com		false	0
+getAny	.jp		p	0
+has	.org		false	0
+add	example.org		true	0
+get	xn--bcher-kva.example			0
+del	例え.jp		false	0
+hasAny	com		true	0
+getAny	example.org			0
+getAny	example.org			0
+del	b.a		true	0
+getAny	.com			0
+set	.example.com			0
+getAny	xample.com			0
+add	xample.com		false	0

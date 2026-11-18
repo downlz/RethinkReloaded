@@ -11,6 +11,7 @@
 
 use crate::impls::log;
 use crate::rt::FsResult;
+use fs_core::settings;
 use jni::JNIEnv;
 use jni::objects::{GlobalRef, JObject};
 use parking_lot::Mutex;
@@ -19,30 +20,10 @@ use std::sync::atomic::{AtomicBool, AtomicI64, Ordering};
 static CONSOLE: Mutex<Option<GlobalRef>> = Mutex::new(None);
 static SELF_UID: Mutex<String> = Mutex::new(String::new());
 
-/// Engine-wide toggles set by Kotlin (consumed by the netstack / dialers / WireGuard once ported).
-pub struct Toggles {
-    pub low_mem_bytes: AtomicI64,
-    pub slowdown: AtomicBool,
-    pub loopback: AtomicBool,
-    pub undelegated_domains: AtomicBool,
-    pub default_dns_as_fallback: AtomicBool,
-    pub experimental_wireguard: AtomicBool,
-    pub flood_wireguard: AtomicBool,
-    pub eim: AtomicBool,
-    pub eif: AtomicBool,
-}
-
-pub static TOGGLES: Toggles = Toggles {
-    low_mem_bytes: AtomicI64::new(0),
-    slowdown: AtomicBool::new(false),
-    loopback: AtomicBool::new(false),
-    undelegated_domains: AtomicBool::new(false),
-    default_dns_as_fallback: AtomicBool::new(false),
-    experimental_wireguard: AtomicBool::new(false),
-    flood_wireguard: AtomicBool::new(false),
-    eim: AtomicBool::new(false),
-    eif: AtomicBool::new(false),
-};
+/// `Intra.lowMem(bytes)`: memory limit hint (consumed by buffer pools once the netstack is ported).
+pub static LOW_MEM_BYTES: AtomicI64 = AtomicI64::new(0);
+/// `Intra.slowdown(bool)`: throttle hint for the netstack.
+pub static SLOWDOWN: AtomicBool = AtomicBool::new(false);
 
 /// `Intra.build(full)`: engine identity shown in About and bug reports.
 pub fn build(_env: &mut JNIEnv, full: bool) -> FsResult<String> {
@@ -97,28 +78,31 @@ pub fn set_self_uid(_env: &mut JNIEnv, uid: String) -> FsResult<()> {
 }
 
 pub fn low_mem(_env: &mut JNIEnv, bytes: i64) -> FsResult<()> {
-    TOGGLES.low_mem_bytes.store(bytes, Ordering::Relaxed);
+    LOW_MEM_BYTES.store(bytes, Ordering::Relaxed);
     Ok(())
 }
 
 macro_rules! toggle {
-    ($fn:ident, $field:ident) => {
+    ($fn:ident, $flag:expr) => {
         pub fn $fn(_env: &mut JNIEnv, on: bool) -> FsResult<()> {
-            TOGGLES.$field.store(on, Ordering::Relaxed);
+            $flag.store(on, Ordering::SeqCst);
             Ok(())
         }
     };
 }
-toggle!(slowdown, slowdown);
-toggle!(loopback, loopback);
-toggle!(undelegated_domains, undelegated_domains);
-toggle!(default_dns_as_fallback, default_dns_as_fallback);
-toggle!(experimental_wireguard, experimental_wireguard);
-toggle!(flood_wireguard, flood_wireguard);
+toggle!(slowdown, SLOWDOWN);
+toggle!(loopback, settings::LOOPINGBACK);
+toggle!(
+    undelegated_domains,
+    settings::SYSTEM_DNS_FOR_UNDELEGATED_DOMAINS
+);
+toggle!(default_dns_as_fallback, settings::DEFAULT_DNS_AS_FALLBACK);
+toggle!(experimental_wireguard, settings::EXPERIMENTAL_WIREGUARD);
+toggle!(flood_wireguard, settings::FLOOD_WIREGUARD);
 
 /// `Intra.transparency(eim, eif)`: endpoint-independent mapping / filtering for UDP.
 pub fn transparency(_env: &mut JNIEnv, eim: bool, eif: bool) -> FsResult<()> {
-    TOGGLES.eim.store(eim, Ordering::Relaxed);
-    TOGGLES.eif.store(eif, Ordering::Relaxed);
+    settings::ENDPOINT_INDEPENDENT_MAPPING.store(eim, Ordering::SeqCst);
+    settings::ENDPOINT_INDEPENDENT_FILTERING.store(eif, Ordering::SeqCst);
     Ok(())
 }
