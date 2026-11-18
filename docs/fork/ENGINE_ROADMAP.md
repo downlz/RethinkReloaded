@@ -16,6 +16,34 @@ The Go engine stays the default until Phase 4. Each phase has an exit gate that 
 
 Total estimate: about 45–50 engineer-weeks.
 
+## Status (2026-11-18)
+
+**Phase 0: in progress.**
+
+Done:
+* `engine/` workspace with licences, NOTICE, cargo-deny, the toolchain pin and 16 KB page alignment.
+* `facade-sync.sh`: gobind Java vendored verbatim at `d3d530ea3e`, plus the javap golden and `natives.tsv`.
+* `jni-gen`: all **1061** natives exported on all four ABIs.
+* Seq refnum runtime, `proxyerror` errors, panic containment with Go-format crash output.
+* Struct store covering 28 classes (616 accessors).
+* Real implementations of `Intra.build/logLevel/setupConsole/setCrashOutput/SELF_UID/lowMem/toggles`.
+* `Backend.newRadixTree` and the full `RadixTree` port.
+* Gradle `-PfirestackRepo=rust` composite build.
+* `api-contract.sh` passes.
+* `./gradlew -PfirestackRepo=rust :app:assembleFdroidFullDebug` builds.
+* The 562-test parity unit subset passes on both engines.
+
+Remaining before the Phase 0 exit gate:
+* `IpTree` port. It needs critbitgo `Net` traversal order, verified against a Go oracle. Until then `Backend.newIpTree()`
+  returns `null`, so the app cannot start with the Rust engine yet.
+* Real `Settings.*` setters and `WgKey` (x25519).
+* Go oracle harness (`engine/tools/go-oracle`) and the JVM host-test module.
+* On-device check that the app launches and the VPN start fails cleanly. No emulator or device was available in the setup session.
+* Go performance baseline captured on reference devices.
+
+Current census: 25 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are
+permanent stubs and 306 natives are still to port.
+
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the
   facade, but they permanently throw `rpn: unsupported`.
