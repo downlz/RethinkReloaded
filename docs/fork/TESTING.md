@@ -105,6 +105,18 @@ adb shell am start -n io.github.downlz.rethinkreloaded/com.celzero.bravedns.ui.a
 | Size | `libgojni.so` size per ABI, compared with Go's (19–21 MB) |
 
 `engine/perf/capture.sh <label>` records PSS, native heap, RSS and thread count of the running app, plus the size of
-`libgojni.so`, as JSON. Baselines are stored as `engine/perf/baseline-<engine>-<firestack-sha>-<device>.json`.
+`libgojni.so`, as JSON. `engine/perf/device-baseline.sh <label> [--no-vpn]` wraps it for a full device run. With
+`ANDROID_SERIAL` set and RethinkReloaded's VPN connected, it adds:
+* a wakeup proxy (context switches per minute across the app's threads);
+* DNS latency through the VPN's DNS address, cached and uncached;
+* TCP connect latency;
+* download throughput together with the app's CPU seconds per GB.
+
+The probe is `engine/e2e/fs-probe`, built with `cargo ndk -t arm64-v8a build --release -p fs-probe`. It runs as the
+shell user, whose traffic goes through the VPN. For the download, serve a large file from a LAN host
+(`python3 -m http.server`) and pass `RR_HTTP_TARGET="<ip> <port> /<file>"`; public test servers are often blocked or
+throttled. Repeat the run with `--no-vpn` (no VPN active) for the network ceiling. Keep the phone on the same Wi-Fi band
+for both runs: one router isolated 2.4 GHz clients from the LAN host. Recorded files contain no SSID, BSSID, MAC or
+device IP. Baselines are stored as `engine/perf/baseline-<engine>-<firestack-sha>-<device>.json`.
 Compare engines only on the same device and build type. Emulator numbers support relative comparison only. Each Phase 1+ exit gate compares against them
 (see [ENGINE_ROADMAP.md](ENGINE_ROADMAP.md)).

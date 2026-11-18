@@ -36,13 +36,37 @@ Delivered in Phase 0:
 * JVM host tests of the real JNI path (`engine/android/host-test`, 8 tests).
 * Go oracle (`tools/go-oracle`, Docker): 18,204 recorded firestack operations, all reproduced by the Rust replay tests
   (`engine/PARITY.md`). It also found 107 inputs on which firestack itself panics.
-* Go baseline on the emulator: `engine/perf/baseline-go-d3d530ea3e-emulator.json`. That is about 157 MB PSS for the whole app
-  with the VPN connected and idle, 71–78 threads, and a 19.8 MB `libgojni.so`. Comparing it with a stub-only Rust
-  engine is not meaningful yet.
+* Go baselines on the emulator (`baseline-go-d3d530ea3e-emulator.json`) and on a physical phone (below).
+
+### Go baseline on a physical device (2026-11-18)
+
+The setup:
+* motorola edge 60 pro, Android 17 (API 37), arm64.
+* Wi-Fi 802.11ac on 5 GHz.
+* `fdroidFullReleaseDebug` build.
+* DNS set to Cloudflare DoH.
+
+Files: `engine/perf/baseline-go-d3d530ea3e-edge60pro.json` (VPN on) and `engine/perf/reference-novpn-edge60pro.json` (no VPN).
+Captured with `engine/perf/device-baseline.sh` and `engine/e2e/fs-probe`.
+
+| Metric | Go engine (VPN on) | No VPN |
+|---|---|---|
+| App PSS, steady idle (screen on) | ~186 MB (native heap ~38 MB, RSS ~242 MB) | n/a |
+| Threads | 86 | n/a |
+| Context switches / min, idle (wakeup proxy) | ~4,800 | n/a |
+| LAN HTTP download (300 MB from a LAN host) | **133 Mbit/s** | 206 Mbit/s (Go costs ~35%) |
+| App CPU per GB downloaded | **86.9 s** | n/a |
+| DNS, cached (via the VPN's DNS) | p50 23.5 ms, p95 26.2 ms | n/a |
+| DNS, uncached | p50 79 ms, p95 2.19 s, 14/40 timed out | UDP 1.1.1.1: p50 49.7 ms, 7/40 lost |
+| `libgojni.so` (arm64) | 19.8 MB | n/a |
+
+TCP connect through the VPN measures about 4 ms because the netstack terminates the handshake locally. It is recorded
+but is not a network latency. The Phase 1 performance gates compare against the VPN-on column, with the same device,
+build type, network and DNS settings.
 
 Carried forward:
-* Go baseline on physical reference devices (arm64 + armv7), including throughput, DNS latency and battery. This needs
-  hardware; the capture script is `engine/perf/capture.sh`.
+* Baseline on an **armv7** device. The edge 60 pro is 64-bit only.
+* A battery run of several hours, using `batterystats` and Battery Historian.
 * Census: 67 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
   stubs and **264** natives remain for Phases 1–3.
 

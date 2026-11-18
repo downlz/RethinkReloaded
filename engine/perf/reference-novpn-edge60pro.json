@@ -1,0 +1,17 @@
+{
+  "label": "reference-novpn-edge60pro",
+  "captured": "2026-11-18T15:00:14Z",
+  "device": "motorola motorola edge 60 pro / Android 17 (API 37) / arm64-v8a",
+  "vpn": null,
+  "network": "Active default network: 698; Wi-Fi standard: 11ac;RSSI: -55;Link speed: 585Mbps;Link speed: 585Mbps;Link speed: 866Mbps;Rx Link speed: 702Mbps;Rx Link speed: 866Mbps",
+  "http_target": "192.168.1.13 8099 /300MB.bin",
+  "firestack_pin": "d3d530ea3e",
+  "screen": "on (charging), idle = no user traffic",
+  "idle": null,
+  "wakeups": null,
+  "dns_uncached": {"cmd":"dns","server":"1.1.1.1:53","mode":"uncached","count":40,"ok":33,"fail":7,"p50_ms":49.70,"p95_ms":57.89,"max_ms":187.02},
+  "dns_cached": {"cmd":"dns","server":"1.1.1.1:53","mode":"cached","count":40,"ok":38,"fail":2,"p50_ms":46.99,"p95_ms":51.78,"max_ms":56.33},
+  "tcp_connect": {"cmd":"tcp","target":"1.1.1.1:443","count":20,"ok":20,"fail":0,"p50_ms":47.96,"p95_ms":1067.09,"max_ms":1068.08},
+  "download": {"cmd":"get","url":"http://192.168.1.13:8099/300MB.bin","connect_ms":55.7,"ttfb_ms":9.1,"bytes":314573007,"seconds":12.21,"mbit_s":206.13},
+  "app_cpu_seconds_per_gb": null
+}

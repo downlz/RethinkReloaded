@@ -22,6 +22,8 @@ Kotlin app runs on it unchanged. Credit for firestack goes to Celzero and the Re
 | `crates/fs-iptree` | critbitgo crit-bit trie port; `RadixTree` and `IpTree` |
 | `crates/fs-wg` | WireGuard (keys now; tunnels in Phase 2) |
 | `android/host-test` | JVM tests of the real JNI path: vendored facade on the desktop JVM against host `libgojni` |
+| `e2e/fs-probe` | on-device probe (DNS / TCP / HTTP throughput) used by `perf/device-baseline.sh` |
+| `perf/` | baseline capture scripts and recorded baselines (Go engine, emulator and physical device) |
 | `tools/go-oracle` | records firestack's own results (in Docker) into `testdata/oracle/<pin>/*.tsv` for replay tests |
 | `tools/facade-sync.sh` | re-vendor the facade + regenerate API files at a new pin |
 | `tools/jni-gen` | generates `crates/fs-jni/src/exports.rs` from `api/natives.tsv` + `crates/fs-jni/impls.tsv` |
