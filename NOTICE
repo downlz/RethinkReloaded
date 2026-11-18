@@ -1,0 +1,43 @@
+RethinkReloaded
+Copyright 2026 RethinkReloaded contributors
+
+RethinkReloaded is a community fork of "Rethink DNS + Firewall + VPN"
+(https://github.com/celzero/rethink-app) and is NOT affiliated with,
+endorsed by, or supported by Celzero.
+
+This product includes software developed by Celzero and the RethinkDNS
+authors and contributors (https://github.com/celzero/rethink-app,
+https://github.com/celzero/rethink-app/graphs/contributors), licensed under
+the Apache License, Version 2.0 (see LICENSE). All original copyright
+notices in source files are retained. Files modified by this fork are listed
+in FORK_CHANGES.md and marked with "[rr]" comments, per Apache-2.0 Sec. 4(b).
+
+Upstream support: https://svc.rethinkdns.com/r/sponsor
+                  https://github.com/sponsors/serverless-dns
+
+Third-party and upstream credits carried by this codebase
+----------------------------------------------------------
+* Celzero / RethinkDNS and its authors - the Rethink DNS + Firewall + VPN
+  Android app (Apache-2.0) and the firestack network engine
+  (https://github.com/celzero/firestack, MPL-2.0).
+* Jigsaw Operations LLC - Intra and outline-go-tun2socks, from which parts of
+  the app and of firestack derive (Apache-2.0).
+* WireGuard LLC - WireGuard Android configuration code (Apache-2.0 / MIT).
+* ezelab - the Android TV flavor ("rethink-tv fork"), Apache-2.0.
+* Google Inc. - billing helper code (Apache-2.0).
+* Translators via Weblate (https://hosted.weblate.org/engage/rethink-dns-firewall/).
+
+Rust network engine (engine/)
+-----------------------------
+The code under engine/ is a Rust port of celzero/firestack and is licensed
+under the Mozilla Public License 2.0 (see engine/LICENSE and engine/NOTICE).
+Each ported file carries the original "Copyright (c) RethinkDNS and its
+authors" notice together with a reference to the firestack file it derives
+from.
+
+Network services
+----------------
+Builds of this fork continue to use public services operated by Celzero /
+serverless-dns (e.g. dl.rethinkdns.com blocklists, sky/max.rethinkdns.com
+resolvers). Their use is subject to RethinkDNS's terms and privacy policy
+(https://rethinkdns.com/privacy). No endorsement is implied.

@@ -1,0 +1,26 @@
+# Licence / advisory / ban checks for the Rust engine's dependency tree.
+name: rr-engine-audit
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "engine/**" ]
+  pull_request:
+    paths: [ "engine/**" ]
+  schedule:
+    - cron: '41 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deny:
+    runs-on: ubuntu-latest
+    if: ${{ hashFiles('engine/Cargo.toml') != '' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: EmbarkStudios/cargo-deny-action@v2
+        with:
+          manifest-path: engine/Cargo.toml
+          command: check advisories bans licenses sources
