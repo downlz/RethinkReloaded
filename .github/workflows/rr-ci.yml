@@ -63,7 +63,6 @@ jobs:
     name: Rust engine
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    if: ${{ hashFiles('engine/Cargo.toml') != '' }}
     steps:
       - uses: actions/checkout@v6
         with:
