@@ -1,0 +1,17 @@
+[package]
+name = "fs-dialers"
+description = "Protected sockets for the RethinkReloaded engine (port of firestack intra/protect + intra/dialers basics)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fs-core = { path = "../fs-core" }
+socket2 = { version = "0.6", features = ["all"] }
+tokio = { workspace = true, features = ["net", "time", "rt", "macros"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "io-util", "rt-multi-thread"] }

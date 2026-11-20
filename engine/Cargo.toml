@@ -14,6 +14,8 @@ authors = ["RethinkReloaded contributors", "RethinkDNS and its authors (firestac
 [workspace.dependencies]
 jni = "0.21"
 parking_lot = "0.12"
+crossbeam-channel = "0.5"
+tokio = { version = "1.47", default-features = false }
 
 [profile.release]
 lto = "fat"
