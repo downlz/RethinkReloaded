@@ -249,7 +249,7 @@ impl DohTransport {
     }
 }
 
-impl Transport for Arc<DohTransport> {
+impl Transport for DohTransport {
     fn id(&self) -> &str {
         &self.id
     }
@@ -265,8 +265,8 @@ impl Transport for Arc<DohTransport> {
     fn p50(&self) -> i64 {
         self.stats.p50()
     }
-    fn query(&self, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
-        let me = self.clone();
+    fn query(self: Arc<Self>, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
+        let me = self;
         Box::pin(async move {
             let start = Instant::now();
             let Some(mut m) = msg::parse(&q) else {

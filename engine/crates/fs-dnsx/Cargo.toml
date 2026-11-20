@@ -1,0 +1,20 @@
+[package]
+name = "fs-dnsx"
+description = "DNS resolver for the RethinkReloaded engine: transport registry, cache, per-query policy (port of firestack intra/dnsx)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fs-core = { path = "../fs-core" }
+fs-dns = { path = "../fs-dns" }
+fs-dialers = { path = "../fs-dialers" }
+hickory-proto = { version = "0.25", default-features = false, features = ["std"] }
+tokio = { workspace = true, features = ["time", "rt", "macros", "sync"] }
+parking_lot.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["time", "rt", "macros", "sync", "rt-multi-thread"] }

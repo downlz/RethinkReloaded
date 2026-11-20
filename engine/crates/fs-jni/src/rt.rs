@@ -109,15 +109,69 @@ pub fn obj_of<T: Any + Send + Sync>(env: &mut JNIEnv, obj: &JObject) -> FsResult
         .map_err(|_| FsError::new(format!("refnum {r}: unexpected type")))
 }
 
+// ---------------------------------------------------------------- class cache
+
+/// Global refs to the classes the engine instantiates, resolved once on an app thread (`Seq.init`). Threads
+/// attached from native code (the callback executor) resolve `FindClass` with the *system* class loader, which
+/// cannot see the app's classes, so they must use these cached refs.
+fn classes() -> &'static Mutex<HashMap<String, jni::objects::GlobalRef>> {
+    static C: OnceLock<Mutex<HashMap<String, jni::objects::GlobalRef>>> = OnceLock::new();
+    C.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+/// Caches `names` (JNI class names). Call from a thread whose class loader sees the facade classes.
+pub fn preload_classes(env: &mut JNIEnv, names: &[&str]) {
+    for n in names {
+        if classes().lock().contains_key(*n) {
+            continue;
+        }
+        match env.find_class(*n) {
+            Ok(c) => {
+                if let Ok(g) = env.new_global_ref(c) {
+                    classes().lock().insert((*n).to_string(), g);
+                }
+            }
+            Err(_) => clear_exception(env),
+        }
+    }
+}
+
+fn cached_class(env: &mut JNIEnv, name: &str) -> FsResult<jni::objects::GlobalRef> {
+    if let Some(g) = classes().lock().get(name).cloned() {
+        return Ok(g);
+    }
+    // not preloaded: only works on threads with the app class loader (JNI calls from Java)
+    let c = env.find_class(name).map_err(|e| {
+        clear_exception(env);
+        FsError::from(e)
+    })?;
+    let g = env.new_global_ref(c)?;
+    classes().lock().insert(name.to_string(), g.clone());
+    Ok(g)
+}
+
+pub fn clear_exception(env: &mut JNIEnv) {
+    if env.exception_check().unwrap_or(false) {
+        let _ = env.exception_clear();
+    }
+}
+
 /// Wraps a Rust value in a new Java proxy object of `class` (JNI name, e.g. `com/celzero/firestack/intra/Mark`
 /// or `com/celzero/firestack/backend/Backend$proxyIpTree`), whose constructor is `(I)V`.
 pub fn new_proxy<'l>(env: &mut JNIEnv<'l>, class: &str, obj: Obj) -> FsResult<JObject<'l>> {
     let r = alloc_refnum(obj);
-    match env.new_object(class, "(I)V", &[JValue::Int(r)]) {
+    let made = cached_class(env, class).and_then(|g| {
+        // SAFETY: the global ref keeps the class alive; JClass is a non-owning view of it.
+        let cls = unsafe { JClass::from_raw(g.as_obj().as_raw()) };
+        env.new_object(&cls, "(I)V", &[JValue::Int(r)])
+            .map_err(FsError::from)
+    });
+    match made {
         Ok(o) => Ok(o),
         Err(e) => {
+            clear_exception(env);
             destroy_ref(r);
-            Err(e.into())
+            Err(e)
         }
     }
 }

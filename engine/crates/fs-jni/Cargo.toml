@@ -20,3 +20,6 @@ tokio = { workspace = true, features = ["sync"] }
 fs-core = { path = "../fs-core" }
 fs-iptree = { path = "../fs-iptree" }
 fs-wg = { path = "../fs-wg" }
+fs-intra = { path = "../fs-intra" }
+fs-dns = { path = "../fs-dns" }
+fs-dnsx = { path = "../fs-dnsx" }

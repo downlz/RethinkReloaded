@@ -105,7 +105,7 @@ impl Dns53Transport {
     }
 }
 
-impl Transport for Arc<Dns53Transport> {
+impl Transport for Dns53Transport {
     fn id(&self) -> &str {
         &self.id
     }
@@ -125,8 +125,8 @@ impl Transport for Arc<Dns53Transport> {
     fn p50(&self) -> i64 {
         self.stats.p50()
     }
-    fn query(&self, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
-        let me = self.clone();
+    fn query(self: Arc<Self>, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
+        let me = self;
         Box::pin(async move {
             let start = Instant::now();
             if q.len() < 12 || msg::parse(&q).is_none() {
@@ -189,7 +189,7 @@ impl Default for BlockAll {
     }
 }
 
-impl Transport for Arc<BlockAll> {
+impl Transport for BlockAll {
     fn id(&self) -> &str {
         crate::ids::BLOCK_ALL
     }
@@ -205,7 +205,7 @@ impl Transport for Arc<BlockAll> {
     fn p50(&self) -> i64 {
         0
     }
-    fn query(&self, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
+    fn query(self: Arc<Self>, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>> {
         Box::pin(async move {
             let m = msg::parse(&q)
                 .ok_or_else(|| QueryError::new(dns_status::BAD_QUERY, "blockall: bad query"))?;

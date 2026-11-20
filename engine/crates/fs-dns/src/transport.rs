@@ -11,6 +11,7 @@
 
 use fs_core::bridge::{BoxFuture, dns_status};
 use parking_lot::Mutex;
+use std::sync::Arc;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::time::Duration;
 
@@ -61,7 +62,7 @@ pub trait Transport: Send + Sync {
     /// p50 latency estimate in millis (`DNSTransport.p50`)
     fn p50(&self) -> i64;
     /// Sends `q` (wire format) via proxy `pid`.
-    fn query(&self, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>>;
+    fn query(self: Arc<Self>, q: Vec<u8>, pid: String) -> BoxFuture<Result<Answer, QueryError>>;
 }
 
 /// Shared bookkeeping for status and latency (a cheap moving p50 estimate).

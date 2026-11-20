@@ -300,6 +300,10 @@ fn main() {
     for (i, p) in &proxies {
         let _ = writeln!(o, "    (\"{i}\", \"{p}\"),");
     }
+    o.push_str("];\n\n/// gobind struct classes (JNI names), instantiated by the engine via `(I)V`.\npub const STRUCT_CLASSES: &[&str] = &[\n");
+    for c in &structs {
+        let _ = writeln!(o, "    \"{}\",", jni_class(c));
+    }
     o.push_str("];\n\n/// Exported JNI symbol of every native (for completeness tests).\npub const NATIVE_SYMBOLS: &[&str] = &[\n");
     let sym = |n: &Native| format!("Java_{}_{}", mangle(&n.class), mangle(&n.method));
     for n in &natives {

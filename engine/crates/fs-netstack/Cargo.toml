@@ -1,0 +1,16 @@
+[package]
+name = "fs-netstack"
+description = "TUN device + userspace TCP/IP stack for the RethinkReloaded engine (replaces firestack's gVisor netstack)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+netstack-smoltcp = "0.2.5"
+futures = "0.3"
+libc = "0.2"
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync"] }
+parking_lot.workspace = true

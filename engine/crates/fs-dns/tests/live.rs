@@ -29,7 +29,7 @@ async fn doh_cloudflare() {
     );
     for name in ["example.com.", "wikipedia.org."] {
         let q = msg::pack(&msg::query(name, RecordType::A, 0xbeef).unwrap()).unwrap();
-        let a = t.query(q, "Exit".into()).await.expect("doh answer");
+        let a = t.clone().query(q, "Exit".into()).await.expect("doh answer");
         let m = msg::parse(&a.msg).unwrap();
         assert_eq!(m.id(), 0xbeef, "query id restored");
         assert!(
@@ -56,7 +56,11 @@ async fn dns53_cloudflare() {
         protector(),
     ));
     let q = msg::pack(&msg::query("example.com.", RecordType::AAAA, 7).unwrap()).unwrap();
-    let a = t.query(q, "Exit".into()).await.expect("dns53 answer");
+    let a = t
+        .clone()
+        .query(q, "Exit".into())
+        .await
+        .expect("dns53 answer");
     let m = msg::parse(&a.msg).unwrap();
     println!(
         "AAAA example.com -> {} in {:?}",

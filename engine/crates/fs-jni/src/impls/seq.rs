@@ -24,6 +24,11 @@ pub fn init(env: &mut JNIEnv) -> FsResult<()> {
     if VM.get().is_none() {
         let _ = VM.set(env.get_java_vm()?);
     }
+    // Seq's static initializer runs on an app thread: resolve every class the engine instantiates now, so that
+    // native-attached threads (callback executor) never need FindClass.
+    let mut names: Vec<&str> = crate::exports::STRUCT_CLASSES.to_vec();
+    names.extend(crate::exports::PROXY_CLASSES.iter().map(|(_, p)| *p));
+    crate::rt::preload_classes(env, &names);
     crate::impls::log::info("rust engine loaded (libgojni)");
     Ok(())
 }
