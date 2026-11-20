@@ -8,6 +8,7 @@
 //! The tunnel: TUN + netstack + resolver + flow handlers, wired to Kotlin through the Bridge.
 
 pub mod flow;
+pub mod icmp;
 pub mod tcp;
 pub mod tunnel;
 pub mod udp;

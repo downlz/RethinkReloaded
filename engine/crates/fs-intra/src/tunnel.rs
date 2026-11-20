@@ -222,15 +222,6 @@ impl Tunnel {
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         let mtu = if tun_mtu > 0 { tun_mtu as usize } else { 1500 };
-        let (netstack, eps) = Netstack::start(
-            tun,
-            Opts {
-                mtu,
-                ..Default::default()
-            },
-        )
-        .map_err(|e| format!("netstack: {e}"))?;
-
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
@@ -238,6 +229,34 @@ impl Tunnel {
             stall: Stall::default(),
             conns: Conns::default(),
         });
+
+        // ICMP echo requests are intercepted before the stack and handled by `icmp::handle`
+        let ns_slot: Arc<std::sync::OnceLock<Weak<Netstack>>> =
+            Arc::new(std::sync::OnceLock::new());
+        let (shi, slot, flood) = (
+            sh.clone(),
+            ns_slot.clone(),
+            Arc::new(crate::icmp::Flood::default()),
+        );
+        let intercept: fs_netstack::Interceptor = Arc::new(move |pkt: &[u8]| {
+            let Some(e) = crate::icmp::parse_echo(pkt) else {
+                return false;
+            };
+            if let Some(ns) = slot.get().and_then(Weak::upgrade) {
+                tokio::spawn(crate::icmp::handle(shi.clone(), ns, flood.clone(), e));
+            }
+            true
+        });
+        let (netstack, eps) = Netstack::start(
+            tun,
+            Opts {
+                mtu,
+                ..Default::default()
+            },
+            Some(intercept),
+        )
+        .map_err(|e| format!("netstack: {e}"))?;
+        let _ = ns_slot.set(Arc::downgrade(&netstack));
         let t = Arc::new(Tunnel {
             sh: sh.clone(),
             netstack,

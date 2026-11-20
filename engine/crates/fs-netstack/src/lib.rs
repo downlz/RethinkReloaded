@@ -28,6 +28,9 @@ use tun::Tun;
 pub use netstack_smoltcp::TcpStream;
 pub use netstack_smoltcp::udp::UdpMsg;
 
+/// Sees every packet read from the TUN before the stack; returns true to consume it (e.g. ICMP echo).
+pub type Interceptor = Arc<dyn Fn(&[u8]) -> bool + Send + Sync>;
+
 /// A running stack bound to a (swappable) TUN device.
 pub struct Netstack {
     tun: Arc<tun::Link>,
@@ -62,11 +65,15 @@ impl Default for Opts {
 
 impl Netstack {
     /// Starts pumping packets between `tun` and a new stack. Must be called within a tokio runtime.
-    pub fn start(tun: Tun, opts: Opts) -> std::io::Result<(Arc<Netstack>, Endpoints)> {
+    pub fn start(
+        tun: Tun,
+        opts: Opts,
+        intercept: Option<Interceptor>,
+    ) -> std::io::Result<(Arc<Netstack>, Endpoints)> {
         let (stack, runner, udp, tcp) = StackBuilder::default()
             .enable_tcp(true)
             .enable_udp(true)
-            .enable_icmp(true) // Phase 1: echo requests are answered by the stack (see docs/fork/ENGINE_ROADMAP.md)
+            .enable_icmp(true) // echo requests are intercepted before the stack (see `Interceptor`)
             .mtu(opts.mtu)
             .stack_buffer_size(1024)
             .udp_buffer_size(1024)
@@ -97,6 +104,11 @@ impl Netstack {
                 match rd.read(&mut buf).await {
                     Ok(0) => continue,
                     Ok(n) => {
+                        if let Some(f) = &intercept
+                            && f(&buf[..n])
+                        {
+                            continue;
+                        }
                         if stack_sink.send(buf[..n].to_vec()).await.is_err() {
                             break;
                         }
@@ -134,6 +146,11 @@ impl Netstack {
                 udp_tx,
             },
         ))
+    }
+
+    /// Writes a raw IP packet to the TUN (e.g. a synthesized ICMP reply).
+    pub async fn write_to_tun(&self, pkt: &[u8]) -> std::io::Result<usize> {
+        self.tun.write(pkt).await
     }
 
     /// Replaces the TUN fd (network change / new VpnService.Builder fd) without dropping connections.
