@@ -12,6 +12,7 @@
 
 use fs_core::bridge::{FlowArgs, Mark, SharedBridge};
 use fs_core::settings;
+use fs_dnsx::Resolver;
 use parking_lot::Mutex;
 use std::collections::HashMap;
 use std::net::SocketAddr;
@@ -44,9 +45,11 @@ impl Verdict {
     }
 }
 
-/// firestack `onFlow` + `judge` (Phase 1: no ALG / blocklists / netstat yet: realips = dst ip, domains empty).
+/// firestack `onFlow` + `judge`. With translation (ALG) off: realips = dst ip; domains = names that recently
+/// resolved to the dst ip (the resolver's reverse map). Blocklists and /proc/net uid lookup are still to come.
 pub async fn decide(
     bridge: &SharedBridge,
+    resolver: &Resolver,
     protocol: i32,
     src: SocketAddr,
     dst: SocketAddr,
@@ -83,7 +86,7 @@ pub async fn decide(
         src: src.to_string(),
         dst: dst.to_string(),
         origdsts: dst.ip().to_string(),
-        domains: String::new(),
+        domains: resolver.domains_for(dst.ip()),
         probable_domains: String::new(),
         blocklists: String::new(),
         dst_is_alg: false,

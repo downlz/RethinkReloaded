@@ -67,11 +67,20 @@ fn unix_millis() -> i64 {
         .unwrap_or(0)
 }
 
+/// ip -> (domains, most recent first; expiry)
+type RdnsMap = HashMap<IpAddr, (Vec<String>, Instant)>;
+
+/// How long an answered IP keeps pointing at its domain(s) (at least as long as cache entries live).
+const RDNS_LIFE: Duration = Duration::from_secs(10 * 60);
+const RDNS_CAPACITY: usize = 64 * 1024;
+const RDNS_MAX_DOMAINS: usize = 8;
+
 pub struct Resolver {
     transports: RwLock<HashMap<String, Arc<dyn Transport>>>,
     cache: Cache,
     listener: Arc<dyn DnsListener>,
     fakedns: Vec<SocketAddr>,
+    rdns: parking_lot::Mutex<RdnsMap>,
 }
 
 impl Resolver {
@@ -86,6 +95,54 @@ impl Resolver {
             cache: Cache::default(),
             listener,
             fakedns,
+            rdns: parking_lot::Mutex::new(HashMap::new()),
+        }
+    }
+
+    /// Domains that recently resolved to `ip` (csv, most recent first), as firestack's ALG gateway `PTR`
+    /// with translation off: fed by every answer the resolver hands to apps.
+    pub fn domains_for(&self, ip: IpAddr) -> String {
+        let m = self.rdns.lock();
+        match m.get(&ip) {
+            Some((d, exp)) if *exp > Instant::now() => d.join(","),
+            _ => String::new(),
+        }
+    }
+
+    /// Records the A/AAAA answers of `ans` for `qname` (and CNAME targets) in the reverse map.
+    fn remember(&self, qname: &str, ans: &[u8]) {
+        let Some(m) = msg::parse(ans) else { return };
+        let ips = msg::answer_ips(&m);
+        if ips.is_empty() {
+            return;
+        }
+        let ttl = Duration::from_secs(msg::max_ttl(&m) as u64);
+        let exp = Instant::now() + RDNS_LIFE.max(ttl);
+        let mut names = vec![qname.trim_end_matches('.').to_ascii_lowercase()];
+        for r in m.answers() {
+            if let hickory_proto::rr::RData::CNAME(c) = r.data() {
+                let n = c.0.to_ascii().trim_end_matches('.').to_ascii_lowercase();
+                if !names.contains(&n) {
+                    names.push(n);
+                }
+            }
+        }
+        let mut map = self.rdns.lock();
+        if map.len() >= RDNS_CAPACITY {
+            let now = Instant::now();
+            map.retain(|_, (_, e)| *e > now);
+            if map.len() >= RDNS_CAPACITY {
+                map.clear();
+            }
+        }
+        for ip in ips {
+            let e = map.entry(ip).or_insert_with(|| (Vec::new(), exp));
+            for n in names.iter().rev() {
+                e.0.retain(|x| x != n);
+                e.0.insert(0, n.clone());
+            }
+            e.0.truncate(RDNS_MAX_DOMAINS);
+            e.1 = exp;
         }
     }
 
@@ -274,6 +331,11 @@ impl Resolver {
         } else {
             start.elapsed().as_secs_f64()
         };
+        if let Some(a) = &answer
+            && smm.blocked_target.is_empty()
+        {
+            self.remember(&smm.qname, a);
+        }
         self.listener.on_response(smm);
         answer
     }
@@ -585,6 +647,16 @@ mod tests {
         assert_eq!(
             pol.responses.lock().last().unwrap().blocked_target,
             "ads.example."
+        );
+        assert_eq!(
+            r.domains_for("93.184.215.14".parse().unwrap()),
+            "example.com",
+            "reverse map from answers"
+        );
+        assert_eq!(
+            r.domains_for("0.0.0.0".parse().unwrap()),
+            "",
+            "blocked answers are not mapped"
         );
 
         // upstream failure: no reply, status reported

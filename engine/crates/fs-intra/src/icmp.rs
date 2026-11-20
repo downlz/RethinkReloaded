@@ -182,7 +182,7 @@ pub async fn handle(sh: Arc<Shared>, ns: Arc<Netstack>, flood: Arc<Flood>, e: Ec
         PROTO_ICMP6
     };
     let (src, dst) = (SocketAddr::new(e.src, 0), SocketAddr::new(e.dst, 0));
-    let v = flow::decide(&sh.bridge, proto, src, dst).await;
+    let v = flow::decide(&sh.bridge, &sh.resolver, proto, src, dst).await;
     let target = flow::target(&v, dst).ip();
     let mut smm = FlowSummary {
         proto: "icmp".into(),

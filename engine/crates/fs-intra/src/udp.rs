@@ -97,7 +97,7 @@ async fn session(
     dst: SocketAddr,
 ) {
     let start = Instant::now();
-    let v = flow::decide(&sh.bridge, PROTO_UDP, src, dst).await;
+    let v = flow::decide(&sh.bridge, &sh.resolver, PROTO_UDP, src, dst).await;
     let target = flow::target(&v, dst);
     let mut smm = FlowSummary {
         proto: "udp".into(),
