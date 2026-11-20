@@ -68,7 +68,21 @@ pub async fn decide(
         return judge(preset);
     }
 
-    let mut uid: i32 = -1; // FilterProc (/proc/net lookup) arrives in Phase 1C
+    // FilterProc (Android 9 and older): the owner comes from /proc/net; otherwise Kotlin finds it in preflow
+    let mut uid: i32 = -1;
+    if block_mode == settings::BLOCK_MODE_FILTER_PROC {
+        let proto = match protocol {
+            fs_core::bridge::PROTO_TCP => "tcp",
+            fs_core::bridge::PROTO_UDP => "udp",
+            _ => "",
+        };
+        if !proto.is_empty()
+            && let Ok(Some(u)) =
+                tokio::task::spawn_blocking(move || crate::netstat::find_uid(proto, src, dst)).await
+        {
+            uid = u as i32;
+        }
+    }
     let pre = tokio::time::timeout(
         PREFLOW_TIMEOUT,
         bridge.preflow(protocol, uid, src.to_string(), dst.to_string()),

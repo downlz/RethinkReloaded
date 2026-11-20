@@ -32,6 +32,22 @@ replayed by the Rust tests (`crates/*/tests/oracle.rs`). At `d3d530ea3e`:
 * `RadixTree.delAll(prefix)` also deletes the empty key, if present. firestack seeds its delete list with ten nil keys
   (`make([][]byte, 10)`).
 
+## Phase 1 notes
+* The TCP handshake with the app completes before the policy decision, as in firestack with happy eyeballs off.
+  Blocked connections are closed after the stall, not reset.
+* Upstream DNS failures send **no reply** to the app, as firestack.
+* ICMP echo replies are synthesized whenever the probe socket opened, even if the remote stayed silent, as firestack.
+* `onPrequery` is not called. Kotlin always returns null for it; it will be wired up if it ever carries policy.
+* `Goos` (Go's system resolver) is served by the `System` transport, i.e. the network's DNS servers set via
+  `setSystemDNS`.
+* DoH POSTs carry `content-length`. Go always sends it, and Cloudflare's h2 front end rejects requests without it.
+* Not yet ported:
+  * cache stale-while-revalidate and coalescing of identical in-flight queries;
+  * UDP endpoint-independent mapping (`Intra.transparency`);
+  * ALG translation (`Resolver.translate(true, …)`);
+  * pcap.
+  `Tunnel.stat()` still throws; Kotlin catches it.
+
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.

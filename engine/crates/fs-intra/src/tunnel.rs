@@ -368,6 +368,19 @@ impl Tunnel {
     }
 
     /// `Intra.addDNSProxy(t, id, ipportcsv)` / `Intra.setSystemDNS(t, ipcsv)`.
+    /// `Intra.addDoTTransport(t, id, url, ipcsv)`.
+    pub fn add_dot(&self, id: &str, url: &str, ipcsv: &str) -> Result<(), String> {
+        let t = fs_dns::dot::DotTransport::new(
+            id,
+            url,
+            parse_ips(ipcsv),
+            self.sh.protector.clone(),
+            Some(self.host_resolver()),
+        )?;
+        self.sh.resolver.add(Arc::new(t));
+        Ok(())
+    }
+
     pub fn add_dns53(&self, id: &str, csv: &str) -> Result<(), String> {
         let servers = Dns53Transport::parse_servers(csv);
         if servers.is_empty() {

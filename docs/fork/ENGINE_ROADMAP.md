@@ -70,7 +70,34 @@ Carried forward:
 * Census: 67 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
   stubs and **264** natives remain for Phases 1–3.
 
-**Next: Phase 1** (netstack, dialers, DNS transports, resolver/ALG, blocklists).
+### Phase 1 progress (2026-11-20)
+
+**Phase 1: in progress.** The app runs a working VPN on the Rust engine (emulator, `-PfirestackRepo=rust`):
+* DNS answers through the fake DNS address; warm-cache p50 is 6.4 ms, including Kotlin's `onQuery` over JNI.
+* HTTP/TCP and UDP flows are relayed over protected sockets, with Kotlin's `preflow`/`flow` verdicts applied.
+* Domains reach Kotlin's firewall.
+* ping works.
+
+| Area | Status |
+|---|---|
+| JNI callback executor (protect / flow / dns / notify lanes), Bridge over Kotlin | done |
+| Protected sockets (`bind4`/`bind6` before connect; tcp, udp, icmp) | done |
+| DNS messages (RData, padding, blocked answers), DoH (h2), DoT, DNS53, BlockAll | done (live-tested) |
+| Resolver: onQuery → `[Cache]tid[:pid]` → cache → upstream → onUpstreamAnswer → onResponse | done |
+| Default DNS (DoH with seeds, DNS53, system), System DNS, DNS proxy | done |
+| TUN + netstack (netstack-smoltcp), fd swap / unlink / restart | done |
+| TCP relay (half-close), UDP sessions (120 s idle), DNS over UDP/TCP to the fake DNS address | done |
+| Flow decision (preflow 5 s, flow 15 s, judge, Mark.IP, Block stall, CloseConns) | done |
+| ICMP echo (probe socket, synthesized reply, unreachable when blocked, flood stall) | done |
+| Domains in Flow (reverse map from DNS answers) | done |
+| `/proc/net` uid lookup (Android 9 and older) | done (unit-tested; needs an API ≤ 28 device) |
+| Rethink blocklists: gotrie port + blockstamps (`setRdnsLocal/Remote`, RDNS) | **next (1D)** |
+| UDP endpoint-independent mapping/filtering (`Intra.transparency`) | todo |
+| Cache stale-serving + query coalescing; ALG translation | todo |
+| Performance gate vs the Go baseline (phone) | todo (1E) |
+
+Census: 137 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
+stubs and 194 natives remain.
 
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the

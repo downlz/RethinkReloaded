@@ -69,3 +69,28 @@ async fn dns53_cloudflare() {
     );
     assert_eq!(m.id(), 7);
 }
+
+#[tokio::test]
+#[ignore]
+async fn dot_cloudflare() {
+    let t = Arc::new(
+        fs_dns::dot::DotTransport::new(
+            "Plus2dot",
+            "tls://one.one.one.one",
+            vec!["1.1.1.1".parse().unwrap()],
+            protector(),
+            None,
+        )
+        .unwrap(),
+    );
+    let q = msg::pack(&msg::query("example.org.", RecordType::A, 0x77).unwrap()).unwrap();
+    let a = t.clone().query(q, "Exit".into()).await.expect("dot answer");
+    let m = msg::parse(&a.msg).unwrap();
+    println!(
+        "DoT example.org -> {} in {:?}",
+        msg::interesting_rdata(Some(&m)),
+        a.latency
+    );
+    assert_eq!(m.id(), 0x77);
+    assert!(!msg::answer_ips(&m).is_empty());
+}

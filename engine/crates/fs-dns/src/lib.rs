@@ -9,6 +9,7 @@
 
 pub mod dns53;
 pub mod doh;
+pub mod dot;
 pub mod msg;
 pub mod tls;
 pub mod transport;

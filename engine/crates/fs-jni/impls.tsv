@@ -137,3 +137,4 @@ com.celzero.firestack.backend.Backend$proxyProxy	pause	tunnel::p_pause
 com.celzero.firestack.backend.Backend$proxyProxy	resume	tunnel::p_resume
 com.celzero.firestack.backend.Backend$proxyProxy	refresh	tunnel::p_refresh
 com.celzero.firestack.backend.Backend$proxyProxy	stop	tunnel::p_stop
+com.celzero.firestack.intra.Intra	addDoTTransport	tunnel::add_dot

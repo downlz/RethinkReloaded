@@ -4604,7 +4604,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDoHTransport2<'
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDoTTransport<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring, a3: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDoTTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; let a3 = rt::jstr(env, &unsafe { JString::from_raw(a3) })?; rt::unimplemented("Intra.addDoTTransport") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDoTTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; let a3 = rt::jstr(env, &unsafe { JString::from_raw(a3) })?; crate::impls::tunnel::add_dot(env, a0, a1, a2, a3) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addODoHTransport<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring, a3: sys::jstring, a4: sys::jstring) -> () {
@@ -5396,5 +5396,5 @@ pub extern "system" fn Java_go_Universe_00024proxyerror_error<'l>(env: *mut sys:
 }
 
 /// Natives with a real implementation (impls + struct accessors + runtime).
-pub const fn implemented_count() -> usize { 761 }
-pub const STUB_CENSUS: (usize, usize) = (195, 105); // (unimplemented, rpn)
+pub const fn implemented_count() -> usize { 762 }
+pub const STUB_CENSUS: (usize, usize) = (194, 105); // (unimplemented, rpn)

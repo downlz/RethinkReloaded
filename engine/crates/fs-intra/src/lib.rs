@@ -9,6 +9,7 @@
 
 pub mod flow;
 pub mod icmp;
+pub mod netstat;
 pub mod tcp;
 pub mod tunnel;
 pub mod udp;

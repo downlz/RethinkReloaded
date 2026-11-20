@@ -202,6 +202,17 @@ pub fn add_doh2(
     Ok(tunnel_of(env, &t)?.add_doh(&id, &url, &ipcsv)?)
 }
 
+/// `Intra.addDoTTransport(t, id, url, ipcsv)`
+pub fn add_dot(
+    env: &mut JNIEnv,
+    t: JObject,
+    id: String,
+    url: String,
+    ipcsv: String,
+) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_dot(&id, &url, &ipcsv)?)
+}
+
 /// `Intra.addDNSProxy(t, id, ipportcsv)`
 pub fn add_dns_proxy(env: &mut JNIEnv, t: JObject, id: String, csv: String) -> FsResult<()> {
     Ok(tunnel_of(env, &t)?.add_dns53(&id, &csv)?)
