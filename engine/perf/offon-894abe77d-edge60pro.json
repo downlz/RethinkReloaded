@@ -1,0 +1,11 @@
+{
+  "captured": "2026-11-21T11:30:00Z",
+  "device": "motorola edge 60 pro / Android 17 / arm64-v8a",
+  "method": "engine/perf/offon.sh: fresh process with the VPN off, then START; median of 6 samples after 60 s settle (MB)",
+  "runs": [
+    {"engine": "go",   "round": 1, "off": {"pss": 124, "native": 28, "graphics": 31}, "on": {"pss": 152, "native": 32, "graphics": 36}},
+    {"engine": "rust", "round": 1, "off": {"pss": 108, "native": 24, "graphics": 31}, "on": {"pss": 130, "native": 29, "graphics": 36}},
+    {"engine": "go",   "round": 2, "off": {"pss": 116, "native": 29, "graphics": 31}, "on": {"pss": 146, "native": 34, "graphics": 36}},
+    {"engine": "rust", "round": 2, "off": {"pss": 101, "native": 29, "graphics": 31}, "on": {"pss": 125, "native": 36, "graphics": 36}}
+  ]
+}

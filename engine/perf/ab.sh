@@ -43,15 +43,21 @@ for r in $(seq 1 "$rounds"); do
     [ "$owner" = $pkg ] || { echo "round $r $engine: VPN not up (owner '$owner')" >&2; exit 1; }
     pid=$(sh pidof $pkg)
     sleep 60 # settle
-    pss=()
+    pss=(); nat=(); dal=(); gfx=()
     for _ in $(seq 1 6); do
-      pss+=("$(sh dumpsys meminfo "$pid" | awk '/TOTAL PSS:/ && !d {print $3; d=1}')"); sleep 5
+      m=$(sh dumpsys meminfo "$pid")
+      # App Summary rows (PSS, KB): "Native Heap:", "Java Heap:", "Graphics:", and the total
+      pss+=("$(echo "$m" | awk '/TOTAL PSS:/ && !d {print $3; d=1}')")
+      nat+=("$(echo "$m" | awk '/^ *Native Heap:/ && !d {print $3; d=1}')")
+      dal+=("$(echo "$m" | awk '/^ *Java Heap:/ && !d {print $3; d=1}')")
+      gfx+=("$(echo "$m" | awk '/^ *Graphics:/ && !d {print $2; d=1}')")
+      sleep 5
     done
     c0=$(ctx "$pid"); sleep 60; c1=$(ctx "$pid")
     thr=$(sh "ls /proc/$pid/task | wc -l")
     dns=$(sh $probe dns 10.111.222.3:53 40 cached)
-    runs="$runs{\"round\":$r,\"engine\":\"$engine\",\"pss_kb\":[$(IFS=,; echo "${pss[*]}")],\"ctx_per_min\":$((c1 - c0)),\"threads\":$thr,\"dns_cached\":$dns},"
-    echo "round $r $engine: pss ${pss[*]} ctx/min $((c1 - c0))" >&2
+    runs="$runs{\"round\":$r,\"engine\":\"$engine\",\"pss_kb\":[$(IFS=,; echo "${pss[*]}")],\"native_heap_kb\":[$(IFS=,; echo "${nat[*]}")],\"java_heap_kb\":[$(IFS=,; echo "${dal[*]}")],\"graphics_kb\":[$(IFS=,; echo "${gfx[*]}")],\"ctx_per_min\":$((c1 - c0)),\"threads\":$thr,\"dns_cached\":$dns},"
+    echo "round $r $engine: pss ${pss[5]} native ${nat[5]} java ${dal[5]} graphics ${gfx[5]} ctx/min $((c1 - c0))" >&2
   done
 done
 cat <<JSON

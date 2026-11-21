@@ -177,9 +177,23 @@ so single runs are not meaningful; the A/B rounds are.
 Notes:
 * Screen-off windows: one per engine, back to back, with the charger reported unplugged and Doze not forced.
 * Startup runs: the phone was locked; TotalTime measures the same launch for both engines.
-* The memory gate is the one miss. Rust's idle PSS is consistently lower than Go's, but not by 20% in this session.
-  Next steps: separate native heap from graphics in `ab.sh`, look at the 46 MB native heap (engine plus app
-  libraries), and check whether the 80% target was set from the overstated Go baseline.
+* The memory gate is the one miss. Follow-up runs split it up (`ab2-*.json`, `offon-*.json`):
+
+  | Median (MB) | Go | Rust |
+  |---|---|---|
+  | Whole-app PSS, VPN on (A/B, 3 rounds) | 143.5 | 124.4 (−13%) |
+  | Same without graphics (equal for both engines: 34) | 109 | 90.5 (−17%) |
+  | Fresh process, VPN off (2 rounds) | 124, 116 | 108, 101 (−15) |
+  | Tunnel cost, VPN off → on (2 rounds) | +28, +30 | +22, +24 (−20%) |
+
+  * The engines' Java heap (13) and graphics are equal.
+  * Go keeps its heap outside "Native Heap", so Rust's higher native heap (37 against 30) is not an extra cost.
+  * On-device blocklists were off, and only 5 TCP connections were open, so neither the trie nor per-connection
+    buffers explain it.
+  * Of Rust's +24 MB tunnel cost, about 7 MB is native heap and 5 MB graphics. The rest is engine code pages and
+    thread stacks, so the next lever is code size (opt-level, codegen) rather than allocations (Phase 4).
+  * The gate compares whole-app PSS, which the app's fixed costs dominate. Consider restating it as the engine's own
+    footprint.
 
 Findings (app-side, both engines):
 * After an install, the app sometimes stops its own VPN right after starting it. Two "start VPN" calls race and the
