@@ -140,8 +140,8 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
 * `DNSTransport.measure` follows firestack `Perf`, but uses its preset domains instead of hosts sampled from the IP
   map. Percentiles are exact rather than P² estimates. `getRelay` is null: no transport here dials through a
   relay proxy registered under its id.
-* `http://` DoH URLs (firestack: HTTPS without certificate checks, used by Kotlin's "insecure" Plus members) are
-  rejected; such members are skipped.
+* As firestack, `http://` DoH URLs mean HTTPS without certificate verification, and DoT verifies certificates only
+  for `tls:`/`tls://` URLs. Kotlin uses both for resolvers the user marked insecure, as Plus members.
 
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.

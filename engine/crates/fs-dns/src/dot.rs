@@ -32,6 +32,8 @@ pub struct DotTransport {
     seeds: Vec<IpAddr>,
     resolve_host: Option<HostResolver>,
     dialer: SharedDial,
+    /// skip certificate verification (no `tls:` scheme)
+    insecure: bool,
     stats: Stats,
 }
 
@@ -43,10 +45,13 @@ impl DotTransport {
         dialer: SharedDial,
         resolve_host: Option<HostResolver>,
     ) -> Result<Self, String> {
-        let hp = url
-            .trim()
+        // firestack: certificates are verified only for `tls://` (or `tls:`) URLs; bare hosts skip verification
+        let u = url.trim();
+        let insecure = !u.starts_with("tls:");
+        let hp = u
             .strip_prefix("tls://")
-            .unwrap_or(url.trim())
+            .or_else(|| u.strip_prefix("tls:"))
+            .unwrap_or(u)
             .trim_end_matches('/');
         if hp.is_empty() {
             return Err("dot: empty url".into());
@@ -67,6 +72,7 @@ impl DotTransport {
             seeds,
             resolve_host,
             dialer,
+            insecure,
             stats: Stats::default(),
         })
     }
@@ -111,9 +117,13 @@ impl DotTransport {
             };
             let name = ServerName::try_from(self.host.clone())
                 .map_err(|e| QueryError::new(dns_status::INTERNAL_ERROR, e.to_string()))?;
-            let mut s = match tokio_rustls::TlsConnector::from(tls::client_config(&[b"dot"]))
-                .connect(name, tcp)
-                .await
+            let mut s = match tokio_rustls::TlsConnector::from(if self.insecure {
+                tls::client_config_insecure(&[b"dot"])
+            } else {
+                tls::client_config(&[b"dot"])
+            })
+            .connect(name, tcp)
+            .await
             {
                 Ok(s) => s,
                 Err(e) => {

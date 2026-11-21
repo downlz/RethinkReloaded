@@ -43,12 +43,14 @@ pub struct DohTransport {
     dialer: SharedDial,
     conn: tokio::sync::Mutex<Option<h2::client::SendRequest<Bytes>>>,
     use_get: AtomicBool,
+    /// `http://` URL: skip certificate verification
+    insecure: bool,
     stats: Stats,
 }
 
 impl DohTransport {
-    /// `url` must be `https://…` (firestack also accepts `http://` meaning https without verification; not
-    /// supported here: rejected).
+    /// `url` is `https://…`; `http://…` means https without certificate verification (firestack: Kotlin's
+    /// "insecure" resolvers).
     pub fn new(
         id: &str,
         url: &str,
@@ -56,6 +58,12 @@ impl DohTransport {
         dialer: SharedDial,
         resolve_host: Option<HostResolver>,
     ) -> Result<Self, String> {
+        let insecure = url.trim_start().to_ascii_lowercase().starts_with("http://");
+        let url = if insecure {
+            format!("https://{}", &url.trim_start()[7..])
+        } else {
+            url.to_string()
+        };
         let uri: http::Uri = url
             .parse()
             .map_err(|e| format!("doh: bad url {url}: {e}"))?;
@@ -78,6 +86,7 @@ impl DohTransport {
             dialer,
             conn: tokio::sync::Mutex::new(None),
             use_get: AtomicBool::new(false),
+            insecure,
             stats: Stats::default(),
         })
     }
@@ -120,7 +129,11 @@ impl DohTransport {
             };
             let name = ServerName::try_from(self.host.clone())
                 .map_err(|e| QueryError::new(dns_status::INTERNAL_ERROR, e.to_string()))?;
-            let tls = tokio_rustls::TlsConnector::from(tls::client_config(&[b"h2"]));
+            let tls = tokio_rustls::TlsConnector::from(if self.insecure {
+                tls::client_config_insecure(&[b"h2"])
+            } else {
+                tls::client_config(&[b"h2"])
+            });
             let stream =
                 match tokio::time::timeout(TLS_HANDSHAKE_TIMEOUT, tls.connect(name, tcp)).await {
                     Ok(Ok(s)) => s,

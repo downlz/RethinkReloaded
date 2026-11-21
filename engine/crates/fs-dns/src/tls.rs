@@ -54,3 +54,63 @@ pub fn client_config(alpn: &[&[u8]]) -> Arc<ClientConfig> {
     cfg.alpn_protocols = alpn.iter().map(|p| p.to_vec()).collect();
     Arc::new(cfg)
 }
+
+/// Accepts any server certificate (handshake signatures are still checked). Only for what the user marked
+/// insecure: firestack's `http://` DoH and scheme-less DoT URLs (`InsecureSkipVerify`).
+#[derive(Debug)]
+struct NoVerify(Arc<rustls::crypto::CryptoProvider>);
+
+impl rustls::client::danger::ServerCertVerifier for NoVerify {
+    fn verify_server_cert(
+        &self,
+        _: &CertificateDer<'_>,
+        _: &[CertificateDer<'_>],
+        _: &rustls_pki_types::ServerName<'_>,
+        _: &[u8],
+        _: rustls_pki_types::UnixTime,
+    ) -> Result<rustls::client::danger::ServerCertVerified, rustls::Error> {
+        Ok(rustls::client::danger::ServerCertVerified::assertion())
+    }
+    fn verify_tls12_signature(
+        &self,
+        msg: &[u8],
+        cert: &CertificateDer<'_>,
+        dss: &rustls::DigitallySignedStruct,
+    ) -> Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error> {
+        rustls::crypto::verify_tls12_signature(
+            msg,
+            cert,
+            dss,
+            &self.0.signature_verification_algorithms,
+        )
+    }
+    fn verify_tls13_signature(
+        &self,
+        msg: &[u8],
+        cert: &CertificateDer<'_>,
+        dss: &rustls::DigitallySignedStruct,
+    ) -> Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error> {
+        rustls::crypto::verify_tls13_signature(
+            msg,
+            cert,
+            dss,
+            &self.0.signature_verification_algorithms,
+        )
+    }
+    fn supported_verify_schemes(&self) -> Vec<rustls::SignatureScheme> {
+        self.0.signature_verification_algorithms.supported_schemes()
+    }
+}
+
+/// Client config that skips certificate verification (see [`NoVerify`]).
+pub fn client_config_insecure(alpn: &[&[u8]]) -> Arc<ClientConfig> {
+    let provider = Arc::new(rustls::crypto::ring::default_provider());
+    let mut cfg = ClientConfig::builder_with_provider(provider.clone())
+        .with_protocol_versions(&[&rustls::version::TLS13, &rustls::version::TLS12])
+        .expect("tls versions")
+        .dangerous()
+        .with_custom_certificate_verifier(Arc::new(NoVerify(provider)))
+        .with_no_client_auth();
+    cfg.alpn_protocols = alpn.iter().map(|p| p.to_vec()).collect();
+    Arc::new(cfg)
+}
