@@ -8,6 +8,10 @@
 //! `&this` (for instance methods) and the converted arguments, and returns `FsResult<T>`.
 
 pub mod backend;
+pub mod bridge;
 pub mod intra;
 pub mod log;
+pub mod rdns;
 pub mod seq;
+pub mod settings;
+pub mod tunnel;

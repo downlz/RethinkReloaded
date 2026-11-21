@@ -15,4 +15,12 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 jni = { version = "=0.21.1", default-features = false }
 parking_lot.workspace = true
+crossbeam-channel.workspace = true
+tokio = { workspace = true, features = ["sync"] }
+fs-core = { path = "../fs-core" }
 fs-iptree = { path = "../fs-iptree" }
+fs-wg = { path = "../fs-wg" }
+fs-intra = { path = "../fs-intra" }
+fs-dns = { path = "../fs-dns" }
+fs-dnsx = { path = "../fs-dnsx" }
+fs-blocklist = { path = "../fs-blocklist" }

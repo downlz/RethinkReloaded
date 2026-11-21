@@ -1,0 +1,19 @@
+[package]
+name = "fs-intra"
+description = "Tunnel orchestration and flow handlers for the RethinkReloaded engine (port of firestack intra/)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fs-core = { path = "../fs-core" }
+fs-dialers = { path = "../fs-dialers" }
+fs-dns = { path = "../fs-dns" }
+fs-dnsx = { path = "../fs-dnsx" }
+fs-netstack = { path = "../fs-netstack" }
+tokio = { workspace = true, features = ["net", "time", "rt", "rt-multi-thread", "macros", "sync", "io-util"] }
+futures = "0.3"
+parking_lot.workspace = true

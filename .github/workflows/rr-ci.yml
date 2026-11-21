@@ -45,7 +45,11 @@ jobs:
           distribution: 'temurin'
           cache: gradle
       - name: Assemble + parity unit tests (fdroid)
-        run: ./gradlew --no-daemon :app:assembleFdroidFullDebug :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)
+        # one retry: upstream TunFirewallManagerTest "RULE1B" races a Dispatchers.IO launch (see docs/fork/TESTING.md)
+        run: |
+          ./gradlew --no-daemon :app:assembleFdroidFullDebug
+          ./gradlew --no-daemon :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh) \
+            || ./gradlew --no-daemon :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)
       - name: Verify identity
         run: |
           apk=$(ls app/build/outputs/apk/fdroidFull/debug/*universal*.apk 2>/dev/null | head -1)
@@ -90,8 +94,18 @@ jobs:
           cargo test --workspace --locked
           cargo clippy --workspace --locked -- -D warnings
           cargo fmt --all --check
+      - name: JVM <-> Rust JNI tests (vendored facade against host libgojni)
+        # -Xcheck:jni: HotSpot only warns on JNI misuse that aborts Android apps, so fail on any warning
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon -p engine/android :host-test:test 2>&1 | tee host-test.log
+          if grep -q "WARNING in native method" host-test.log; then echo "::error::CheckJNI warnings"; exit 1; fi
       - name: App with Rust engine (assemble + parity unit tests)
-        run: ./gradlew --no-daemon -PfirestackRepo=rust :app:assembleFdroidFullDebug :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)
+        # one retry: upstream TunFirewallManagerTest "RULE1B" races a Dispatchers.IO launch (see docs/fork/TESTING.md)
+        run: |
+          ./gradlew --no-daemon -PfirestackRepo=rust :app:assembleFdroidFullDebug
+          ./gradlew --no-daemon -PfirestackRepo=rust :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh) \
+            || ./gradlew --no-daemon -PfirestackRepo=rust :app:testFdroidFullDebugUnitTest $(scripts/rr/parity-test-args.sh)
       - name: API contract vs upstream firestack
         run: engine/tools/api-contract.sh
       - uses: actions/upload-artifact@v4

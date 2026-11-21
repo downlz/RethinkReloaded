@@ -17,6 +17,7 @@
 
 #[rustfmt::skip]
 mod exports;
+pub mod cbexec;
 pub mod impls;
 pub mod rt;
 

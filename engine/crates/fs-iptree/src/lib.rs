@@ -7,6 +7,10 @@
 
 //! Thread-safe tries exposed to Kotlin as `backend.RadixTree` and `backend.IpTree`.
 
+pub mod critbit;
+pub mod iptree;
+pub mod net;
 pub mod radix;
 
+pub use iptree::IpTree;
 pub use radix::RadixTree;
