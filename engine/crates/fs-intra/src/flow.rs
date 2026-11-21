@@ -325,8 +325,14 @@ mod tests {
         );
         // dial order (firestack makeIPPorts): the destination first unless it was an ALG address
         let dst: SocketAddr = "93.184.215.14:443".parse().unwrap();
-        let real: Vec<IpAddr> = vec!["93.184.215.14".parse().unwrap(), "93.184.215.15".parse().unwrap()];
-        let mut v = Verdict { realips: real.clone(), ..Default::default() };
+        let real: Vec<IpAddr> = vec![
+            "93.184.215.14".parse().unwrap(),
+            "93.184.215.15".parse().unwrap(),
+        ];
+        let mut v = Verdict {
+            realips: real.clone(),
+            ..Default::default()
+        };
         let t = targets(&v, dst);
         assert_eq!((t[0], t.len()), (dst, 2));
         v.undid_alg = true;
@@ -335,7 +341,11 @@ mod tests {
         assert_eq!(t.len(), 2);
         assert!(t.iter().all(|a| real.contains(&a.ip()) && a.port() == 443));
         v.realips = vec!["0.0.0.0".parse().unwrap()];
-        assert_eq!(targets(&v, alg), vec![alg], "nothing dialable: the destination as-is");
+        assert_eq!(
+            targets(&v, alg),
+            vec![alg],
+            "nothing dialable: the destination as-is"
+        );
         let s = Stall::default();
         assert_eq!(s.delay("k"), Duration::ZERO);
         assert!(s.delay("k") >= Duration::from_secs(1));
