@@ -175,3 +175,15 @@ com.celzero.firestack.backend.Backend$proxyServer	start	services::s_start
 com.celzero.firestack.backend.Backend$proxyServer	status	services::s_status
 com.celzero.firestack.backend.Backend$proxyServer	stop	services::s_stop
 com.celzero.firestack.backend.Backend$proxyServer	type	services::s_type
+# --- phase 3: Rethink Plus and the DNSCrypt multi-server
+com.celzero.firestack.backend.Backend$proxyDNSResolver	getMult	mult::get_mult
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	add	mult::m_add
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	get	mult::m_get
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	getIPs	mult::m_get_ips
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	liveTransports	mult::m_live_transports
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	refresh	mult::m_refresh
+com.celzero.firestack.backend.Backend$proxyDNSTransportMult	remove	mult::m_remove
+com.celzero.firestack.backend.Backend$proxyDNSTransport	measure	tunnel::tr_measure
+com.celzero.firestack.backend.Backend$proxyDNSTransport	getRelay	tunnel::tr_get_relay
+com.celzero.firestack.intra.Intra$proxyDefaultDNS	measure	tunnel::tr_measure
+com.celzero.firestack.intra.Intra$proxyDefaultDNS	getRelay	tunnel::tr_get_relay

@@ -188,7 +188,9 @@ impl OdohTransport {
             .ok_or_else(|| "odoh: no odoh configs found".into())
     }
 
-    async fn config_from_well_known(&self) -> Result<(ObliviousDoHConfigContents, Duration), String> {
+    async fn config_from_well_known(
+        &self,
+    ) -> Result<(ObliviousDoHConfigContents, Duration), String> {
         let req = Req {
             method: "GET",
             path_and_query: WELL_KNOWN.into(),

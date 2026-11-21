@@ -128,6 +128,21 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
     from `/.well-known/odohconfigs`, cached 1 h. The source that worked last goes first.
   * A client error (4xx) drops the cached config.
 
+* Rethink Plus (firestack `dnsx/plus.go`):
+  * Transports with ids prefixed `Plus` join Plus, without `onDNSAdded`; `get` of such an id is Plus itself.
+  * Each query tries up to six members in this order: the one that answered last, the complete ones by p50,
+    Default, fresh or soft-failed ones, then recoverable ones. Errored ones are added when fewer than six remain.
+  * The order follows the Plus strategy (safest, random, fastest, robust) and the Plus filter (ad-block, security,
+    family; matched on the member's address, as firestack). The order is reused for 10 s.
+  * SERVFAIL, blocked and error answers move on to the next member. Empty answers do too, until half the tries are
+    spent.
+  * `DNSResolver.getMult` serves `Plus` and `DcProxy`.
+* `DNSTransport.measure` follows firestack `Perf`, but uses its preset domains instead of hosts sampled from the IP
+  map. Percentiles are exact rather than P² estimates. `getRelay` is null: no transport here dials through a
+  relay proxy registered under its id.
+* `http://` DoH URLs (firestack: HTTPS without certificate checks, used by Kotlin's "insecure" Plus members) are
+  rejected; such members are skipped.
+
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.

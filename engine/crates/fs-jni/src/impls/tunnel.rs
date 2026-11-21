@@ -480,6 +480,46 @@ pub fn tr_status(env: &mut JNIEnv, this: &JObject) -> FsResult<i32> {
         AnyTransport::D(_) => dns_status::START,
     })
 }
+/// `measure(mid, n, seconds)`: blocks for up to `seconds` (10..60) while it queries.
+pub fn tr_measure<'l>(
+    env: &mut JNIEnv<'l>,
+    this: &JObject,
+    mid: String,
+    n: i32,
+    seconds: i32,
+) -> FsResult<JObject<'l>> {
+    let t = match transport(env, this)? {
+        AnyTransport::T(t) => Some(t),
+        AnyTransport::D(_) => None, // a Default spec outside a tunnel has nothing to measure
+    };
+    let m = fs_intra::runtime().block_on(fs_dnsx::perf::measure(t, &mid, n, seconds));
+    let s = rt::Struct::new("com/celzero/firestack/backend/DNSMeasurement");
+    for (k, v) in [
+        ("MID", m.mid),
+        ("Domains", m.domains),
+        ("Errors", m.errors),
+        ("Addrs", m.addrs),
+    ] {
+        s.set(k, rt::Field::Str(v));
+    }
+    for (k, v) in [
+        ("Max", m.max),
+        ("Min", m.min),
+        ("P50", m.p50),
+        ("P95", m.p95),
+        ("Jitter", m.jitter),
+    ] {
+        s.set(k, rt::Field::I64(v));
+    }
+    s.set("Success", rt::Field::I32(m.success));
+    s.set("Seconds", rt::Field::I32(m.seconds));
+    rt::new_struct_object(env, s)
+}
+/// `getRelay()`: no transport here dials through a relay proxy of its own (firestack: DoH/DNSCrypt with a proxy
+/// registered under the transport's id), so null.
+pub fn tr_get_relay<'l>(_env: &mut JNIEnv<'l>, _this: &JObject) -> FsResult<JObject<'l>> {
+    Ok(JObject::null())
+}
 pub fn tr_p50(env: &mut JNIEnv, this: &JObject) -> FsResult<i64> {
     Ok(match transport(env, this)? {
         AnyTransport::T(t) => t.p50(),

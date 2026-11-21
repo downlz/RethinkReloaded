@@ -47,7 +47,9 @@ fn unix_millis() -> i64 {
 }
 
 pub struct Resolver {
-    transports: RwLock<HashMap<String, Arc<dyn Transport>>>,
+    transports: Arc<RwLock<HashMap<String, Arc<dyn Transport>>>>,
+    /// Rethink Plus, over the `Plus…` transports (registered as `Plus`)
+    plus: Arc<crate::plus::Plus>,
     caches: Arc<Caches>,
     rdnsl: RwLock<Option<Arc<fs_blocklist::RdnsLocal>>>,
     rdnsr: RwLock<Option<Arc<Rdns>>>,
@@ -63,8 +65,18 @@ impl Resolver {
             .split(',')
             .filter_map(|s| s.trim().parse::<SocketAddr>().ok())
             .collect();
+        let transports: Arc<RwLock<HashMap<String, Arc<dyn Transport>>>> =
+            Arc::new(RwLock::new(HashMap::new()));
+        let tr = transports.clone();
+        let plus = Arc::new(crate::plus::Plus::new(Box::new(move || {
+            tr.read().get(ids::DEFAULT).cloned()
+        })));
+        transports
+            .write()
+            .insert(crate::plus::PLUS.to_string(), plus.clone());
         Resolver {
-            transports: RwLock::new(HashMap::new()),
+            transports,
+            plus,
             caches: Arc::new(Caches::default()),
             rdnsl: RwLock::new(None),
             rdnsr: RwLock::new(None),
@@ -90,9 +102,13 @@ impl Resolver {
         }
     }
 
-    /// Adds or replaces a transport; notifies Kotlin (`onDNSAdded`).
+    /// Adds or replaces a transport; notifies Kotlin (`onDNSAdded`). `Plus…` ids join Plus instead (silently,
+    /// as firestack).
     pub fn add(&self, t: Arc<dyn Transport>) -> bool {
         let id = t.id().to_string();
+        if id != crate::plus::PLUS && crate::plus::is_plus(&id) {
+            return self.plus.add(t);
+        }
         self.transports.write().insert(id.clone(), t);
         self.caches.drop_tid(&id); // firestack recreates the caching transport
         self.listener.on_dns_added(id);
@@ -100,6 +116,9 @@ impl Resolver {
     }
 
     pub fn remove(&self, id: &str) -> bool {
+        if id != crate::plus::PLUS && crate::plus::is_plus(id) {
+            return self.plus.remove(id);
+        }
         let removed = self.transports.write().remove(id).is_some();
         self.caches.drop_tid(id);
         // firestack onStopped: what the transport (and its cache) answered expires
@@ -111,8 +130,16 @@ impl Resolver {
         removed
     }
 
+    /// A `Plus…` id resolves to Plus itself (firestack `determineTransport`).
     pub fn get(&self, id: &str) -> Option<Arc<dyn Transport>> {
+        if crate::plus::is_plus(id) {
+            return Some(self.plus.clone());
+        }
         self.transports.read().get(id).cloned()
+    }
+
+    pub fn plus(&self) -> &Arc<crate::plus::Plus> {
+        &self.plus
     }
 
     pub fn live_transports(&self) -> String {
@@ -127,6 +154,7 @@ impl Resolver {
 
     pub fn stop_all(&self) {
         self.transports.write().clear();
+        self.plus.stop_all();
         self.caches.clear();
         self.gw.clear();
         self.listener.on_dns_stopped();
