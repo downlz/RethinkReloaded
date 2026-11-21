@@ -260,6 +260,30 @@ Found and fixed during the run:
 * The engine did not compile for 32-bit Android ABIs (`socklen_t`), so the app shipped a stale `libgojni`.
 * CI now lints armeabi-v7a and arm64-v8a with cargo-ndk.
 
+### Phase 4 status (2026-11-22)
+
+**Work done before the phone check** (branch `dnsmvp/phase4`):
+
+| Area | Result |
+|---|---|
+| Fuzzing (`engine/fuzz`, 8 targets, weekly CI) | 5-minute runs of every target are clean (1.2–6 million inputs each). Two panics found and fixed, both with regression tests: (1) the ICMP echo parser in the TUN reader sliced backwards on a short IPv4 total length, so any app could stop the VPN with one packet; (2) a non-ASCII character inside a WireGuard key |
+| AddressSanitizer | Unit tests of fs-jni, fs-dialers, fs-blocklist, fs-iptree and fs-dns pass, as do the 10 JVM host tests against an ASan `libgojni` (the real JNI path, including refnum GC). No reports |
+| Memory: on-device blocklists | Blocklist files are hashed with plain reads and mapped for random access. gotrie hashes through the mapping and keeps the whole ~180 MB trie resident. Emulator, 18 lists, 300 lookups: **app PSS 315 → 138 MB**; throughput and CPU unchanged |
+| Memory: code size | opt-level `s`/`z` saves less than 1 MB of PSS (all native code pages total about 4 MB), at +4% / +16% CPU. The release profile stays at opt-level 3 |
+| Memory: what else is resident (blocklists off) | Mostly the app: ART and app regions such as 43 MB of read-only anonymous memory that persists with the VPN stopped. The engine's own part is small, so the Phase 2 gate (whole-app PSS ≤ 80% of Go) mainly measures the app |
+| Release default switch | `rr-release.yml`: alpha tags build Rust prereleases; the repository variable `RR_ENGINE` (default `go`) sets the engine for other releases. Flipping it is a variable change, and Go stays selectable |
+| Soak (emulator, 2.9 h; 34 cycles of 100 uncached DNS queries, 20 TCP connects and a download) | No restarts; VPN up throughout. File descriptors flat (174–180); threads flat (66). Native heap swings between 27 and 31 MB and drifts up about 0.9 MB/h, slowing from 1.2 to 0.7 MB/h between the halves. That fits about 3,400 unique names filling the DNS and ALG caches; the phone soak will show whether it levels off |
+
+**Phone check** (after Phase 4, needs the owner's go-ahead):
+* Final performance gates with blocklists on and off: memory, throughput, CPU, battery, screen-off wakeups, startup.
+* A long soak.
+* Items from Phase 3: mDNS, the desync TTL measurement, the WireGuard exit-IP card.
+* Relay restore after a VPN restart, compared with Go.
+* Then set `RR_ENGINE=rust`.
+
+Not done: an HWASan device run. The emulator system image is not HWASan, and ASan on the host covers the unsafe
+code paths.
+
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the
   facade, but they permanently throw `rpn: unsupported`.
