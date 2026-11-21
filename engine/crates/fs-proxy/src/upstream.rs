@@ -45,7 +45,7 @@ impl Opts {
     }
 }
 
-fn pct_decode(s: &str) -> String {
+pub fn pct_decode(s: &str) -> String {
     let b = s.as_bytes();
     let mut out = Vec::with_capacity(b.len());
     let mut i = 0;
@@ -66,7 +66,7 @@ fn pct_decode(s: &str) -> String {
 }
 
 /// Splits `host[:port]`, with `[v6]:port` and bare IPv6.
-fn split_host_port(hp: &str) -> (String, Option<u16>) {
+pub fn split_host_port(hp: &str) -> (String, Option<u16>) {
     if let Some(rest) = hp.strip_prefix('[')
         && let Some((h, tail)) = rest.split_once(']')
     {

@@ -81,6 +81,24 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   * pcap.
   `Tunnel.stat()` still throws; Kotlin catches it.
 
+## Phase 2 notes
+* Proxies follow firestack's `ipn`: Base/Exit/Block/Auto (Auto → Exit; RPN is excluded), SOCKS5 (TCP, UDP
+  associate, credentials), HTTP CONNECT (Basic, one 407 retry, TLS to `https://` proxies, no UDP) and WireGuard.
+  WireGuard tunnels run gotatun with a userspace smoltcp stack per proxy. Config text is parsed as firestack does
+  (UAPI keys, an empty line ends parsing, the configured MTU is treated as the network MTU). Amnezia keys are parsed
+  and ignored, as firestack.
+* Hops (`Proxies.hop` / `testHop`) apply firestack's rules: no self or triple hops, no stopped proxies, the via must
+  route ip4 or ip6. WireGuard additionally needs a via that carries its address family, announces UDP, routes every
+  peer endpoint and has a known MTU (`calcTunMtu` of the via's router MTU, reconciled). A SOCKS5 or HTTP proxy has no
+  MTU (`errNoMtu`), so WireGuard hops only through WireGuard. A WireGuard router reports `calcNetMtu` (tunnel MTU
+  + 80), as firestack.
+* Updating a WireGuard proxy re-creates it (firestack updates a running device in place when only peers changed).
+* gotatun's timers tick every 250 ms while a tunnel is up (Phase 4 tuning item).
+* Local servers (`Tunnel.getServices`, firestack `rnet`): SOCKS5 (CONNECT, UDP associate) and HTTP (CONNECT and
+  plain `http://` requests) servers. Every connection is routed by Kotlin (`svcRoute`), dialled out protected as
+  the server or through the bridged proxy, and summarized (`onSvcComplete`, 50 ms later). HTTPS servers are
+  unimplemented, as in firestack. v0.5.8's app never starts a server.
+
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.
@@ -96,3 +114,12 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   transport); firestack only logs an overflow. Non-ASCII query names bypass the cache; firestack fails those queries.
 * Blocklist files with an out-of-range `value` or a missing `uname` fail `setRdnsLocal`; firestack panics on them.
 * `Intra.build()` reports `rethinkreloaded-rust/<version> (firestack-api@<pin>)`, so bug reports identify the engine.
+* A replaced proxy's hop origins re-hop through its successor (firestack's via references follow the id; Rust's
+  point at the instance).
+* Local servers work. firestack's do not serve: its SOCKS5 `candial` refuses every connection while running, and its
+  `start` refuses unless stopped. Its HTTP `start` refuses after a `stop`, and a proxied SOCKS5 connect fails on a
+  non-TCP conn. In Rust, servers listen on `start()`, `refresh()` restarts them, and `addServer` succeeds when there
+  is no namesake proxy to bridge (firestack returns the bridge error). HTTP credentials are read from
+  `Proxy-Authorization` as well as `Authorization` (firestack reads only the latter). `svcRoute` gets the client
+  address as `src` for CONNECTs (firestack passes the server's own address). A SOCKS5 UDP association relays only for
+  the client that asked, and ends with its control connection.

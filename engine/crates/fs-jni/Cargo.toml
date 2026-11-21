@@ -25,3 +25,4 @@ fs-dns = { path = "../fs-dns" }
 fs-dnsx = { path = "../fs-dnsx" }
 fs-blocklist = { path = "../fs-blocklist" }
 fs-proxy = { path = "../fs-proxy" }
+fs-rnet = { path = "../fs-rnet" }

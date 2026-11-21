@@ -93,6 +93,7 @@ com.celzero.firestack.intra.Intra$proxyTunnel	closeConns	tunnel::t_close_conns
 com.celzero.firestack.intra.Intra$proxyTunnel	setPcap	tunnel::t_set_pcap
 com.celzero.firestack.intra.Intra$proxyTunnel	getResolver	tunnel::t_get_resolver
 com.celzero.firestack.intra.Intra$proxyTunnel	getProxies	tunnel::t_get_proxies
+com.celzero.firestack.intra.Intra$proxyTunnel	getServices	tunnel::t_get_services
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	id	tunnel::tr_id
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	type	tunnel::tr_type
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	getAddr	tunnel::tr_addr
@@ -155,3 +156,18 @@ com.celzero.firestack.backend.Backend$proxyRouter	reaches	proxies::rt_reaches
 com.celzero.firestack.backend.Backend$proxyRouter	self	proxies::rt_self
 com.celzero.firestack.backend.Backend$proxyRouter	stat	proxies::rt_stat
 com.celzero.firestack.backend.Backend$proxyRouter	via	proxies::rt_via
+# --- phase 2: local proxy servers (rnet)
+com.celzero.firestack.backend.Backend$proxyServices	addServer	services::add_server
+com.celzero.firestack.backend.Backend$proxyServices	bridge	services::bridge
+com.celzero.firestack.backend.Backend$proxyServices	getServer	services::get_server
+com.celzero.firestack.backend.Backend$proxyServices	refreshServers	services::refresh_servers
+com.celzero.firestack.backend.Backend$proxyServices	removeAll	services::remove_all
+com.celzero.firestack.backend.Backend$proxyServices	removeServer	services::remove_server
+com.celzero.firestack.backend.Backend$proxyServer	getAddr	services::s_get_addr
+com.celzero.firestack.backend.Backend$proxyServer	hop	services::s_hop
+com.celzero.firestack.backend.Backend$proxyServer	id	services::s_id
+com.celzero.firestack.backend.Backend$proxyServer	refresh	services::s_refresh
+com.celzero.firestack.backend.Backend$proxyServer	start	services::s_start
+com.celzero.firestack.backend.Backend$proxyServer	status	services::s_status
+com.celzero.firestack.backend.Backend$proxyServer	stop	services::s_stop
+com.celzero.firestack.backend.Backend$proxyServer	type	services::s_type

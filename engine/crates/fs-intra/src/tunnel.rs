@@ -127,6 +127,8 @@ pub struct Shared {
 
 pub struct Tunnel {
     sh: Arc<Shared>,
+    /// local proxy servers (`Tunnel.getServices`)
+    services: Arc<fs_rnet::Services>,
     netstack: Arc<Netstack>,
     sessions: Arc<Sessions>,
     tasks: Mutex<Vec<JoinHandle<()>>>,
@@ -224,6 +226,7 @@ impl Tunnel {
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         let mtu = if tun_mtu > 0 { tun_mtu as usize } else { 1500 };
+        let services = fs_rnet::Services::new(proxies.clone(), bridge.clone());
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
@@ -261,6 +264,7 @@ impl Tunnel {
         let _ = ns_slot.set(Arc::downgrade(&netstack));
         let t = Arc::new(Tunnel {
             sh: sh.clone(),
+            services,
             netstack,
             sessions: Arc::new(Sessions::default()),
             tasks: Mutex::new(Vec::new()),
@@ -314,6 +318,10 @@ impl Tunnel {
 
     pub fn proxies(&self) -> &Arc<Proxifier> {
         &self.sh.proxies
+    }
+
+    pub fn services(&self) -> &Arc<fs_rnet::Services> {
+        &self.services
     }
 
     /// DNS transports dial through the proxies, by the pid of each query.
@@ -482,6 +490,7 @@ impl Tunnel {
         }
         self.netstack.stop();
         self.sh.resolver.stop_all();
+        self.services.stop_servers();
         self.sh.proxies.stop_proxies(); // tells Kotlin onProxiesStopped
     }
 

@@ -484,6 +484,7 @@ dependencies = [
  "fs-dnsx",
  "fs-netstack",
  "fs-proxy",
+ "fs-rnet",
  "futures",
  "parking_lot",
  "tokio",
@@ -508,6 +509,7 @@ dependencies = [
  "fs-intra",
  "fs-iptree",
  "fs-proxy",
+ "fs-rnet",
  "fs-wg",
  "jni 0.21.1",
  "parking_lot",
@@ -546,6 +548,18 @@ dependencies = [
  "smoltcp",
  "tokio",
  "tokio-rustls",
+]
+
+[[package]]
+name = "fs-rnet"
+version = "0.0.1"
+dependencies = [
+ "base64",
+ "fs-core",
+ "fs-dialers",
+ "fs-proxy",
+ "parking_lot",
+ "tokio",
 ]
 
 [[package]]

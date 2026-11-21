@@ -316,6 +316,15 @@ pub fn t_get_proxies<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObje
     rt::new_iface_proxy(env, C_PROXIES, Arc::new(ProxiesRef(t)))
 }
 
+/// `getServices()`: the tunnel's local proxy servers.
+pub fn t_get_services<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
+    let t = this_tunnel(env, this)?;
+    if !t.is_connected() {
+        return Err(FsError::new("tunnel closed"));
+    }
+    crate::impls::services::services_obj(env, t)
+}
+
 // ------------------------------------------------------------------ DNSResolver
 
 fn resolver(env: &mut JNIEnv, this: &JObject) -> FsResult<Arc<Tunnel>> {

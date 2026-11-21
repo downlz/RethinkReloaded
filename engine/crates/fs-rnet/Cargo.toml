@@ -1,0 +1,20 @@
+[package]
+name = "fs-rnet"
+description = "Local SOCKS5 and HTTP proxy servers for the RethinkReloaded engine (port of firestack intra/rnet)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fs-core = { path = "../fs-core" }
+fs-dialers = { path = "../fs-dialers" }
+fs-proxy = { path = "../fs-proxy" }
+base64 = "0.22"
+parking_lot.workspace = true
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util", "rt-multi-thread"] }

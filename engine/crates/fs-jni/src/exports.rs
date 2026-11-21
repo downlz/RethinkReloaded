@@ -1952,35 +1952,35 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyRpnS
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_getAddr<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.getAddr", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.getAddr", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_get_addr(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_hop<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.hop", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = unsafe { JObject::from_raw(a0) }; rt::unimplemented("Backend.Server.hop") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.hop", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = unsafe { JObject::from_raw(a0) }; crate::impls::services::s_hop(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_id<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.id", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.id", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_id(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_refresh<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.refresh", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.Server.refresh") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.refresh", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_refresh(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_start<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.start", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.Server.start") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.start", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_start(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_status<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jint {
-    unsafe { rt::enter::<'l, i32, _>(env, "Backend.Server.status", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, i32, _>(env, "Backend.Server.status", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_status(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_stop<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.stop", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.Server.stop") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Server.stop", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_stop(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServer_type<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.type", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.Server.type", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::s_type(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServerListener_onSvcComplete<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jobject) -> () {
@@ -1992,27 +1992,27 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServ
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_addServer<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring, a1: sys::jstring, a2: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Services.addServer", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; rt::unimplemented("Backend.Services.addServer") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Services.addServer", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; crate::impls::services::add_server(env, &this, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_bridge<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring, a1: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Services.bridge", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::unimplemented("Backend.Services.bridge") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Services.bridge", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::services::bridge(env, &this, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_getServer<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Services.getServer", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Backend.Services.getServer") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Services.getServer", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::services::get_server(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_refreshServers<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.Services.refreshServers", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.Services.refreshServers", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::refresh_servers(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_removeAll<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Backend.Services.removeAll", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Backend.Services.removeAll", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::services::remove_all(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyServices_removeServer<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jboolean {
-    unsafe { rt::enter::<'l, bool, _>(env, "Backend.Services.removeServer", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, bool, _>(env, "Backend.Services.removeServer", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::services::remove_server(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyWgKey_base64<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -5048,7 +5048,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_g
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_getServices<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.Tunnel.getServices", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Intra.Tunnel.getServices") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.Tunnel.getServices", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::tunnel::t_get_services(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_isConnected<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jboolean {
@@ -5396,5 +5396,5 @@ pub extern "system" fn Java_go_Universe_00024proxyerror_error<'l>(env: *mut sys:
 }
 
 /// Natives with a real implementation (impls + struct accessors + runtime).
-pub const fn implemented_count() -> usize { 779 }
-pub const STUB_CENSUS: (usize, usize) = (177, 105); // (unimplemented, rpn)
+pub const fn implemented_count() -> usize { 794 }
+pub const STUB_CENSUS: (usize, usize) = (162, 105); // (unimplemented, rpn)

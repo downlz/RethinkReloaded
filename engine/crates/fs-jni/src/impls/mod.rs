@@ -14,5 +14,6 @@ pub mod log;
 pub mod proxies;
 pub mod rdns;
 pub mod seq;
+pub mod services;
 pub mod settings;
 pub mod tunnel;

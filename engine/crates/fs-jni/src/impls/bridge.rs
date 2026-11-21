@@ -20,6 +20,8 @@ const C_FLOW_SUMMARY: &str = "com/celzero/firestack/intra/FlowSummary";
 const C_DNS_SUMMARY: &str = "com/celzero/firestack/backend/DNSSummary";
 const C_DNS_OPTS: &str = "com/celzero/firestack/backend/DNSOpts";
 const SIG_STR: &str = "Ljava/lang/String;";
+const C_TAB: &str = "com/celzero/firestack/backend/Tab";
+const C_SERVER_SUMMARY: &str = "com/celzero/firestack/backend/ServerSummary";
 
 pub struct JniBridge {
     obj: Arc<GlobalRef>,
@@ -490,6 +492,76 @@ impl ProxyListener for JniBridge {
     fn on_proxies_stopped(&self) {
         self.notify(|env, obj| {
             call(env, obj, "onProxiesStopped", "()V", &[]);
+        });
+    }
+}
+
+impl ServerListener for JniBridge {
+    fn svc_route(
+        &self,
+        sid: String,
+        pid: String,
+        network: String,
+        src: String,
+        dst: String,
+    ) -> BoxFuture<Tab> {
+        let obj = self.obj.clone();
+        Box::pin(async move {
+            executor()
+                .call(Lane::Flow, move |env| {
+                    let a: Vec<JObject> = [&sid, &pid, &network, &src, &dst]
+                        .iter()
+                        .map(|s| jstr(env, s))
+                        .collect();
+                    let sig = format!("({SIG_STR}{SIG_STR}{SIG_STR}{SIG_STR}{SIG_STR})L{C_TAB};");
+                    let v = call(
+                        env,
+                        &obj,
+                        "svcRoute",
+                        &sig,
+                        &[
+                            JValue::Object(&a[0]),
+                            JValue::Object(&a[1]),
+                            JValue::Object(&a[2]),
+                            JValue::Object(&a[3]),
+                            JValue::Object(&a[4]),
+                        ],
+                    );
+                    returned_struct(env, v).map(|t| Tab {
+                        cid: t.str("CID"),
+                        block: t.bool("Block"),
+                    })
+                })
+                .await
+                .flatten()
+                .unwrap_or_default()
+        })
+    }
+
+    fn on_svc_complete(&self, smm: ServerSummary) {
+        self.notify(move |env, obj| {
+            let s = Struct::new(C_SERVER_SUMMARY);
+            for (k, v) in [
+                ("Type", &smm.typ),
+                ("SID", &smm.sid),
+                ("PID", &smm.pid),
+                ("CID", &smm.cid),
+                ("Msg", &smm.msg),
+            ] {
+                s.set(k, Field::Str(v.clone()));
+            }
+            s.set("Rx", Field::I64(smm.rx));
+            s.set("Tx", Field::I64(smm.tx));
+            s.set("Duration", Field::I64(smm.duration));
+            if let Ok(o) = rt::new_struct_object(env, s) {
+                call(
+                    env,
+                    obj,
+                    "onSvcComplete",
+                    &format!("(L{C_SERVER_SUMMARY};)V"),
+                    &[JValue::Object(&o)],
+                );
+            }
         });
     }
 }
