@@ -7,7 +7,8 @@
 //! jni-gen: emits `crates/fs-jni/src/exports.rs` from `api/natives.tsv` (written by `tools/facade-sync.sh`) and
 //! `crates/fs-jni/impls.tsv` (hand-maintained list of natives with real Rust implementations).
 //!
-//! Usage (from engine/): `cargo run -p jni-gen` ; `cargo run -p jni-gen -- --check` fails if exports.rs is stale.
+//! Usage (from engine/): `cargo run -p jni-gen` ; `cargo run -p jni-gen -- --check` fails if exports.rs is stale;
+//! `--list-stubs` prints the natives that are still stubs (class, method) to stderr.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
@@ -211,6 +212,7 @@ fn runtime_body(n: &Native) -> Option<&'static str> {
 fn main() {
     let check = env::args().any(|a| a == "--check");
     let symbols = env::args().any(|a| a == "--symbols");
+    let list_stubs = env::args().any(|a| a == "--list-stubs");
     let engine = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let tsv = fs::read_to_string(engine.join("api/natives.tsv"))
         .expect("api/natives.tsv (run tools/facade-sync.sh)");
@@ -359,6 +361,9 @@ fn main() {
             }
         } else {
             n_stub += 1;
+            if list_stubs {
+                eprintln!("stub\t{}\t{}", n.class, n.method);
+            }
             if n.throws {
                 format!("rt::unimplemented(\"{what}\")")
             } else {
