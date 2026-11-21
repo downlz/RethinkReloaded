@@ -41,5 +41,23 @@ git push origin v0.5.8-rr.1
 The release notes link to upstream's release. Review the draft and publish it.
 
 ## Engine choice
-Until the Rust engine passes the Phase 4 gate (see [ENGINE_ROADMAP.md](ENGINE_ROADMAP.md)), releases use upstream's
-Go engine. Test builds with the Rust engine use `-PfirestackRepo=rust`. CI uploads them as workflow artifacts, never as releases.
+`rr-release.yml` picks the network engine for each release:
+
+| Tag | Engine | Release |
+|---|---|---|
+| `vX.Y.Z-rr.N-alpha.M` | Rust (`-PfirestackRepo=rust`) | draft **prerelease** |
+| `vX.Y.Z-rr.N` | repository variable `RR_ENGINE`: `go` (default when unset) or `rust` | draft release |
+
+The release notes state which engine a build uses.
+
+Rollout (Phase 4, see [ENGINE_ROADMAP.md](ENGINE_ROADMAP.md)):
+1. Until the phone check passes, stable releases stay on Go. Alpha tags carry the Rust engine to testers.
+2. Then set `RR_ENGINE=rust` (Settings → Secrets and variables → Actions → Variables) to make Rust the default for
+   releases. To go back, set it to `go` or delete it. No code change is needed either way, and Go stays selectable
+   for as many releases as needed.
+
+An alpha uses the same `rr.N` revision, and so the same versionCode, as the stable release it precedes. To let
+testers install the stable release over an alpha, tag the alpha with the next revision instead
+(`v0.5.8-rr.2-alpha.1` before `v0.5.8-rr.2`).
+
+CI (`rr-ci.yml`) builds both engines on every PR; those test builds are workflow artifacts, never releases.
