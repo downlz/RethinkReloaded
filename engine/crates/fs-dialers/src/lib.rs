@@ -17,6 +17,8 @@
 //! Rethink-in-Rethink (loopback) is on, deliberately routing that traffic back through the tunnel.
 
 pub mod conn;
+pub mod desync;
+pub mod split;
 pub use conn::{Datagram, Dial, Fut, SharedDial, TcpConn, UdpConn};
 
 use fs_core::bridge::Controller;
@@ -85,6 +87,38 @@ impl Protector {
                 format!("dial tcp {dst}: i/o timeout"),
             )),
         }
+    }
+
+    /// firestack `SplitDial` for TCP: to public HTTPS / DoT servers a [`split::Retrier`] following the global
+    /// `DialerOpts` (split, desync, retry), else a plain protected connection.
+    pub async fn split_dial_tcp(
+        &self,
+        who: &'static str,
+        dst: SocketAddr,
+        timeout: Duration,
+    ) -> io::Result<TcpConn> {
+        if !split::do_split(dst) {
+            return self.dial_tcp(who, dst, timeout).await.map(TcpConn::Sock);
+        }
+        let p = self.clone();
+        let d: split::StratDial = Arc::new(move |strat| {
+            let p = p.clone();
+            Box::pin(async move {
+                match strat {
+                    fs_core::settings::SPLIT_DESYNC => desync::dial(&p, who, dst, timeout).await,
+                    fs_core::settings::SPLIT_TCP | fs_core::settings::SPLIT_TCP_OR_TLS => {
+                        let s = p.dial_tcp(who, dst, timeout).await?;
+                        Ok(TcpConn::Dyn(Box::new(split::Splitter::new(
+                            TcpConn::Sock(s),
+                            strat,
+                        ))))
+                    }
+                    _ => p.dial_tcp(who, dst, timeout).await.map(TcpConn::Sock),
+                }
+            })
+        });
+        let r = split::Retrier::dial(d, dst.port()).await?;
+        Ok(TcpConn::Dyn(Box::new(r)))
     }
 
     /// Protected UDP socket connected to `dst`.

@@ -184,6 +184,17 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
     proxy must have dialed (OK/KO status).
 * `Proxies.underlay(id, controller)` (an untracked Base) and `Intra.controlledRouter` (the router of an untracked
   Exit) route sockets through the given `Controller`.
+* Split, desync and retry (`DialerOpts`) for Exit/Base TCP to public servers on ports 443 and 853 (firestack's
+  `doSplit`; as in Go, loopback counts as public):
+  * Strategies per attempt, reply timeouts (`calcTimeout`), the replay of everything written before the first
+    reply, and the "short TLS reply to a split" retry all follow `retrier.go`; table and timing tests pin them.
+  * The TCP split happens at 32–64 bytes, and the TLS record fragmentation at 6–64 bytes, as in firestack.
+  * Desync sends firestack's decoy POST through `sendfile` from a memfd page, at the largest TTL that a UDP
+    traceroute saw expire (cached 30 s per address), then overwrites the page and restores TTL 64.
+  * The mechanics are tested on an Android kernel (emulator). Measuring the TTL needs real ICMP, which the
+    emulator's user-mode network does not deliver.
+  * Desync is Linux-only, as in firestack; elsewhere the connection is plain.
+  * `DialAny` (Auto's multi-dialer retrier) is not ported. The Auto proxy keeps its own fallback order.
 * Census (Phase 3 exit):
   * Every native is implemented except the RPN stubs and 96 "unreachable" ones.
   * The unreachable natives belong to engine-side wrappers (`$proxyX`) of interfaces that the engine never hands

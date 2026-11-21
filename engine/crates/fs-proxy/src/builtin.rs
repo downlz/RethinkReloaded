@@ -132,14 +132,15 @@ impl Proxy for Direct {
             if let Some(v) = self.via_proxy() {
                 return v.dial_tcp(dst, timeout).await;
             }
-            let r = self.protector.dial_tcp(self.who, dst, timeout).await;
+            // firestack localDialStrat: split / desync / retry to public HTTPS and DoT servers
+            let r = self.protector.split_dial_tcp(self.who, dst, timeout).await;
             dial_status(&self.status, &r);
-            if let Ok(s) = &r
+            if let Ok(TcpConn::Sock(s)) = &r
                 && let Ok(l) = s.local_addr()
             {
                 self.gw.set_lastaddr(l.to_string());
             }
-            r.map(TcpConn::Sock)
+            r
         })
     }
     fn dial_udp<'a>(&'a self, dst: SocketAddr) -> Fut<'a, io::Result<UdpConn>> {

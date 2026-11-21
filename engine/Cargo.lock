@@ -547,6 +547,7 @@ name = "fs-dialers"
 version = "0.0.1"
 dependencies = [
  "fs-core",
+ "libc",
  "socket2",
  "tokio",
 ]
