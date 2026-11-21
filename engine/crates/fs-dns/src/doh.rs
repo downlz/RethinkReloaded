@@ -18,7 +18,7 @@ use crate::transport::{Answer, QueryError, Stats, TYPE_DOH, Transport};
 use base64::Engine;
 use bytes::Bytes;
 use fs_core::bridge::{BoxFuture, dns_status};
-use fs_dialers::Protector;
+use fs_dialers::SharedDial;
 use parking_lot::Mutex;
 use rustls_pki_types::ServerName;
 use std::net::{IpAddr, SocketAddr};
@@ -40,7 +40,7 @@ pub struct DohTransport {
     port: u16,
     seeds: Mutex<Vec<IpAddr>>,
     resolve_host: Option<HostResolver>,
-    protector: Protector,
+    dialer: SharedDial,
     conn: tokio::sync::Mutex<Option<h2::client::SendRequest<Bytes>>>,
     use_get: AtomicBool,
     stats: Stats,
@@ -53,7 +53,7 @@ impl DohTransport {
         id: &str,
         url: &str,
         seeds: Vec<IpAddr>,
-        protector: Protector,
+        dialer: SharedDial,
         resolve_host: Option<HostResolver>,
     ) -> Result<Self, String> {
         let uri: http::Uri = url
@@ -75,7 +75,7 @@ impl DohTransport {
             port,
             seeds: Mutex::new(seeds),
             resolve_host,
-            protector,
+            dialer,
             conn: tokio::sync::Mutex::new(None),
             use_get: AtomicBool::new(false),
             stats: Stats::default(),
@@ -108,7 +108,7 @@ impl DohTransport {
         for ip in ips {
             let sa = SocketAddr::new(ip, self.port);
             let tcp = match self
-                .protector
+                .dialer
                 .dial_tcp(pid, sa, fs_dialers::DIAL_TIMEOUT)
                 .await
             {

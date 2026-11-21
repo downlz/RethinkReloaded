@@ -1,0 +1,18 @@
+[package]
+name = "fs-proxy"
+description = "Proxies for the RethinkReloaded engine: registry, routing, built-in, SOCKS5, HTTP and WireGuard proxies (port of firestack intra/ipn)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+fs-core = { path = "../fs-core" }
+fs-dialers = { path = "../fs-dialers" }
+parking_lot.workspace = true
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util", "rt-multi-thread"] }

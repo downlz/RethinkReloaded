@@ -24,6 +24,7 @@ use fs_dns::transport::{Answer, QueryError, TYPE_DNS53, TYPE_DOH, Transport};
 use fs_dnsx::Resolver;
 use fs_netstack::tun::Tun;
 use fs_netstack::{Netstack, Opts};
+use fs_proxy::Proxifier;
 use futures::{SinkExt, StreamExt};
 use parking_lot::Mutex;
 use std::collections::HashMap;
@@ -119,7 +120,7 @@ impl Conns {
 pub struct Shared {
     pub bridge: SharedBridge,
     pub resolver: Arc<Resolver>,
-    pub protector: Protector,
+    pub proxies: Arc<Proxifier>,
     pub stall: Stall,
     pub conns: Conns,
 }
@@ -218,6 +219,7 @@ impl Tunnel {
         bridge: SharedBridge,
     ) -> Result<Arc<Tunnel>, String> {
         let protector = Protector::new(bridge.clone());
+        let proxies = Proxifier::new("46", link_mtu as i64, protector, bridge.clone());
         let resolver = Arc::new(Resolver::new(fakedns, bridge.clone()));
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
@@ -225,7 +227,7 @@ impl Tunnel {
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
-            protector,
+            proxies,
             stall: Stall::default(),
             conns: Conns::default(),
         });
@@ -307,8 +309,13 @@ impl Tunnel {
         &self.sh.resolver
     }
 
-    pub fn protector(&self) -> &Protector {
-        &self.sh.protector
+    pub fn proxies(&self) -> &Arc<Proxifier> {
+        &self.sh.proxies
+    }
+
+    /// DNS transports dial through the proxies, by the pid of each query.
+    fn dialer(&self) -> fs_dialers::SharedDial {
+        self.sh.proxies.clone()
     }
 
     /// Resolves DoH hostnames through the Default transport.
@@ -328,7 +335,7 @@ impl Tunnel {
     /// (Re)builds the Default transport (`Intra.addDefaultTransport` / `newDefaultDNS`); keeps the old one on error.
     pub fn set_default_dns(&self, spec: DefaultDnsSpec) -> Result<(), String> {
         spec.validate()?;
-        let p = self.sh.protector.clone();
+        let p = self.dialer();
         let inner: Arc<dyn Transport> = match spec.typ.as_str() {
             TYPE_DOH => Arc::new(DohTransport::new(
                 ids::BOOTSTRAP,
@@ -360,7 +367,7 @@ impl Tunnel {
             id,
             url,
             parse_ips(ipcsv),
-            self.sh.protector.clone(),
+            self.dialer(),
             Some(self.host_resolver()),
         )?;
         self.sh.resolver.add(Arc::new(t));
@@ -374,7 +381,7 @@ impl Tunnel {
             id,
             url,
             parse_ips(ipcsv),
-            self.sh.protector.clone(),
+            self.dialer(),
             Some(self.host_resolver()),
         )?;
         self.sh.resolver.add(Arc::new(t));
@@ -386,11 +393,9 @@ impl Tunnel {
         if servers.is_empty() {
             return Err(format!("dns53: no valid ip:port in {csv:?}"));
         }
-        self.sh.resolver.add(Arc::new(Dns53Transport::new(
-            id,
-            servers,
-            self.sh.protector.clone(),
-        )));
+        self.sh
+            .resolver
+            .add(Arc::new(Dns53Transport::new(id, servers, self.dialer())));
         Ok(())
     }
 
@@ -425,11 +430,15 @@ impl Tunnel {
         fd: i32,
         tun_mtu: i32,
         link_mtu: i32,
-        _engine: i64,
+        engine: i64,
     ) -> Result<(), String> {
         if !self.is_connected() {
             return Err("tunnel closed".into());
         }
+        // firestack RefreshProto: proxies follow the link's families and MTU
+        self.sh
+            .proxies
+            .refresh_proto(settings::l3(engine), link_mtu as i64);
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         self.netstack.swap(tun);
@@ -470,7 +479,7 @@ impl Tunnel {
         }
         self.netstack.stop();
         self.sh.resolver.stop_all();
-        self.sh.bridge.on_proxies_stopped();
+        self.sh.proxies.stop_proxies(); // tells Kotlin onProxiesStopped
     }
 
     pub fn fakedns(&self) -> Vec<SocketAddr> {

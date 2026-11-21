@@ -61,16 +61,19 @@ pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: S
         return;
     }
 
-    let who = flow::who(&v);
-    smm.pid = who.into();
-    // firestack: the real addresses in turn, until one connects or the retry window closes
+    // firestack: the real addresses in turn (each through its chosen proxy), until one connects or the retry
+    // window closes
     let mut remote = Err(std::io::Error::other("tcp: no target"));
     for t in &targets {
         let t0 = Instant::now();
-        remote = sh
-            .protector
-            .dial_tcp(who, *t, fs_dialers::DIAL_TIMEOUT)
-            .await;
+        remote = match flow::proxy(&sh, &v, *t, "tcp").await {
+            Ok(p) => {
+                smm.pid = p.id().to_string();
+                smm.rpid = flow::via_id(&p);
+                p.dial_tcp(*t, fs_dialers::DIAL_TIMEOUT).await
+            }
+            Err(e) => Err(std::io::Error::other(e)),
+        };
         smm.rtt = t0.elapsed().as_millis() as i64;
         smm.target = t.ip().to_string();
         if remote.is_ok() || start.elapsed() > flow::RETRY_TIMEOUT {

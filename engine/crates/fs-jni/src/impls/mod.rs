@@ -11,6 +11,7 @@ pub mod backend;
 pub mod bridge;
 pub mod intra;
 pub mod log;
+pub mod proxies;
 pub mod rdns;
 pub mod seq;
 pub mod settings;

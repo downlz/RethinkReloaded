@@ -212,6 +212,33 @@ fn shuffle<T>(v: &mut [T]) {
     }
 }
 
+/// firestack `ProxyTo` for one target of a flow; a circular route (the target is a proxy's own endpoint) exits
+/// directly instead, once.
+pub async fn proxy(
+    sh: &crate::tunnel::Shared,
+    v: &Verdict,
+    target: SocketAddr,
+    proto: &str,
+) -> Result<fs_proxy::SharedProxy, String> {
+    let my_uid = sh.resolver.gateway().my_uid().to_string();
+    match sh
+        .proxies
+        .proxy_to(&v.mark.cid, target, proto, &v.uid, &my_uid, &v.pids)
+        .await
+    {
+        Err(e) if e == fs_proxy::proxifier::ERR_CIRCULAR => sh.proxies.proxy_for(fs_proxy::EXIT),
+        r => r,
+    }
+}
+
+/// firestack `ViaID`: the proxy a proxy hops through, if any.
+pub fn via_id(p: &fs_proxy::SharedProxy) -> String {
+    p.via()
+        .map(|v| v.id().to_string())
+        .filter(|v| v != p.id())
+        .unwrap_or_default()
+}
+
 /// firestack `retryTimeout`: dialing moves on to the next real address until this much time has passed.
 pub const RETRY_TIMEOUT: Duration = Duration::from_secs(15);
 

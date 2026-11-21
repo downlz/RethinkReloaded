@@ -203,9 +203,15 @@ pub async fn handle(sh: Arc<Shared>, ns: Arc<Netstack>, flood: Arc<Flood>, e: Ec
         sh.bridge.postflow(smm);
         return;
     }
-    let who = flow::who(&v);
-    smm.pid = who.into();
-    match sh.protector.probe_icmp(who, target).await {
+    let probe = match flow::proxy(&sh, &v, SocketAddr::new(target, 0), "icmp").await {
+        Ok(p) => {
+            smm.pid = p.id().to_string();
+            smm.rpid = flow::via_id(&p);
+            p.probe_icmp(target).await
+        }
+        Err(e) => Err(std::io::Error::other(e)),
+    };
+    match probe {
         Ok(sock) => {
             sh.bridge.flowing(Mark {
                 pidcsv: smm.pid.clone(),

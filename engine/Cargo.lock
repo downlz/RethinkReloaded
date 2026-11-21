@@ -345,6 +345,7 @@ dependencies = [
  "fs-dns",
  "fs-dnsx",
  "fs-netstack",
+ "fs-proxy",
  "futures",
  "parking_lot",
  "tokio",
@@ -368,6 +369,7 @@ dependencies = [
  "fs-dnsx",
  "fs-intra",
  "fs-iptree",
+ "fs-proxy",
  "fs-wg",
  "jni 0.21.1",
  "parking_lot",
@@ -388,6 +390,16 @@ dependencies = [
 [[package]]
 name = "fs-probe"
 version = "0.0.1"
+
+[[package]]
+name = "fs-proxy"
+version = "0.0.1"
+dependencies = [
+ "fs-core",
+ "fs-dialers",
+ "parking_lot",
+ "tokio",
+]
 
 [[package]]
 name = "fs-wg"

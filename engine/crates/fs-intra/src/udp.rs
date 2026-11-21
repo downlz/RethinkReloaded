@@ -124,7 +124,7 @@ fn to_sock(a: SocketAddr, v6: bool) -> SocketAddr {
 
 /// One unconnected protected socket shared by an app source's sessions via one proxy (firestack `muxer`).
 struct Muxer {
-    sock: tokio::net::UdpSocket,
+    sock: fs_dialers::UdpConn,
     v6: bool,
     uid: String,
     /// remote -> the session receiving its datagrams
@@ -157,20 +157,20 @@ impl MuxTable {
     async fn associate(
         &self,
         ctx: &MuxCtx,
-        pid: &str,
+        p: &fs_proxy::SharedProxy,
         uid: &str,
         src: SocketAddr,
         dst: SocketAddr,
     ) -> std::io::Result<(Arc<Muxer>, mpsc::Receiver<Vec<u8>>)> {
-        let key = (pid.to_string(), src);
+        let key = (p.id().to_string(), src);
         let existing = self.t.lock().get(&key).cloned();
         let mxr = match existing {
             Some(m) => m,
             None => {
-                // dial outside the lock; another session may win the race
-                let (sock, v6) = match ctx.sh.protector.announce_udp(pid, true).await {
+                // announce outside the lock; another session may win the race
+                let (sock, v6) = match p.announce_udp(true).await {
                     Ok(s) => (s, true),
-                    Err(_) => (ctx.sh.protector.announce_udp(pid, false).await?, false),
+                    Err(_) => (p.announce_udp(false).await?, false),
                 };
                 let fresh = Arc::new(Muxer {
                     sock,
@@ -412,15 +412,20 @@ async fn session(
         return finish(&sh, smm, start);
     }
 
-    let who = flow::who(&v);
-    smm.pid = who.into();
     if eim() {
         return relay_muxed(me, sh, out, rx, src, dst, target, v, smm, start).await;
     }
     let t0 = Instant::now();
     let mut dialed = Err(std::io::Error::other("udp: no target"));
     for t in &targets {
-        dialed = sh.protector.dial_udp(who, *t).await;
+        dialed = match flow::proxy(&sh, &v, *t, "udp").await {
+            Ok(p) => {
+                smm.pid = p.id().to_string();
+                smm.rpid = flow::via_id(&p);
+                p.dial_udp(*t).await
+            }
+            Err(e) => Err(std::io::Error::other(e)),
+        };
         smm.target = t.ip().to_string();
         if dialed.is_ok() || start.elapsed() > flow::RETRY_TIMEOUT {
             break;
@@ -500,7 +505,16 @@ async fn relay_muxed(
         sessions: me.clone(),
     };
     let t0 = Instant::now();
-    let (mxr, mut from_remote) = match me.mux.associate(&ctx, &smm.pid, &v.uid, src, target).await {
+    let p = match flow::proxy(&sh, &v, target, "udp").await {
+        Ok(p) => p,
+        Err(e) => {
+            smm.msg = e;
+            return finish(&sh, smm, start);
+        }
+    };
+    smm.pid = p.id().to_string();
+    smm.rpid = flow::via_id(&p);
+    let (mxr, mut from_remote) = match me.mux.associate(&ctx, &p, &v.uid, src, target).await {
         Ok(x) => x,
         Err(e) => {
             smm.rtt = t0.elapsed().as_millis() as i64;
@@ -588,7 +602,12 @@ mod tests {
         let sh = Arc::new(Shared {
             bridge: bridge.clone(),
             resolver: Arc::new(fs_dnsx::Resolver::new("10.111.222.3:53", bridge.clone())),
-            protector: fs_dialers::Protector::new(bridge.clone()),
+            proxies: fs_proxy::Proxifier::new(
+                "46",
+                1500,
+                fs_dialers::Protector::new(bridge.clone()),
+                bridge.clone(),
+            ),
             stall: flow::Stall::default(),
             conns: Conns::default(),
         });

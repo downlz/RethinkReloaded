@@ -11,6 +11,7 @@ authors.workspace = true
 [dependencies]
 fs-core = { path = "../fs-core" }
 fs-dialers = { path = "../fs-dialers" }
+fs-proxy = { path = "../fs-proxy" }
 fs-dns = { path = "../fs-dns" }
 fs-dnsx = { path = "../fs-dnsx" }
 fs-netstack = { path = "../fs-netstack" }

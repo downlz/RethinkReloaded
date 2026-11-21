@@ -11,7 +11,7 @@ authors.workspace = true
 [dependencies]
 fs-core = { path = "../fs-core" }
 socket2 = { version = "0.6", features = ["all"] }
-tokio = { workspace = true, features = ["net", "time", "rt", "macros"] }
+tokio = { workspace = true, features = ["net", "time", "rt", "macros", "io-util"] }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["net", "time", "rt", "macros", "io-util", "rt-multi-thread"] }

@@ -13,7 +13,7 @@
 //! Phase 1 `Proxies` / `Router` / `Proxy` objects (built-in Base / Exit / Block / Auto only).
 
 use crate::impls::bridge::JniBridge;
-use crate::rt::{self, FsError, FsResult, Struct};
+use crate::rt::{self, FsError, FsResult};
 use fs_core::bridge::{SharedBridge, dns_status};
 use fs_dns::transport::Transport;
 use fs_intra::{DefaultDnsSpec, Tunnel, runtime};
@@ -26,21 +26,12 @@ const C_DEFAULT_DNS: &str = "com/celzero/firestack/intra/DefaultDNS";
 const C_RESOLVER: &str = "com/celzero/firestack/backend/DNSResolver";
 const C_TRANSPORT: &str = "com/celzero/firestack/backend/DNSTransport";
 const C_PROXIES: &str = "com/celzero/firestack/backend/Proxies";
-const C_ROUTER: &str = "com/celzero/firestack/backend/Router";
-const C_PROXY: &str = "com/celzero/firestack/backend/Proxy";
-const C_ROUTER_STATS: &str = "com/celzero/firestack/backend/RouterStats";
-
-/// proxy status `TOK` (backend constant)
-const TOK: i32 = -1;
-const BUILTIN_PROXIES: &[&str] = &["Base", "Exit", "Block", "Auto"];
 
 pub struct TunnelRef(pub Arc<Tunnel>);
 pub struct ResolverRef(pub Arc<Tunnel>);
 pub struct TransportRef(pub Arc<dyn Transport>);
 pub struct DefaultDnsRef(pub DefaultDnsSpec);
 pub struct ProxiesRef(pub Arc<Tunnel>);
-pub struct RouterRef(pub Arc<Tunnel>);
-pub struct ProxyRef(pub Arc<Tunnel>, pub String);
 
 fn tunnel_of(env: &mut JNIEnv, t: &JObject) -> FsResult<Arc<Tunnel>> {
     Ok(rt::obj_of::<TunnelRef>(env, t)?.0.clone())
@@ -438,139 +429,4 @@ pub fn tr_p50(env: &mut JNIEnv, this: &JObject) -> FsResult<i64> {
         AnyTransport::T(t) => t.p50(),
         AnyTransport::D(_) => 0,
     })
-}
-
-// ------------------------------------------------------------------ Proxies / Router / Proxy (built-ins)
-
-fn proxies(env: &mut JNIEnv, this: &JObject) -> FsResult<Arc<Tunnel>> {
-    Ok(rt::obj_of::<ProxiesRef>(env, this)?.0.clone())
-}
-
-pub fn px_router<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
-    let t = proxies(env, this)?;
-    rt::new_iface_proxy(env, C_ROUTER, Arc::new(RouterRef(t)))
-}
-pub fn px_get_proxy<'l>(env: &mut JNIEnv<'l>, this: &JObject, id: String) -> FsResult<JObject<'l>> {
-    let t = proxies(env, this)?;
-    if !BUILTIN_PROXIES.contains(&id.as_str()) {
-        return Err(FsError::new(format!("proxy: {id} not found")));
-    }
-    rt::new_iface_proxy(env, C_PROXY, Arc::new(ProxyRef(t, id)))
-}
-pub fn px_has_proxy(env: &mut JNIEnv, this: &JObject, id: String) -> FsResult<bool> {
-    proxies(env, this)?;
-    Ok(BUILTIN_PROXIES.contains(&id.as_str()))
-}
-pub fn px_remove_proxy(env: &mut JNIEnv, this: &JObject, _id: String) -> FsResult<bool> {
-    proxies(env, this)?;
-    Ok(false)
-}
-pub fn px_refresh_proxies(env: &mut JNIEnv, this: &JObject) -> FsResult<String> {
-    proxies(env, this)?;
-    Ok(BUILTIN_PROXIES.join(","))
-}
-pub fn px_test_hop(
-    env: &mut JNIEnv,
-    this: &JObject,
-    _via: String,
-    _origin: String,
-) -> FsResult<String> {
-    proxies(env, this)?;
-    Ok("hop: unsupported in phase 1".into())
-}
-
-fn router(env: &mut JNIEnv, this: &JObject) -> FsResult<Arc<Tunnel>> {
-    let r = rt::refnum_of(env, this)?;
-    let o = rt::lookup(r).ok_or_else(|| FsError::new("unknown router"))?;
-    if let Some(r) = o.downcast_ref::<RouterRef>() {
-        return Ok(r.0.clone());
-    }
-    Err(FsError::new("not a router"))
-}
-
-/// The direct (Exit/Base) path is dual-stack.
-pub fn rt_ip4(env: &mut JNIEnv, this: &JObject) -> FsResult<bool> {
-    router(env, this)?;
-    Ok(true)
-}
-pub fn rt_ip6(env: &mut JNIEnv, this: &JObject) -> FsResult<bool> {
-    router(env, this)?;
-    Ok(true)
-}
-pub fn rt_mtu(env: &mut JNIEnv, this: &JObject) -> FsResult<i64> {
-    Ok(router(env, this)?.link_mtu() as i64)
-}
-pub fn rt_reaches(env: &mut JNIEnv, this: &JObject, _csv: String) -> FsResult<bool> {
-    router(env, this)?;
-    Ok(true)
-}
-pub fn rt_contains(
-    env: &mut JNIEnv,
-    this: &JObject,
-    _who: String,
-    _prefix: String,
-) -> FsResult<bool> {
-    router(env, this)?;
-    Ok(false)
-}
-pub fn rt_self(env: &mut JNIEnv, this: &JObject, _ip: String) -> FsResult<bool> {
-    router(env, this)?;
-    Ok(false)
-}
-pub fn rt_stat<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
-    router(env, this)?;
-    rt::new_struct_object(env, Struct::new(C_ROUTER_STATS))
-}
-
-fn proxy(env: &mut JNIEnv, this: &JObject) -> FsResult<(Arc<Tunnel>, String)> {
-    let p = rt::obj_of::<ProxyRef>(env, this)?;
-    Ok((p.0.clone(), p.1.clone()))
-}
-
-pub fn p_id(env: &mut JNIEnv, this: &JObject) -> FsResult<String> {
-    Ok(proxy(env, this)?.1)
-}
-pub fn p_type(env: &mut JNIEnv, this: &JObject) -> FsResult<String> {
-    let (_, id) = proxy(env, this)?;
-    Ok(if id == "Block" {
-        "noop".into()
-    } else {
-        "net".into()
-    })
-}
-pub fn p_get_addr(env: &mut JNIEnv, this: &JObject) -> FsResult<String> {
-    proxy(env, this)?;
-    Ok(String::new())
-}
-pub fn p_status(env: &mut JNIEnv, this: &JObject) -> FsResult<i32> {
-    proxy(env, this)?;
-    Ok(TOK)
-}
-pub fn p_router<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
-    let (t, _) = proxy(env, this)?;
-    rt::new_iface_proxy(env, C_ROUTER, Arc::new(RouterRef(t)))
-}
-pub fn p_dns(env: &mut JNIEnv, this: &JObject) -> FsResult<String> {
-    proxy(env, this)?;
-    Ok(String::new())
-}
-pub fn p_ping(env: &mut JNIEnv, this: &JObject) -> FsResult<bool> {
-    proxy(env, this)?;
-    Ok(true)
-}
-pub fn p_pause(env: &mut JNIEnv, this: &JObject) -> FsResult<bool> {
-    proxy(env, this)?;
-    Ok(false)
-}
-pub fn p_resume(env: &mut JNIEnv, this: &JObject) -> FsResult<bool> {
-    proxy(env, this)?;
-    Ok(false)
-}
-pub fn p_refresh(env: &mut JNIEnv, this: &JObject) -> FsResult<()> {
-    proxy(env, this)?;
-    Ok(())
-}
-pub fn p_stop(env: &mut JNIEnv, this: &JObject) -> FsResult<()> {
-    proxy(env, this)?;
-    Ok(())
 }

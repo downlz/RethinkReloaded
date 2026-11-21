@@ -15,7 +15,7 @@ use crate::msg;
 use crate::tls;
 use crate::transport::{Answer, QueryError, Stats, TYPE_DOT, Transport};
 use fs_core::bridge::{BoxFuture, dns_status};
-use fs_dialers::Protector;
+use fs_dialers::SharedDial;
 use rustls_pki_types::ServerName;
 use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
@@ -31,7 +31,7 @@ pub struct DotTransport {
     port: u16,
     seeds: Vec<IpAddr>,
     resolve_host: Option<HostResolver>,
-    protector: Protector,
+    dialer: SharedDial,
     stats: Stats,
 }
 
@@ -40,7 +40,7 @@ impl DotTransport {
         id: &str,
         url: &str,
         seeds: Vec<IpAddr>,
-        protector: Protector,
+        dialer: SharedDial,
         resolve_host: Option<HostResolver>,
     ) -> Result<Self, String> {
         let hp = url
@@ -66,7 +66,7 @@ impl DotTransport {
             port,
             seeds,
             resolve_host,
-            protector,
+            dialer,
             stats: Stats::default(),
         })
     }
@@ -95,7 +95,7 @@ impl DotTransport {
         let mut last = String::new();
         for ip in ips {
             let tcp = match self
-                .protector
+                .dialer
                 .dial_tcp(
                     pid,
                     SocketAddr::new(ip, self.port),

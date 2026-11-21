@@ -13,7 +13,7 @@
 use crate::msg;
 use crate::transport::{Answer, QueryError, Stats, TYPE_DNS53, Transport};
 use fs_core::bridge::{BoxFuture, dns_status};
-use fs_dialers::Protector;
+use fs_dialers::SharedDial;
 use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
@@ -24,16 +24,16 @@ const TIMEOUT: Duration = Duration::from_secs(15);
 pub struct Dns53Transport {
     id: String,
     servers: Vec<SocketAddr>,
-    protector: Protector,
+    dialer: SharedDial,
     stats: Stats,
 }
 
 impl Dns53Transport {
-    pub fn new(id: &str, servers: Vec<SocketAddr>, protector: Protector) -> Self {
+    pub fn new(id: &str, servers: Vec<SocketAddr>, dialer: SharedDial) -> Self {
         Dns53Transport {
             id: id.to_string(),
             servers,
-            protector,
+            dialer,
             stats: Stats::default(),
         }
     }
@@ -62,7 +62,7 @@ impl Dns53Transport {
         pid: &str,
     ) -> Result<Vec<u8>, (bool, String)> {
         let sock = self
-            .protector
+            .dialer
             .dial_udp(pid, server)
             .await
             .map_err(|e| (true, e.to_string()))?;
@@ -84,7 +84,7 @@ impl Dns53Transport {
 
     async fn tcp(&self, server: SocketAddr, q: &[u8], pid: &str) -> Result<Vec<u8>, String> {
         let mut s = self
-            .protector
+            .dialer
             .dial_tcp(pid, server, fs_dialers::DIAL_TIMEOUT)
             .await
             .map_err(|e| e.to_string())?;
