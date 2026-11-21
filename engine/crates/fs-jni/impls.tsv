@@ -79,6 +79,8 @@ com.celzero.firestack.intra.Intra	addDoHTransport	tunnel::add_doh
 com.celzero.firestack.intra.Intra	addDoHTransport2	tunnel::add_doh2
 com.celzero.firestack.intra.Intra	addDNSProxy	tunnel::add_dns_proxy
 com.celzero.firestack.intra.Intra	addProxyDNS	tunnel::add_proxy_dns
+com.celzero.firestack.intra.Intra	addDNSCryptTransport	tunnel::add_dnscrypt
+com.celzero.firestack.intra.Intra	addDNSCryptRelay	tunnel::add_dnscrypt_relay
 com.celzero.firestack.intra.Intra	setSystemDNS	tunnel::set_system_dns
 com.celzero.firestack.intra.Intra	addDefaultTransport	tunnel::add_default_transport
 com.celzero.firestack.intra.Intra$proxyTunnel	isConnected	tunnel::t_is_connected

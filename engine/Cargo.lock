@@ -374,7 +374,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]
@@ -457,17 +457,22 @@ version = "0.0.1"
 dependencies = [
  "base64",
  "bytes",
+ "chacha20 0.9.1",
  "fs-core",
  "fs-dialers",
  "h2",
  "hickory-proto",
  "http",
  "parking_lot",
+ "poly1305",
+ "ring",
  "rustls",
  "rustls-pki-types",
+ "salsa20",
  "tokio",
  "tokio-rustls",
  "webpki-roots",
+ "x25519-dalek",
 ]
 
 [[package]]
@@ -1456,6 +1461,15 @@ dependencies = [
  "ring",
  "rustls-pki-types",
  "untrusted",
+]
+
+[[package]]
+name = "salsa20"
+version = "0.10.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97a22f5af31f73a954c10289c93e8a50cc23d971e80ee446f1f6f7137a088213"
+dependencies = [
+ "cipher",
 ]
 
 [[package]]

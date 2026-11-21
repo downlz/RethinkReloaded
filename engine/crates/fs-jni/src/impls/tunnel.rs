@@ -234,6 +234,16 @@ pub fn add_proxy_dns(env: &mut JNIEnv, t: JObject, p: JObject) -> FsResult<()> {
     Ok(tun.add_dns53(px.id(), first)?)
 }
 
+/// `Intra.addDNSCryptTransport(t, id, stamp)`
+pub fn add_dnscrypt(env: &mut JNIEnv, t: JObject, id: String, stamp: String) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_dnscrypt(&id, &stamp)?)
+}
+
+/// `Intra.addDNSCryptRelay(t, stamp)`
+pub fn add_dnscrypt_relay(env: &mut JNIEnv, t: JObject, stamp: String) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_dnscrypt_relay(&stamp)?)
+}
+
 /// `Intra.setSystemDNS(t, ipcsv)`
 pub fn set_system_dns(env: &mut JNIEnv, t: JObject, csv: String) -> FsResult<()> {
     Ok(tunnel_of(env, &t)?.add_dns53(fs_dns::ids::SYSTEM, &csv)?)
@@ -365,7 +375,7 @@ pub fn r_get<'l>(env: &mut JNIEnv<'l>, this: &JObject, id: String) -> FsResult<J
     rt::new_iface_proxy(env, C_TRANSPORT, Arc::new(TransportRef(tr)))
 }
 pub fn r_remove(env: &mut JNIEnv, this: &JObject, id: String) -> FsResult<bool> {
-    Ok(resolver(env, this)?.resolver().remove(&id))
+    Ok(resolver(env, this)?.remove_transport(&id))
 }
 /// `add(DNSTransport)`: only transports created by this engine can be (re-)added.
 pub fn r_add(env: &mut JNIEnv, this: &JObject, t: JObject) -> FsResult<bool> {

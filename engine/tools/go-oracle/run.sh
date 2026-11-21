@@ -19,13 +19,14 @@ git -C "$work/fs" fetch -q --depth 1 origin "$sha" 2>/dev/null || git -C "$work/
 git -C "$work/fs" checkout -q "$sha"
 cp "$engine"/tools/go-oracle/inject/*_test.go "$work/fs/intra/backend/"
 cp "$engine"/tools/go-oracle/inject/dnsx/*_test.go "$work/fs/intra/dnsx/"
+cp "$engine"/tools/go-oracle/inject/dnscrypt/*_test.go "$work/fs/intra/dnscrypt/"
 bl=${RR_BLOCKLIST_DIR:-}
 mkdir -p "$out"
 gover=$(sed -n 's/^go //p' "$work/fs/go.mod")
 toolchain=$(sed -n 's/^toolchain //p' "$work/fs/go.mod")
 # a bare language version (go 1.27) is not a toolchain name; Go's first release of it is go1.27.0
 if [ -z "$toolchain" ]; then case "$gover" in *.*.*) toolchain=go$gover ;; *) toolchain=go$gover.0 ;; esac; fi
-args=(test -count=1 -timeout 30m -tags oracle -ldflags=-checklinkname=0 -run Oracle ./intra/backend/ ./intra/dnsx/)
+args=(test -count=1 -timeout 30m -tags oracle -ldflags=-checklinkname=0 -run Oracle ./intra/backend/ ./intra/dnsx/ ./intra/dnscrypt/)
 if [ $docker -eq 1 ]; then
   blargs=(); [ -n "$bl" ] && blargs=(-v "$bl:/bl:ro" -e RR_BLOCKLIST_DIR=/bl)
   docker run --rm -v "$work/fs:/src" -v "$out:/out" -w /src -e RR_ORACLE_OUT=/out ${blargs[@]+"${blargs[@]}"} "golang:${toolchain#go}" go "${args[@]}"

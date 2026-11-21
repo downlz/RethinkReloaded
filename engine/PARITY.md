@@ -104,6 +104,21 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   the server or through the bridged proxy, and summarized (`onSvcComplete`, 50 ms later). HTTPS servers are
   unimplemented, as in firestack. v0.5.8's app never starts a server.
 
+## Phase 3 notes
+* DNSCrypt (firestack `dnscrypt`, from dnscrypt-proxy):
+  * Stamps are parsed as by the go-dnsstamps version firestack pins: DNSCrypt, DoH and DNSCrypt-relay stamps
+    only, default port 443.
+  * Certificates are fetched over Exit, never through relays. Four racing attempts alternate UDP and TCP; the first
+    answer wins (firestack prefers the fastest, which only matters when several answer).
+  * The newest valid certificate is kept; certificates are refreshed every 4 h. When none is valid, timestamps are
+    ignored on retry.
+  * Queries: XSalsa20 or XChaCha20 secretbox, padded as firestack. UDP (two tries) then TCP. A random relay gets
+    the anonymization header, and the relay is reported as the summary's pid.
+  * Relays are kept by stamp and removed with `DNSResolver.remove(stamp)`.
+  * Not ported: a proxy registered under the server's id acting as its relay.
+  * Answers are not truncated for UDP clients (as DoH and DNS53 in this engine). firestack truncates DNSCrypt answers
+    above the client's EDNS size.
+
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.

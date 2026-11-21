@@ -129,6 +129,8 @@ pub struct Tunnel {
     sh: Arc<Shared>,
     /// local proxy servers (`Tunnel.getServices`)
     services: Arc<fs_rnet::Services>,
+    /// DNSCrypt servers and relays (firestack's `DcProxy` transport-mult)
+    dnscrypt: Arc<fs_dns::dnscrypt::DcMulti>,
     netstack: Arc<Netstack>,
     sessions: Arc<Sessions>,
     tasks: Mutex<Vec<JoinHandle<()>>>,
@@ -227,6 +229,7 @@ impl Tunnel {
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         let mtu = if tun_mtu > 0 { tun_mtu as usize } else { 1500 };
         let services = fs_rnet::Services::new(proxies.clone(), bridge.clone());
+        let dnscrypt = fs_dns::dnscrypt::DcMulti::new(proxies.clone());
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
@@ -265,6 +268,7 @@ impl Tunnel {
         let t = Arc::new(Tunnel {
             sh: sh.clone(),
             services,
+            dnscrypt,
             netstack,
             sessions: Arc::new(Sessions::default()),
             tasks: Mutex::new(Vec::new()),
@@ -397,6 +401,32 @@ impl Tunnel {
         )?;
         self.sh.resolver.add(Arc::new(t));
         Ok(())
+    }
+
+    /// `Intra.addDNSCryptTransport(t, id, stamp)`: fetches the server's certificate (blocking the caller, as
+    /// firestack), then serves `id` from it. Call from outside the runtime (JNI threads are).
+    pub fn add_dnscrypt(&self, id: &str, stamp: &str) -> Result<(), String> {
+        let dc = self.dnscrypt.clone();
+        let t = crate::runtime().block_on(async move { dc.add(id, stamp).await })?;
+        if !self.sh.resolver.add(t) {
+            return Err("dns: add failed".into());
+        }
+        Ok(())
+    }
+
+    /// `Intra.addDNSCryptRelay(t, stamp)`: relays are not resolver transports; `DNSResolver.remove(stamp)` drops them.
+    pub fn add_dnscrypt_relay(&self, stamp: &str) -> Result<(), String> {
+        self.dnscrypt.add_relay(stamp)
+    }
+
+    /// `DNSResolver.remove(id)`: a transport, and a DNSCrypt server or relay of that id.
+    pub fn remove_transport(&self, id: &str) -> bool {
+        let dc = self.dnscrypt.remove(id);
+        self.sh.resolver.remove(id) || dc
+    }
+
+    pub fn dnscrypt(&self) -> &Arc<fs_dns::dnscrypt::DcMulti> {
+        &self.dnscrypt
     }
 
     pub fn add_dns53(&self, id: &str, csv: &str) -> Result<(), String> {

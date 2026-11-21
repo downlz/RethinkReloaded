@@ -4580,11 +4580,11 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra__1init<'l>(env: *m
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSCryptRelay<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptRelay", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::unimplemented("Intra.addDNSCryptRelay") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptRelay", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::tunnel::add_dnscrypt_relay(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSCryptTransport<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; rt::unimplemented("Intra.addDNSCryptTransport") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; crate::impls::tunnel::add_dnscrypt(env, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSProxy<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring) -> () {
@@ -5396,5 +5396,5 @@ pub extern "system" fn Java_go_Universe_00024proxyerror_error<'l>(env: *mut sys:
 }
 
 /// Natives with a real implementation (impls + struct accessors + runtime).
-pub const fn implemented_count() -> usize { 795 }
-pub const STUB_CENSUS: (usize, usize) = (161, 105); // (unimplemented, rpn)
+pub const fn implemented_count() -> usize { 797 }
+pub const STUB_CENSUS: (usize, usize) = (159, 105); // (unimplemented, rpn)
