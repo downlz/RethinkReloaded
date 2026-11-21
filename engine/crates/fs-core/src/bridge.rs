@@ -234,8 +234,13 @@ impl FlowListener for AllowAllBridge {
             ip: String::new(),
         }))
     }
-    fn inflow(&self, _: i32, _: i32, _: String, _: String) -> BoxFuture<Option<Mark>> {
-        ready(None)
+    fn inflow(&self, _: i32, _: i32, src: String, dst: String) -> BoxFuture<Option<Mark>> {
+        ready(Some(Mark {
+            pidcsv: "Ingress".into(),
+            cid: format!("i{dst}>{src}"),
+            uid: "-1".into(),
+            ip: String::new(),
+        }))
     }
     fn flowing(&self, _: Mark) {}
     fn postflow(&self, _: FlowSummary) {}

@@ -297,14 +297,31 @@ impl FlowListener for JniBridge {
         })
     }
 
-    fn inflow(
-        &self,
-        _protocol: i32,
-        _uid: i32,
-        _src: String,
-        _dst: String,
-    ) -> BoxFuture<Option<Mark>> {
-        Box::pin(async { None }) // ingress (WireGuard) arrives in Phase 2
+    /// `inflow(protocol, uid, src, dst)`: unsolicited inbound flows (UDP with endpoint-independent filtering).
+    fn inflow(&self, protocol: i32, uid: i32, src: String, dst: String) -> BoxFuture<Option<Mark>> {
+        let obj = self.obj.clone();
+        Box::pin(async move {
+            executor()
+                .call(Lane::Flow, move |env| {
+                    let (s, d) = (jstr(env, &src), jstr(env, &dst));
+                    let sig = format!("(II{SIG_STR}{SIG_STR})L{C_MARK};");
+                    let v = call(
+                        env,
+                        &obj,
+                        "inflow",
+                        &sig,
+                        &[
+                            JValue::Int(protocol),
+                            JValue::Int(uid),
+                            JValue::Object(&s),
+                            JValue::Object(&d),
+                        ],
+                    );
+                    returned_struct(env, v).map(|s| mark_from(&s))
+                })
+                .await
+                .flatten()
+        })
     }
 
     fn flowing(&self, m: Mark) {
