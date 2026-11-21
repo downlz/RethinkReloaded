@@ -94,6 +94,11 @@ jobs:
           cargo test --workspace --locked
           cargo clippy --workspace --locked -- -D warnings
           cargo fmt --all --check
+      - name: Android lint (32- and 64-bit ABIs; libc types differ, e.g. socklen_t)
+        working-directory: engine
+        run: |
+          cargo ndk -t armeabi-v7a clippy -p fs-jni --locked -- -D warnings
+          cargo ndk -t arm64-v8a clippy -p fs-jni --locked -- -D warnings
       - name: JVM <-> Rust JNI tests (vendored facade against host libgojni)
         # -Xcheck:jni: HotSpot only warns on JNI misuse that aborts Android apps, so fail on any warning
         run: |

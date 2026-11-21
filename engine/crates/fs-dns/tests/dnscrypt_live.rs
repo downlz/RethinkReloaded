@@ -99,3 +99,17 @@ async fn through_a_relay() {
     let (_, _, pid) = ask(&t, "example.net.").await;
     assert_eq!(pid, "Base", "direct again");
 }
+
+/// A public relay given as a stamp: `RR_DC_RELAY=sdns://g... cargo test -p fs-dns --test dnscrypt_live public_relay -- --ignored`.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore]
+async fn public_relay() {
+    let Ok(relay) = std::env::var("RR_DC_RELAY") else {
+        return;
+    };
+    let dc = DcMulti::new(dialer());
+    let t: Arc<dyn Transport> = dc.add("dc1", ADGUARD).await.unwrap();
+    dc.add_relay(&relay).unwrap();
+    let (_, n, pid) = ask(&t, "example.com.").await;
+    assert!(n > 0, "answers via {pid}");
+}

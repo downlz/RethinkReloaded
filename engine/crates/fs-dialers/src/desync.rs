@@ -114,7 +114,7 @@ mod imp {
                 level,
                 opt,
                 &v as *const i32 as *const libc::c_void,
-                size_of::<i32>() as u32,
+                size_of::<i32>() as libc::socklen_t,
             )
         };
         if r == 0 {
@@ -159,7 +159,7 @@ mod imp {
             };
             let mut m: libc::msghdr = std::mem::zeroed();
             m.msg_name = &mut name as *mut _ as *mut libc::c_void;
-            m.msg_namelen = size_of::<libc::sockaddr_storage>() as u32;
+            m.msg_namelen = size_of::<libc::sockaddr_storage>() as libc::socklen_t;
             m.msg_iov = &mut iov;
             m.msg_iovlen = 1;
             m.msg_control = cbuf.as_mut_ptr() as *mut libc::c_void;
