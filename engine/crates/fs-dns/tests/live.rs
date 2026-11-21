@@ -31,7 +31,7 @@ async fn doh_cloudflare() {
         let q = msg::pack(&msg::query(name, RecordType::A, 0xbeef).unwrap()).unwrap();
         let a = t.clone().query(q, "Exit".into()).await.expect("doh answer");
         let m = msg::parse(&a.msg).unwrap();
-        assert_eq!(m.id(), 0xbeef, "query id restored");
+        assert_eq!(m.metadata.id, 0xbeef, "query id restored");
         assert!(
             !msg::answer_ips(&m).is_empty(),
             "{name}: {:?}",
@@ -67,7 +67,7 @@ async fn dns53_cloudflare() {
         msg::interesting_rdata(Some(&m)),
         a.latency
     );
-    assert_eq!(m.id(), 7);
+    assert_eq!(m.metadata.id, 7);
 }
 
 #[tokio::test]
@@ -91,6 +91,6 @@ async fn dot_cloudflare() {
         msg::interesting_rdata(Some(&m)),
         a.latency
     );
-    assert_eq!(m.id(), 0x77);
+    assert_eq!(m.metadata.id, 0x77);
     assert!(!msg::answer_ips(&m).is_empty());
 }

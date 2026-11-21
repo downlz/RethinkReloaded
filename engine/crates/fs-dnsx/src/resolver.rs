@@ -119,8 +119,8 @@ impl Resolver {
         let ttl = Duration::from_secs(msg::max_ttl(&m) as u64);
         let exp = Instant::now() + RDNS_LIFE.max(ttl);
         let mut names = vec![qname.trim_end_matches('.').to_ascii_lowercase()];
-        for r in m.answers() {
-            if let hickory_proto::rr::RData::CNAME(c) = r.data() {
+        for r in &m.answers {
+            if let hickory_proto::rr::RData::CNAME(c) = &r.data {
                 let n = c.0.to_ascii().trim_end_matches('.').to_ascii_lowercase();
                 if !names.contains(&n) {
                     names.push(n);
@@ -383,7 +383,7 @@ impl Resolver {
             smm.rdata = msg::interesting_rdata(m.as_ref());
             smm.rcode = m
                 .as_ref()
-                .map(|m| u16::from(m.response_code()) as i64)
+                .map(|m| u16::from(m.metadata.response_code) as i64)
                 .unwrap_or(0);
             smm.rttl = m.as_ref().map(|m| msg::max_ttl(m) as i64).unwrap_or(0);
             smm.pid = pid;
@@ -398,17 +398,17 @@ impl Resolver {
                 smm.pid = a.pid;
                 smm.rdata = msg::interesting_rdata(m.as_ref());
                 if let Some(m) = &m {
-                    smm.rcode = u16::from(m.response_code()) as i64;
+                    smm.rcode = u16::from(m.metadata.response_code) as i64;
                     smm.rttl = msg::max_ttl(m) as i64;
-                    smm.ad = m.authentic_data();
+                    smm.ad = m.metadata.authentic_data;
                     if t.id() == ids::BLOCK_ALL {
                         smm.blocked_target = qname.clone();
                     }
                     let ips = msg::answer_ips(m);
-                    let ok = m.response_code() == ResponseCode::NoError;
+                    let ok = m.metadata.response_code == ResponseCode::NoError;
                     if pref.cache
                         && t.id() != ids::BLOCK_ALL
-                        && cache::cacheable(&qname, ok, m.truncated(), &ips)
+                        && cache::cacheable(&qname, ok, m.metadata.truncation, &ips)
                     {
                         self.cache.put(ckey, a.msg.clone(), msg::max_ttl(m));
                     }
@@ -523,7 +523,7 @@ mod tests {
                 }
                 let m = msg::parse(&q).unwrap();
                 let mut r = msg::empty_response(&m);
-                let name = m.queries()[0].name().clone();
+                let name = m.queries[0].name().clone();
                 r.add_answer(hickory_proto::rr::Record::from_rdata(
                     name,
                     60,

@@ -276,8 +276,8 @@ impl Transport for DohTransport {
                     "doh: unparsable query",
                 ));
             };
-            let id = m.id();
-            m.set_id(0);
+            let id = m.metadata.id;
+            m.metadata.id = 0;
             msg::add_padding_if_none(&mut m);
             let body = msg::pack(&m).unwrap_or(q);
             let r = tokio::time::timeout(QUERY_TIMEOUT, me.exchange(body, &pid)).await;
@@ -304,7 +304,7 @@ impl Transport for DohTransport {
                     "doh: unparsable answer",
                 ));
             };
-            ans.set_id(id);
+            ans.metadata.id = id;
             let latency = start.elapsed();
             me.stats.ok(latency);
             Ok(Answer {

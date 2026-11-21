@@ -12,7 +12,7 @@ authors.workspace = true
 fs-core = { path = "../fs-core" }
 fs-dns = { path = "../fs-dns" }
 fs-dialers = { path = "../fs-dialers" }
-hickory-proto = { version = "0.25", default-features = false, features = ["std"] }
+hickory-proto = { version = "0.26", default-features = false, features = ["std"] }
 tokio = { workspace = true, features = ["time", "rt", "macros", "sync"] }
 parking_lot.workspace = true
 
