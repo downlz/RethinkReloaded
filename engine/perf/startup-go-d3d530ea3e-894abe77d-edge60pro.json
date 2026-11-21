@@ -1,0 +1,6 @@
+{
+  "label": "go-d3d530ea3e-894abe77d-edge60pro",
+  "captured": "2026-11-21T10:36:47Z",
+  "device": "motorola edge 60 pro / Android 17",
+  "runs": [{"total_time_ms":160,"tun_up_ms":18,"dns_ready_ms":1093},{"total_time_ms":152,"tun_up_ms":15,"dns_ready_ms":1230},{"total_time_ms":146,"tun_up_ms":22,"dns_ready_ms":1164},{"total_time_ms":167,"tun_up_ms":18,"dns_ready_ms":1185},{"total_time_ms":302,"tun_up_ms":23,"dns_ready_ms":1160}]
+}

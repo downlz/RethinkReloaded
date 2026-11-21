@@ -1,0 +1,17 @@
+{
+  "label": "rust-894abe77d-edge60pro",
+  "captured": "2026-11-21T09:27:52Z",
+  "device": "motorola motorola edge 60 pro / Android 17 (API 37) / arm64-v8a",
+  "vpn": "io.github.downlz.rethinkreloaded",
+  "network": "Active default network: 809; Wi-Fi standard: 11ac;RSSI: -56;Link speed: 351Mbps;Link speed: 351Mbps;Link speed: 866Mbps;Rx Link speed: 585Mbps;Rx Link speed: 866Mbps",
+  "http_target": "192.168.1.13 8099 /300MB.bin",
+  "firestack_pin": "d3d530ea3e",
+  "screen": "on (charging), idle = no user traffic",
+  "idle": {"label": "rust-894abe77d-edge60pro", "captured": "2026-11-21T09:26:29Z", "device": "motorola edge 60 pro / Android 17 / arm64-v8a", "emulator": false, "engine": "rust", "firestack_pin": "d3d530ea3e", "libgojni_bytes": 50699528, "vpn_connected": true, "samples": [{"pss_kb": 180687, "native_heap_kb": 61100, "rss_kb": 254784, "threads": 74}, {"pss_kb": 161231, "native_heap_kb": 49184, "rss_kb": 251508, "threads": 74}, {"pss_kb": 160766, "native_heap_kb": 50356, "rss_kb": 250132, "threads": 74}, {"pss_kb": 150140, "native_heap_kb": 51696, "rss_kb": 233740, "threads": 74}, {"pss_kb": 136421, "native_heap_kb": 47980, "rss_kb": 214956, "threads": 74}, {"pss_kb": 132265, "native_heap_kb": 38924, "rss_kb": 203540, "threads": 74}, {"pss_kb": 132921, "native_heap_kb": 39360, "rss_kb": 202916, "threads": 75}, {"pss_kb": 131826, "native_heap_kb": 39420, "rss_kb": 203284, "threads": 75}, {"pss_kb": 127794, "native_heap_kb": 37844, "rss_kb": 199504, "threads": 75}, {"pss_kb": 127893, "native_heap_kb": 37744, "rss_kb": 199452, "threads": 75}]},
+  "wakeups": {"ctx_switches_per_min":2907,"threads":78},
+  "dns_uncached": {"cmd":"dns","server":"10.111.222.3:53","mode":"uncached","count":40,"ok":40,"fail":0,"p50_ms":74.34,"p95_ms":133.74,"max_ms":138.71},
+  "dns_cached": {"cmd":"dns","server":"10.111.222.3:53","mode":"cached","count":40,"ok":40,"fail":0,"p50_ms":22.52,"p95_ms":25.36,"max_ms":34.66},
+  "tcp_connect": {"cmd":"tcp","target":"1.1.1.1:443","count":20,"ok":20,"fail":0,"p50_ms":3.11,"p95_ms":5.39,"max_ms":5.85},
+  "download": {"cmd":"get","url":"http://192.168.1.13:8099/300MB.bin","connect_ms":1.0,"ttfb_ms":40.9,"bytes":314573007,"seconds":11.88,"mbit_s":211.83},
+  "app_cpu_seconds_per_gb": 29.72
+}

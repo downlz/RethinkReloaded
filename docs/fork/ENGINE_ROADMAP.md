@@ -148,6 +148,48 @@ Bugs the e2e run found, now fixed and covered by tests: `getProxy`/`refreshProxi
 `force_handshake` held the device lock; DNS ignored Kotlin's proxy choice; Kotlin's WireGuard DNS transport
 (`addProxyDNS`) was missing.
 
+### Measurement pass after Phase 2 (2026-11-21, same phone, both engines in one session)
+
+Both engines were built from `894abe77d` (`fdroidFullReleaseDebug`, arm64) and installed over each other on the
+Phase 1 phone, with the same Wi-Fi and LAN target. Files in `engine/perf/`:
+* `baseline-{go-d3d530ea3e,rust}-894abe77d-edge60pro.json`
+* `ab-894abe77d-edge60pro.json` (three alternating rounds)
+* `screenoff-*-894abe77d-edge60pro.json`
+* `startup-*-894abe77d-edge60pro.json`
+
+**Correction:** the Go baseline of 2026-11-18 overstated Go's idle cost: 182 MB PSS and 4,798 context switches/min,
+against 142–153 MB and 1,763–6,271/min measured today. Idle context switches swing widely with other apps' traffic,
+so single runs are not meaningful; the A/B rounds are.
+
+| Metric | Go | Rust | Gate | Result |
+|---|---|---|---|---|
+| Idle PSS, A/B median of 3 (screen on) | 143 MB | 123 MB (−14%) | ≤ 80% of Go | **fail**: about 86% of Go. One Rust round read 175 MB; 36 MB of it was graphics (UI), not the engine |
+| Idle context switches/min, A/B median of 3 | 5,037 | 1,337 (−73%) | ≤ Go | pass |
+| **Screen off, 15 min**: voluntary switches (wakeups)/min | 2,304 | **93** (−96%) | ≤ Go | pass |
+| Screen off, 15 min: app CPU | 9.03 s | **0.86 s** (−90%) | ≤ Go | pass |
+| Screen off, 15 min: battery estimate (batterystats) | 0.430 mAh | **0.079 mAh** (−82%) | | |
+| LAN download (baseline run) | 140 Mbit/s | 212 Mbit/s (+52%) | ≥ 95% of Go | pass |
+| App CPU per GB | 79.5 s | 29.7 s (−63%) | ≤ Go | pass |
+| DNS cached p50 / p95 (A/B, 3 runs each) | 32–34 / 87–96 ms | 25–32 / 82–86 ms | p50 ≤ Go + 1 ms, p95 ≤ Go | pass |
+| Cold start (`am start -W` TotalTime, median of 5) | 152 ms | 150 ms | regression ≤ 5% | pass |
+| Launch → first DNS answer through the VPN (median of 5) | 1,164 ms | 1,162 ms | | equal |
+
+Notes:
+* Screen-off windows: one per engine, back to back, with the charger reported unplugged and Doze not forced.
+* Startup runs: the phone was locked; TotalTime measures the same launch for both engines.
+* The memory gate is the one miss. Rust's idle PSS is consistently lower than Go's, but not by 20% in this session.
+  Next steps: separate native heap from graphics in `ab.sh`, look at the 46 MB native heap (engine plus app
+  libraries), and check whether the 80% target was set from the overstated Go baseline.
+
+Findings (app-side, both engines):
+* After an install, the app sometimes stops its own VPN right after starting it. Two "start VPN" calls race and the
+  second finds no tunnel ("Cannot handle vpn adapter changes, no tunnel"). This is upstream Kotlin behaviour; seen with
+  Go and Rust.
+* RethinkReloaded on the phone had the universal rules "Block when DNS is bypassed" and "Block port 80" on. They block
+  the probes (`fs-probe` by IP and over HTTP), so they were switched off for the runs.
+
+Not measured: armv7 (this phone is arm64-only), a multi-hour battery drain.
+
 Open items: the WireGuard list's rx/tx counters in the app did not visibly advance during the run, although engine
 counters do (unit-tested), so check the UI refresh path in the measurement pass. Kotlin does not restore a relay after
 a VPN restart (Kotlin's own state; check against the Go engine).
