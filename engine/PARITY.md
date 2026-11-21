@@ -213,6 +213,11 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
     * plus parameters of the callbacks the engine invokes on objects Kotlin passed in.
   * A test asserts that nothing else remains.
 
+* DNSCrypt relays (anonymized DNSCrypt) only work with servers on standard ports. Public relays refuse to forward
+  to non-standard ports such as AdGuard's 5443, so the app's AdGuard preset gets no answers once a relay is on. That is
+  the relays' policy, and it affects firestack the same way. The emulator run and a live test through the app's
+  relays to OpenDNS on port 443 confirm the relay path works.
+
 ## Deliberate deviations
 * `Proxy.client()` skips firestack's second provider, Windscribe's geo API, because firestack calls it with a made-up
   bearer token and the fork does not send forged credentials to a third party. The remaining providers cover the
