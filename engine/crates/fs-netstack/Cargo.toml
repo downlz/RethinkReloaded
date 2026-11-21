@@ -9,6 +9,7 @@ repository.workspace = true
 authors.workspace = true
 
 [dependencies]
+fs-core = { path = "../fs-core" }
 netstack-smoltcp = "0.2.5"
 futures = "0.3"
 libc = "0.2"

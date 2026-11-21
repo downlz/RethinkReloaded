@@ -340,13 +340,9 @@ pub fn t_restart(
 pub fn t_close_conns(env: &mut JNIEnv, this: &JObject, csv: String) -> FsResult<String> {
     Ok(this_tunnel(env, this)?.close_conns(&csv))
 }
-/// `setPcap(path)`: packet capture is not ported yet (Phase 3); accepted and ignored except to log it.
+/// `setPcap(path)`: "" off, one character: a log line per packet, else a pcap file (appended to).
 pub fn t_set_pcap(env: &mut JNIEnv, this: &JObject, path: String) -> FsResult<()> {
-    this_tunnel(env, this)?;
-    if !path.is_empty() {
-        crate::impls::log::warn(&format!("tunnel: pcap not supported yet ({path})"));
-    }
-    Ok(())
+    Ok(this_tunnel(env, this)?.set_pcap(&path)?)
 }
 pub fn t_get_resolver<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
     let t = this_tunnel(env, this)?;

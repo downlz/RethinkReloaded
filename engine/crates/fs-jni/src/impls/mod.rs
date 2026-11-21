@@ -9,9 +9,12 @@
 
 pub mod backend;
 pub mod bridge;
+pub mod console;
+pub mod diag;
 pub mod intra;
 pub mod log;
 pub mod mult;
+pub mod netstat;
 pub mod proxies;
 pub mod rdns;
 pub mod seq;

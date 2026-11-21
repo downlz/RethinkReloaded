@@ -96,7 +96,7 @@ pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: S
         uid: v.uid.clone(),
         ip: smm.target.clone(),
     });
-    let conn = sh.conns.track(&v.mark.cid, &v.uid, &smm.pid);
+    let conn = sh.conns.track("tcp", &v.mark.cid, &v.uid, &smm.pid);
     let relay = tokio::io::copy_bidirectional(&mut app, &mut remote);
     tokio::select! {
         r = relay => match r {

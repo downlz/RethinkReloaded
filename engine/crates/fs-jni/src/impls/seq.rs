@@ -29,6 +29,12 @@ pub fn init(env: &mut JNIEnv) -> FsResult<()> {
     let mut names: Vec<&str> = crate::exports::STRUCT_CLASSES.to_vec();
     names.extend(crate::exports::PROXY_CLASSES.iter().map(|(_, p)| *p));
     crate::rt::preload_classes(env, &names);
+    fs_core::log::set_sink(|level, msg| match level {
+        ..=2 => crate::impls::log::debug(msg),
+        3 => crate::impls::log::info(msg),
+        4 => crate::impls::log::warn(msg),
+        _ => crate::impls::log::error(msg),
+    });
     crate::impls::log::info("rust engine loaded (libgojni)");
     Ok(())
 }

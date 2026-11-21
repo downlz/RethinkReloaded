@@ -126,11 +126,11 @@ public class JniFacadeTest {
     @Test
     public void unimplementedAndRpnStubsThrowGoErrors() {
         try {
-            Intra.addDNSCryptRelay(null, "sdns://x"); // DNSCrypt is a Phase 3 native: still a stub
+            Intra.addDNSCryptRelay(null, "sdns://x"); // implemented (Phase 3): a nil tunnel is a Go error
             fail("expected an exception");
         } catch (Exception e) {
             assertEquals("go.Universe$proxyerror", e.getClass().getName());
-            assertTrue(e.getMessage(), e.getMessage().contains("unimplemented"));
+            assertTrue(e.getMessage(), !e.getMessage().contains("unimplemented"));
         }
         try {
             Intra.connect(-1, 1500, 1500, "", "", null, null); // implemented: rejects a nil bridge

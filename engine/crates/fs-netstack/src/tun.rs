@@ -101,6 +101,20 @@ pub struct Link {
     gen_tx: watch::Sender<u64>,
     mtu: AtomicI32,
     shut: AtomicBool,
+    /// traffic counters (firestack's NIC stats): rx = read from the TUN, tx = written to it
+    pub stats: LinkStats,
+    /// packet capture (`setPcap`)
+    pub pcap: crate::pcap::Pcap,
+}
+
+/// Packets and bytes through the TUN device.
+#[derive(Default, Debug)]
+pub struct LinkStats {
+    pub rx_pkts: std::sync::atomic::AtomicU64,
+    pub rx_bytes: std::sync::atomic::AtomicU64,
+    pub tx_pkts: std::sync::atomic::AtomicU64,
+    pub tx_bytes: std::sync::atomic::AtomicU64,
+    pub errs: std::sync::atomic::AtomicU64,
 }
 
 impl Link {
@@ -111,6 +125,8 @@ impl Link {
             gen_tx: watch::channel(0).0,
             mtu: AtomicI32::new(mtu),
             shut: AtomicBool::new(false),
+            stats: LinkStats::default(),
+            pcap: crate::pcap::Pcap::default(),
         }
     }
 
@@ -123,17 +139,44 @@ impl Link {
         let Some(t) = self.current() else {
             return Err(io::Error::from(io::ErrorKind::NotConnected));
         };
-        tokio::select! {
+        let r = tokio::select! {
             r = t.read(buf) => r,
             _ = gen_rx.changed() => Err(io::Error::from(io::ErrorKind::Interrupted)),
+        };
+        match &r {
+            Ok(n) => {
+                self.stats.rx_pkts.fetch_add(1, Ordering::Relaxed);
+                self.stats.rx_bytes.fetch_add(*n as u64, Ordering::Relaxed);
+                if self.pcap.is_on() {
+                    self.pcap.record(true, &buf[..*n]);
+                }
+            }
+            Err(e) if e.kind() != io::ErrorKind::Interrupted => {
+                self.stats.errs.fetch_add(1, Ordering::Relaxed);
+            }
+            Err(_) => {}
         }
+        r
     }
 
     pub async fn write(&self, pkt: &[u8]) -> io::Result<usize> {
-        match self.current() {
+        let r = match self.current() {
             Some(t) => t.write(pkt).await,
             None => Err(io::Error::from(io::ErrorKind::NotConnected)),
+        };
+        match &r {
+            Ok(n) => {
+                self.stats.tx_pkts.fetch_add(1, Ordering::Relaxed);
+                self.stats.tx_bytes.fetch_add(*n as u64, Ordering::Relaxed);
+                if self.pcap.is_on() {
+                    self.pcap.record(false, pkt);
+                }
+            }
+            Err(_) => {
+                self.stats.errs.fetch_add(1, Ordering::Relaxed);
+            }
         }
+        r
     }
 
     /// Waits until a new fd is linked; false if the link was shut down.

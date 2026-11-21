@@ -45,6 +45,9 @@ fn emit(level: i32, prio: i32, msg: &str) {
     if level >= LEVEL.load(Ordering::Relaxed) {
         sys::write(prio, msg);
     }
+    if level >= CONSOLE_LEVEL.load(Ordering::Relaxed) {
+        crate::impls::console::write(level, msg);
+    }
 }
 
 // android/log.h priorities: DEBUG=3 INFO=4 WARN=5 ERROR=6

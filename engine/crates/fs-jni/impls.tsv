@@ -98,6 +98,7 @@ com.celzero.firestack.intra.Intra$proxyTunnel	setPcap	tunnel::t_set_pcap
 com.celzero.firestack.intra.Intra$proxyTunnel	getResolver	tunnel::t_get_resolver
 com.celzero.firestack.intra.Intra$proxyTunnel	getProxies	tunnel::t_get_proxies
 com.celzero.firestack.intra.Intra$proxyTunnel	getServices	tunnel::t_get_services
+com.celzero.firestack.intra.Intra$proxyTunnel	stat	netstat::t_stat
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	id	tunnel::tr_id
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	type	tunnel::tr_type
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	getAddr	tunnel::tr_addr
@@ -187,3 +188,21 @@ com.celzero.firestack.backend.Backend$proxyDNSTransport	measure	tunnel::tr_measu
 com.celzero.firestack.backend.Backend$proxyDNSTransport	getRelay	tunnel::tr_get_relay
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	measure	tunnel::tr_measure
 com.celzero.firestack.intra.Intra$proxyDefaultDNS	getRelay	tunnel::tr_get_relay
+# --- phase 3: tunnel stats
+com.celzero.firestack.backend.NetStat	nicinfo	netstat::ns_nicinfo
+com.celzero.firestack.backend.NetStat	tun	netstat::ns_tun
+com.celzero.firestack.backend.NetStat	rdnsinfo	netstat::ns_rdnsinfo
+com.celzero.firestack.backend.NetStat	nic	netstat::ns_nic
+com.celzero.firestack.backend.NetStat	tcp	netstat::ns_tcp
+com.celzero.firestack.backend.NetStat	udp	netstat::ns_udp
+com.celzero.firestack.backend.NetStat	ip	netstat::ns_ip
+com.celzero.firestack.backend.NetStat	icmp	netstat::ns_icmp
+com.celzero.firestack.backend.NetStat	fwd	netstat::ns_fwd
+# --- phase 3: diagnostics (stand-ins for Go's runtime tools)
+com.celzero.firestack.intra.Intra	goMet	diag::go_met
+com.celzero.firestack.backend.GoMetrics	go	diag::gm_go
+com.celzero.firestack.intra.Intra	printStack	diag::print_stack
+com.celzero.firestack.intra.Intra	crash	diag::crash
+com.celzero.firestack.intra.Intra	setFlightRecordOutput	diag::set_flight_record_output
+com.celzero.firestack.intra.Intra	memProfile	diag::mem_profile
+com.celzero.firestack.intra.Intra	cpuProfile	diag::cpu_profile

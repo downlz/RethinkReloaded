@@ -75,8 +75,7 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
 * Kotlin receives normalized query names (no trailing dot, lowercase) in `onQuery` and every summary, as firestack.
 * Blocked answers carry TTL 0 (firestack's `BustDnsproxydResNetCache`), as do ALG answers.
 * Not yet ported:
-  * pcap.
-  `Tunnel.stat()` still throws; Kotlin catches it.
+  * (pcap and `Tunnel.stat()`: see Phase 3 notes)
 
 ## Phase 2 notes
 * Proxies follow firestack's `ipn`: Base/Exit/Block/Auto (Auto → Exit; RPN is excluded), SOCKS5 (TCP, UDP
@@ -156,6 +155,23 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
     families.
   * The first response within 3 s carrying an address for the name (or for an alias of it) answers.
   * The answer is rebuilt around the app's question and id; firestack returns the raw mDNS message.
+
+* `Tunnel.stat()` (Kotlin's network stats screen):
+  * Reports what this engine tracks: TUN packets and bytes, open TCP and UDP connections, link, resolver, proxy and
+    settings state.
+  * firestack fills these structs from gVisor's counters; the remaining counters read 0.
+* `setPcap`: as firestack, "" turns it off, one character logs a line per packet, and a path is appended to in
+  pcap format (raw IP link type).
+* Engine logs reach Kotlin's console (they did not before):
+  * Over firestack's memfd double buffer (`logMemFD`, 801-byte slots, drained when a buffer is full or 2.5 s after
+    its first line).
+  * Without memfd, via `Console.log` per line; the pipe (`logFD`) is not used.
+* Go runtime diagnostics, reproduced in shape only:
+  * `goMet`: process memory, threads and CPUs.
+  * `printStack`: the engine's threads and the caller's backtrace.
+  * `memProfile` / `cpuProfile`: text reports of memory and of CPU time sampled over 10–120 s.
+  * `crash`: report, then abort or not, per type.
+  * `setFlightRecordOutput`: the path is remembered.
 
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.

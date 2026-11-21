@@ -66,8 +66,8 @@ pub fn parse_ips(csv: &str) -> Vec<IpAddr> {
         .collect()
 }
 
-/// cid -> (uid, pid, closer)
-type ConnMap = HashMap<String, (String, String, Arc<Notify>)>;
+/// cid -> (uid, pid, closer, protocol)
+type ConnMap = HashMap<String, (String, String, Arc<Notify>, &'static str)>;
 
 /// Connection registry for `Tunnel.closeConns`.
 #[derive(Default)]
@@ -84,13 +84,19 @@ impl ConnHandle {
 }
 
 impl Conns {
-    pub fn track(&self, cid: &str, uid: &str, pid: &str) -> ConnHandle {
+    /// `proto`: "tcp" or "udp".
+    pub fn track(&self, proto: &'static str, cid: &str, uid: &str, pid: &str) -> ConnHandle {
         let n = Arc::new(Notify::new());
         self.m.lock().insert(
             cid.to_string(),
-            (uid.to_string(), pid.to_string(), n.clone()),
+            (uid.to_string(), pid.to_string(), n.clone(), proto),
         );
         ConnHandle(n)
+    }
+
+    /// Open connections of `proto`.
+    pub fn count(&self, proto: &str) -> usize {
+        self.m.lock().values().filter(|v| v.3 == proto).count()
     }
 
     pub fn untrack(&self, cid: &str) {
@@ -106,7 +112,7 @@ impl Conns {
             .collect();
         let m = self.m.lock();
         let mut closed = Vec::new();
-        for (cid, (uid, pid, n)) in m.iter() {
+        for (cid, (uid, pid, n, _)) in m.iter() {
             if keys.is_empty() || keys.iter().any(|k| k == cid || k == uid || k == pid) {
                 n.notify_one();
                 closed.push(cid.clone());
@@ -114,6 +120,30 @@ impl Conns {
         }
         closed.join(",")
     }
+}
+
+/// `Tunnel.stat()` contents.
+#[derive(Clone, Debug, Default)]
+pub struct NetStatInfo {
+    pub open: bool,
+    pub up: bool,
+    pub mtu: i32,
+    pub link_mtu: i32,
+    pub rx_pkts: i64,
+    pub rx_bytes: i64,
+    pub tx_pkts: i64,
+    pub tx_bytes: i64,
+    pub errs: i64,
+    pub tcp_open: i64,
+    pub udp_open: i64,
+    pub dns: String,
+    pub dns64: String,
+    pub proxies: String,
+    pub proxies4: bool,
+    pub proxies6: bool,
+    pub alg: bool,
+    pub l3: String,
+    pub pcap: String,
 }
 
 /// State shared by the handlers.
@@ -329,6 +359,47 @@ impl Tunnel {
 
     pub fn proxies(&self) -> &Arc<Proxifier> {
         &self.sh.proxies
+    }
+
+    /// `Tunnel.setPcap(path)`.
+    pub fn set_pcap(&self, path: &str) -> Result<(), String> {
+        self.netstack
+            .pcap()
+            .set(path)
+            .map_err(|e| format!("tun: pcap({path}): {e}"))
+    }
+
+    /// `Tunnel.stat()`: what the engine knows about the tunnel (firestack fills gVisor's stack counters).
+    pub fn net_stat(&self) -> NetStatInfo {
+        let st = self.netstack.stats();
+        let ld = |a: &std::sync::atomic::AtomicU64| a.load(Ordering::Relaxed) as i64;
+        let nat = self.sh.resolver.natpt();
+        let dns64: Vec<String> = [fs_dnsx::x64::UNDERLAY, fs_dnsx::x64::LOCAL464]
+            .iter()
+            .flat_map(|id| nat.get(id))
+            .map(|p| p.to_string())
+            .collect();
+        NetStatInfo {
+            open: self.is_connected(),
+            up: self.enabled(),
+            mtu: self.mtu(),
+            link_mtu: self.link_mtu(),
+            rx_pkts: ld(&st.rx_pkts),
+            rx_bytes: ld(&st.rx_bytes),
+            tx_pkts: ld(&st.tx_pkts),
+            tx_bytes: ld(&st.tx_bytes),
+            errs: ld(&st.errs),
+            tcp_open: self.sh.conns.count("tcp") as i64,
+            udp_open: self.sh.conns.count("udp") as i64,
+            dns: self.sh.resolver.live_transports(),
+            dns64: dns64.join(","),
+            proxies: self.sh.proxies.live_proxies(),
+            proxies4: self.sh.proxies.router_ip4(),
+            proxies6: self.sh.proxies.router_ip6(),
+            alg: self.sh.resolver.gateway().translating(),
+            l3: self.sh.proxies.link_props().l3,
+            pcap: self.netstack.pcap().mode().into(),
+        }
     }
 
     pub fn services(&self) -> &Arc<fs_rnet::Services> {

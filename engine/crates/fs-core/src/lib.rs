@@ -8,4 +8,5 @@
 //! Core of the RethinkReloaded engine shared by all subsystems (JNI-free, host-testable).
 
 pub mod bridge;
+pub mod log;
 pub mod settings;
