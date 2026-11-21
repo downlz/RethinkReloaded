@@ -253,6 +253,9 @@ impl Proxy for Ground {
     fn probe_icmp<'a>(&'a self, _: IpAddr) -> Fut<'a, io::Result<UdpConn>> {
         Box::pin(async { Err(refused()) })
     }
+    fn can_announce(&self) -> bool {
+        false
+    }
     fn ip4(&self) -> bool {
         false
     }

@@ -194,6 +194,9 @@ impl Proxy for Http1 {
     fn probe_icmp<'a>(&'a self, _: IpAddr) -> Fut<'a, io::Result<UdpConn>> {
         Box::pin(async { Err(io::Error::other("proxy: probe not supported")) })
     }
+    fn can_announce(&self) -> bool {
+        false
+    }
     fn ip4(&self) -> bool {
         self.up.gw.ip4()
     }

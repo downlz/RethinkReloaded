@@ -262,6 +262,11 @@ impl Proxifier {
                 let _ = self.hop(v.id(), &id, false);
             }
             old.stop();
+            // origins hopping through the replaced proxy now hop through its successor (firestack's via refs
+            // follow the id; ours point at the instance)
+            for o in self.hop_origins(&id) {
+                let _ = self.hop(&id, &o, false);
+            }
         }
         true
     }
@@ -629,10 +634,14 @@ impl Proxifier {
 
     /// firestack `hop(via, origin, dryrun)`: routes `origin` through `via` (empty `via` unhops).
     pub fn hop(&self, via: &str, origin: &str, dryrun: bool) -> Result<(), String> {
+        if origin.is_empty() {
+            return Err("proxy: missing proxy id".into());
+        }
         let o = self.proxy_for(origin)?;
+        let old = o.via();
         if via.is_empty() {
             let r = o.hop(None, dryrun);
-            if !dryrun {
+            if r.is_ok() && !dryrun {
                 self.unmap_hop_from(origin);
             }
             return r;
@@ -641,19 +650,39 @@ impl Proxifier {
             return Err("proxy: hop looping back onto hop".into());
         }
         let v = self.proxy_for(via)?;
+        if v.status() == END || o.status() == END {
+            return Err("proxy: stopped".into());
+        }
+        if old.as_ref().is_some_and(|x| x.handle() == v.handle()) {
+            if !dryrun {
+                let o2 = o.clone();
+                tokio::task::spawn_blocking(move || o2.refresh());
+            }
+            return Ok(()); // no change
+        }
         if v.via().is_some() {
-            return Err("proxy: hop must not be hopping".into());
+            return Err("proxy: hop must not be hopping".into()); // no triple hops
+        }
+        if !v.ip4() && !v.ip6() {
+            return Err("proxy: hop must route all ip4/ip6".into());
+        }
+        if !dryrun {
+            self.unmap_hop_from(origin);
         }
         o.hop(Some(v), dryrun)?;
         if !dryrun {
-            self.unmap_hop_from(origin);
-            self.hp
-                .lock()
-                .entry(via.to_string())
-                .or_default()
-                .push(origin.to_string());
+            let mut hp = self.hp.lock();
+            let e = hp.entry(via.to_string()).or_default();
+            if !e.iter().any(|x| x == origin) {
+                e.push(origin.to_string());
+            }
         }
         Ok(())
+    }
+
+    /// Origins hopping through `via`.
+    pub fn hop_origins(&self, via: &str) -> Vec<String> {
+        self.hp.lock().get(via).cloned().unwrap_or_default()
     }
 
     /// firestack `TestHop`: "" when `origin` can hop through `via`, else why not.

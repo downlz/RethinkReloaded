@@ -170,6 +170,10 @@ pub trait Proxy: Send + Sync {
     fn hop(&self, _via: Option<Arc<dyn Proxy>>, _dryrun: bool) -> Result<()> {
         Err("proxy: nop".into())
     }
+    /// can open unconnected UDP sockets (firestack `viaCanListen("udp")`, which tries `Announce`)
+    fn can_announce(&self) -> bool {
+        true
+    }
 
     // lifecycle
     fn pause(&self) -> bool {

@@ -219,6 +219,11 @@ impl Stack {
     pub fn ip4(&self) -> bool {
         self.addr4.is_some()
     }
+
+    /// New MTU for the interface (hops shrink it).
+    pub fn set_mtu(&self, mtu: usize) {
+        self.inner.lock().dev.mtu = mtu;
+    }
     pub fn ip6(&self) -> bool {
         self.addr6.is_some()
     }
@@ -499,6 +504,7 @@ pub struct UdpSock {
 
 impl UdpSock {
     async fn send_inner(&self, b: &[u8], to: SocketAddr) -> io::Result<usize> {
+        let to = SocketAddr::new(to.ip().to_canonical(), to.port()); // v4-mapped from dual-stack callers
         self.stack.routable(to.ip())?;
         poll_fn(|cx| {
             let mut g = self.stack.inner.lock();

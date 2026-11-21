@@ -245,3 +245,61 @@ async fn http_connect_with_challenge() {
     assert!(anon.dial_tcp(echo, Duration::from_secs(5)).await.is_err());
     assert!(add_proxy(&px, "x", "ftp://1.2.3.4:21").is_err());
 }
+
+/// firestack `hop` rules at the proxifier: no self, no triple hops, no unknown proxies, dry runs change nothing,
+/// a replaced via keeps its origins, and WireGuard hops only through proxies that announce UDP and know their MTU.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn hops() {
+    let px = px();
+    let (echo, srv) = (tcp_echo().await, socks5_server().await);
+    let a = add_proxy(&px, "s5a", &format!("socks5://u:p@{srv}")).unwrap();
+    let b = add_proxy(&px, "s5b", &format!("socks5://u:p@{srv}")).unwrap();
+    add_proxy(&px, "dead", "socks5://127.0.0.1:1").unwrap();
+
+    assert_eq!(px.test_hop("s5a", "s5b"), "");
+    assert!(b.via().is_none(), "dry run");
+    px.hop("dead", "s5b", false).unwrap();
+    assert!(
+        b.dial_tcp(echo, Duration::from_secs(5)).await.is_err(),
+        "dials go through the hop"
+    );
+    px.hop("s5a", "s5b", false).unwrap();
+    assert_eq!(px.hop_origins("s5a"), ["s5b"]);
+    assert!(
+        px.hop_origins("dead").is_empty(),
+        "re-hopping unmaps the old via"
+    );
+    echo_over(b.dial_tcp(echo, Duration::from_secs(5)).await.unwrap()).await;
+    assert_eq!(b.via().unwrap().handle(), a.handle());
+
+    assert!(px.hop("s5b", "s5b", false).unwrap_err().contains("looping"));
+    assert!(
+        px.hop("s5b", "s5a", false).unwrap_err().contains("hopping"),
+        "no triple hops"
+    );
+    assert!(px.hop("nope", "s5b", false).is_err());
+    assert!(px.hop("s5a", "", false).is_err());
+
+    // a replaced via carries its origins
+    let a2 = add_proxy(&px, "s5a", &format!("socks5://u:p@{srv}")).unwrap();
+    assert_ne!(a2.handle(), a.handle());
+    assert_eq!(b.via().unwrap().handle(), a2.handle());
+    echo_over(b.dial_tcp(echo, Duration::from_secs(5)).await.unwrap()).await;
+
+    px.hop("", "s5b", false).unwrap();
+    assert!(b.via().is_none() && px.hop_origins("s5a").is_empty());
+
+    // WireGuard: the hop must announce UDP (http1 cannot) and have an MTU (socks5 does not: errNoMtu)
+    let wg = format!(
+        "private_key={}\naddress=10.9.0.2/32\ndns=1.1.1.1\nmtu=1420\npublic_key={}\nendpoint=127.0.0.1:9\nallowed_ip=0.0.0.0/0\n",
+        "01".repeat(32),
+        "02".repeat(32)
+    );
+    add_proxy(&px, "wgx", &wg).unwrap();
+    add_proxy(&px, "h1", &format!("http://{srv}")).unwrap();
+    assert!(px.test_hop("h1", "wgx").contains("announce"));
+    assert!(px.test_hop("s5a", "wgx").contains("mtu"));
+
+    px.remove_proxy("s5a");
+    assert!(px.hop("s5a", "s5b", false).is_err());
+}

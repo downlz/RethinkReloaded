@@ -200,9 +200,10 @@ impl UdpTransportFactory for Bind {
         crate::candial(st.status.load(Ordering::Relaxed)).map_err(io::Error::other)?;
         let open = async {
             match st.via() {
-                Some(v) => match v.announce_udp(true).await {
-                    Ok(c) => Ok((c, true)),
-                    Err(_) => v.announce_udp(false).await.map(|c| (c, false)),
+                // the hop's datagram takes either family as is (no v4-mapping)
+                Some(v) => match v.announce_udp(v.ip6()).await {
+                    Ok(c) => Ok((c, false)),
+                    Err(_) => v.announce_udp(!v.ip6()).await.map(|c| (c, false)),
                 },
                 None => match st.protector.announce_udp(&st.id, true).await {
                     Ok(c) => Ok((UdpConn::from(c), true)),
@@ -325,7 +326,9 @@ pub struct WgProxy {
     rt: fs_iptree::IpTree,
     /// resolved peer endpoints (the proxy's own addresses)
     endpoints: RwLock<Vec<SocketAddr>>,
-    mtu: i64,
+    mtu: AtomicI64,
+    /// the link's MTU (firestack `netmtu`)
+    netmtu: i64,
     resolver: Option<HostResolver>,
     handle: tokio::runtime::Handle,
 }
@@ -420,7 +423,8 @@ impl WgProxy {
             dev: Arc::new(tokio::sync::Mutex::new(None)),
             rt,
             endpoints: RwLock::new(Vec::new()),
-            mtu,
+            mtu: AtomicI64::new(mtu),
+            netmtu: underlay,
             resolver,
             handle,
         });
@@ -441,7 +445,7 @@ impl WgProxy {
                     ToStack(w.stack.clone()),
                     FromStack {
                         rx,
-                        mtu: w.mtu.min(u16::MAX as i64) as u16,
+                        mtu: w.mtu.load(Ordering::Relaxed).min(u16::MAX as i64) as u16,
                     },
                 )
                 .with_private_key(StaticSecret::from(cfg.private_key))
@@ -574,8 +578,9 @@ impl Proxy for WgProxy {
     fn ip6(&self) -> bool {
         self.stack.ip6()
     }
+    /// firestack `wgtun.MTU`: what a proxy hopping through us may use (`calcNetMtu`: tunnel MTU + wg overhead).
     fn mtu(&self) -> Option<i64> {
-        Some(self.mtu)
+        Some(crate::MIN_MTU6.max(self.mtu.load(Ordering::Relaxed) + 80))
     }
     /// firestack `wgproxy.Stat`
     fn stat(&self) -> RouterStats {
@@ -660,19 +665,60 @@ impl Proxy for WgProxy {
     fn via(&self) -> Option<SharedProxy> {
         self.st.via()
     }
-    /// Routes the tunnel's UDP through `via` (rebinding the device).
+    /// firestack `wgproxy.Hop`: routes the tunnel's UDP through `via` (rebinding the device). The via must carry
+    /// the tunnel's address family, announce UDP, route every peer endpoint, and leave room for the MTU.
     fn hop(&self, via: Option<SharedProxy>, dryrun: bool) -> crate::Result<()> {
+        if let Some(v) = &via {
+            if v.status() == END {
+                return Err("proxy: stopped".into());
+            }
+            if self.ip4() {
+                if !v.ip4() {
+                    return Err("proxy: hop cannot route ip4".into());
+                }
+            } else if self.ip6() {
+                if !v.ip6() {
+                    return Err("proxy: hop cannot route ip6".into());
+                }
+            } else {
+                return Err("proxy: no routes to hop".into());
+            }
+            if !v.can_announce() {
+                return Err("proxy: announce not supported".into());
+            }
+            let (c4, c6) = (self.ip4() && v.ip4(), self.ip6() && v.ip6());
+            for e in self.endpoints.read().iter() {
+                let ip = e.ip().to_canonical();
+                if ((ip.is_ipv4() && c4) || (ip.is_ipv6() && c6))
+                    && !v.contains(&self.id, &ip.to_string())
+                {
+                    return Err(format!(
+                        "wg: {}: via {} cannot route peer {e}",
+                        self.id,
+                        v.id()
+                    ));
+                }
+            }
+        }
+        self.reset_mtu(via.as_ref(), dryrun)?;
         if dryrun {
             return Ok(());
         }
+        let same = match (&via, self.st.via()) {
+            (Some(a), Some(b)) => a.handle() == b.handle(),
+            (None, None) => true,
+            _ => false,
+        };
         *self.st.via.lock() = via.as_ref().map(Arc::downgrade);
-        let dev = self.dev.clone();
-        self.handle.spawn(async move {
-            if let Some(d) = dev.lock().await.as_ref() {
-                d.suspend().await;
-                let _ = d.resume().await;
-            }
-        });
+        if !same {
+            let dev = self.dev.clone();
+            self.handle.spawn(async move {
+                if let Some(d) = dev.lock().await.as_ref() {
+                    d.suspend().await;
+                    let _ = d.resume().await;
+                }
+            });
+        }
         Ok(())
     }
     fn pause(&self) -> bool {
@@ -762,6 +808,37 @@ impl Proxy for WgProxy {
     }
 }
 
+impl WgProxy {
+    /// firestack `maybeResetMtu`: the MTU fits the configured one into what the network (or the hop) offers.
+    fn reset_mtu(&self, via: Option<&SharedProxy>, dryrun: bool) -> crate::Result<()> {
+        let mut needed = self.cfg.read().mtu;
+        let avail = match via {
+            Some(v) => v.mtu().ok_or("proxy: missing mtu")? - 80, // calcTunMtu
+            None => self.netmtu,
+        };
+        let minmtu = if self.ip6() {
+            crate::MIN_MTU6
+        } else {
+            crate::MIN_MTU4
+        };
+        if needed > avail {
+            needed = avail;
+        }
+        if avail < minmtu {
+            return Err("proxy: hop mtu insufficient".into());
+        }
+        let fin = reconcile_mtu(avail, needed, minmtu);
+        if fin <= crate::NOMTU {
+            return Err("proxy: hop mtu insufficient".into());
+        }
+        if !dryrun {
+            self.mtu.store(fin, Ordering::Relaxed);
+            self.stack.set_mtu(fin as usize);
+        }
+        Ok(())
+    }
+}
+
 fn status_str(s: i32) -> &'static str {
     match s {
         TKO => "notok",
@@ -781,10 +858,10 @@ mod tests {
     use fs_core::bridge::AllowAllBridge;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-    /// The far end's bind: a plain loopback socket.
-    struct Plain(Arc<tokio::net::UdpSocket>);
+    /// The far end's bind: a loopback socket, or a socket inside another far end's stack.
+    struct Plain(UdpConn);
     #[derive(Clone)]
-    struct PlainIo(Arc<tokio::net::UdpSocket>);
+    struct PlainIo(UdpConn);
     impl UdpTransportFactory for Plain {
         type Send = PlainIo;
         type Recv = PlainIo;
@@ -811,42 +888,41 @@ mod tests {
         }
     }
 
-    fn hex(k: &[u8; 32]) -> String {
-        k.iter().map(|b| format!("{b:02x}")).collect()
-    }
-
-    /// A WireGuard proxy against an in-process WireGuard peer (gotatun with its own userspace stack) that
-    /// echoes TCP and UDP: handshakes, data both ways, stats and status.
-    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
-    async fn tunnel_to_a_peer() {
-        let (ck, sk) = ([7u8; 32], [9u8; 32]);
-        let (cpub, spub) = (
-            PublicKey::from(&StaticSecret::from(ck)).to_bytes(),
-            PublicKey::from(&StaticSecret::from(sk)).to_bytes(),
-        );
-        // far end: 10.9.0.1, echo on tcp/udp 7
-        let sock = Arc::new(tokio::net::UdpSocket::bind("127.0.0.1:0").await.unwrap());
-        let sport = sock.local_addr().unwrap().port();
+    /// A WireGuard peer (key `sk`, tunnel address `addr`) accepting `client` (`client_ip`) over `bind`, with
+    /// TCP and UDP echo on port 7 inside its tunnel.
+    async fn far_end(
+        sk: [u8; 32],
+        client: [u8; 32],
+        client_ip: &str,
+        addr: &str,
+        bind: UdpConn,
+    ) -> (impl Sized, Arc<Stack>) {
         let (tx, rx) = mpsc::channel(1024);
-        let server = Stack::new(&[config::Net::parse("10.9.0.1/32").unwrap()], 1420, tx);
-        let _dev = DeviceBuilder::new()
-            .with_udp(Plain(sock))
+        let server = Stack::new(&[config::Net::parse(addr).unwrap()], 1420, tx);
+        let dev = DeviceBuilder::new()
+            .with_udp(Plain(bind))
             .with_ip_pair(ToStack(server.clone()), FromStack { rx, mtu: 1420 })
             .with_private_key(StaticSecret::from(sk))
             .with_peer(
-                Peer::new(PublicKey::from(cpub)).with_allowed_ip("10.9.0.2/32".parse().unwrap()),
+                Peer::new(PublicKey::from(client)).with_allowed_ip(client_ip.parse().unwrap()),
             )
             .build()
             .await
             .unwrap();
         let s2 = server.clone();
         tokio::spawn(async move {
-            let mut c = s2.accept(7).await.unwrap();
-            let mut b = [0u8; 64];
-            while let Ok(n) = c.read(&mut b).await {
-                if n == 0 || c.write_all(&b[..n]).await.is_err() {
-                    break;
-                }
+            loop {
+                let Ok(mut c) = s2.accept(7).await else {
+                    return;
+                };
+                tokio::spawn(async move {
+                    let mut b = [0u8; 64];
+                    while let Ok(n) = c.read(&mut b).await {
+                        if n == 0 || c.write_all(&b[..n]).await.is_err() {
+                            break;
+                        }
+                    }
+                });
             }
         });
         let us = server.udp_on(7).unwrap();
@@ -856,6 +932,150 @@ mod tests {
                 let _ = fs_dialers::Datagram::send_to(&us, &b[..n], from).await;
             }
         });
+        (dev, server)
+    }
+
+    fn pubkey(k: [u8; 32]) -> [u8; 32] {
+        PublicKey::from(&StaticSecret::from(k)).to_bytes()
+    }
+
+    fn client_cfg(
+        ck: [u8; 32],
+        spub: [u8; 32],
+        addr: &str,
+        endpoint: &str,
+        allowed: &str,
+    ) -> String {
+        format!(
+            "private_key={}\naddress={addr}\ndns=1.1.1.1\nmtu=1420\npublic_key={}\nendpoint={endpoint}\nallowed_ip={allowed}\n",
+            hex(&ck),
+            hex(&spub)
+        )
+    }
+
+    fn link() -> crate::proxifier::LinkProps {
+        crate::proxifier::LinkProps {
+            l3: "46".into(),
+            mtu: 1500,
+        }
+    }
+
+    async fn echo(c: &mut TcpConn, msg: &[u8]) {
+        c.write_all(msg).await.unwrap();
+        let mut got = vec![0u8; msg.len()];
+        tokio::time::timeout(Duration::from_secs(10), c.read_exact(&mut got))
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(got, msg);
+    }
+
+    /// Multi-hop: wg0's peer is only reachable inside wg1's tunnel (its socket lives in wg1's far end), so wg0's
+    /// handshakes and data ride wg1. The hop shrinks wg0's MTU to what wg1 carries.
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn multi_hop() {
+        let (c1, s1, c0, s0) = ([1u8; 32], [2u8; 32], [3u8; 32], [4u8; 32]);
+        let sock = tokio::net::UdpSocket::bind("127.0.0.1:0").await.unwrap();
+        let p1 = sock.local_addr().unwrap().port();
+        let (_d1, stack1) =
+            far_end(s1, pubkey(c1), "10.9.0.2/32", "10.9.0.1/32", sock.into()).await;
+        // the inner far end listens on 10.9.0.1:51820, inside the outer tunnel
+        let inner = UdpConn::Dyn(Arc::new(stack1.udp_on(51820).unwrap()));
+        let (_d0, _) = far_end(s0, pubkey(c0), "10.8.0.2/32", "10.8.0.1/32", inner).await;
+
+        let b = Arc::new(AllowAllBridge);
+        let h = tokio::runtime::Handle::current();
+        let wg1: SharedProxy = WgProxy::new(
+            "wg1",
+            &client_cfg(
+                c1,
+                pubkey(s1),
+                "10.9.0.2/32",
+                &format!("127.0.0.1:{p1}"),
+                "10.9.0.0/24",
+            ),
+            Protector::new(b.clone()),
+            None,
+            &link(),
+            h.clone(),
+        )
+        .unwrap();
+        let wg0 = WgProxy::new(
+            "wg0",
+            &client_cfg(
+                c0,
+                pubkey(s0),
+                "10.8.0.2/32",
+                "10.9.0.1:51820",
+                "10.8.0.0/24",
+            ),
+            Protector::new(b),
+            None,
+            &link(),
+            h,
+        )
+        .unwrap();
+        assert_eq!(wg1.mtu(), Some(1420), "1340 inside + 80");
+        wg0.hop(Some(wg1.clone()), true).unwrap();
+        assert_eq!(
+            wg0.mtu.load(Ordering::Relaxed),
+            1340,
+            "dry runs change nothing"
+        );
+        wg0.hop(Some(wg1.clone()), false).unwrap();
+        // available 1420 - 80 = 1340; needed min(1420, 1340); reconciled to 1340 - 80
+        assert_eq!(wg0.mtu.load(Ordering::Relaxed), 1260);
+        assert_eq!(wg0.via().map(|v| v.handle()), Some(wg1.handle()));
+
+        let mut c = wg0
+            .dial_tcp("10.8.0.1:7".parse().unwrap(), Duration::from_secs(15))
+            .await
+            .unwrap();
+        echo(&mut c, b"two tunnels deep").await;
+        assert!(wg1.stat().rx > 0, "the outer tunnel carried the inner one");
+
+        // unhop: back to the network's MTU
+        wg0.hop(None, false).unwrap();
+        assert!(wg0.via().is_none());
+        assert_eq!(wg0.mtu.load(Ordering::Relaxed), 1340);
+
+        // the hop must route the peer
+        let narrow = WgProxy::new(
+            "wg2",
+            &client_cfg(
+                c1,
+                pubkey(s1),
+                "10.9.0.2/32",
+                &format!("127.0.0.1:{p1}"),
+                "10.7.0.0/24",
+            ),
+            Protector::new(Arc::new(AllowAllBridge)),
+            None,
+            &link(),
+            tokio::runtime::Handle::current(),
+        )
+        .unwrap();
+        let e = wg0.hop(Some(narrow), true).unwrap_err();
+        assert!(e.contains("cannot route peer"), "{e}");
+        wg0.stop();
+        let e = wg0.hop(Some(wg1), true);
+        assert!(e.is_ok(), "stopped origins are the proxifier's to refuse");
+    }
+
+    fn hex(k: &[u8; 32]) -> String {
+        k.iter().map(|b| format!("{b:02x}")).collect()
+    }
+
+    /// A WireGuard proxy against an in-process WireGuard peer (gotatun with its own userspace stack) that
+    /// echoes TCP and UDP: handshakes, data both ways, stats and status.
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn tunnel_to_a_peer() {
+        let (ck, sk) = ([7u8; 32], [9u8; 32]);
+        let spub = pubkey(sk);
+        // far end: 10.9.0.1, echo on tcp/udp 7
+        let sock = tokio::net::UdpSocket::bind("127.0.0.1:0").await.unwrap();
+        let sport = sock.local_addr().unwrap().port();
+        let _far = far_end(sk, pubkey(ck), "10.9.0.2/32", "10.9.0.1/32", sock.into()).await;
 
         let txt = format!(
             "private_key={}\naddress=10.9.0.2/32\ndns=10.9.0.1\nmtu=1420\npublic_key={}\nendpoint=127.0.0.1:{sport}\n\
@@ -877,11 +1097,12 @@ mod tests {
             tokio::runtime::Handle::current(),
         )
         .unwrap();
-        // firestack treats the configured MTU as the network MTU: 1420 - 80
+        // firestack treats the configured MTU as the network MTU (tunnel: 1420 - 80); the router reports it + 80
         assert_eq!(
             (w.typ(), w.dns().as_str(), w.mtu()),
-            ("wg", "10.9.0.1", Some(1340))
+            ("wg", "10.9.0.1", Some(1420))
         );
+        assert_eq!(w.mtu.load(Ordering::Relaxed), 1340);
         assert!(
             w.contains("c", "10.9.0.1:7") && !w.contains("c", "1.1.1.1:443"),
             "routes only allowed ips"
