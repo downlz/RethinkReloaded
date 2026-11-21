@@ -5,17 +5,18 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //
-// Derived-From: celzero/firestack@d3d530ea3e:intra/common.go (onFlow, judge, stall)
+// Derived-From: celzero/firestack@d3d530ea3e:intra/common.go (onFlow, undoAlg, makeIPPorts, judge, stall)
 
-//! Per-connection policy: `preflow` (5 s) for the uid, then `flow` (15 s) for the verdict (`Mark`), then the
-//! firestack judgement of the proxy list (any `Block` blocks; empty means `Exit`).
+//! Per-connection policy: `preflow` (5 s) for the uid; the DNS gateway maps the destination back to its real
+//! addresses, names and blocklists (undoing ALG translations, re-resolving expired ones); then `flow` (15 s) for
+//! the verdict (`Mark`) and the firestack judgement of the proxy list (any `Block` blocks; empty means `Exit`).
 
 use fs_core::bridge::{FlowArgs, Mark, SharedBridge};
 use fs_core::settings;
 use fs_dnsx::Resolver;
 use parking_lot::Mutex;
 use std::collections::HashMap;
-use std::net::SocketAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::sync::atomic::Ordering;
 use std::time::{Duration, Instant};
 
@@ -28,12 +29,17 @@ pub const EXIT: &str = "Exit";
 pub const AUTO: &str = "Auto";
 
 /// The decision for one flow.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Verdict {
     pub mark: Mark,
     /// proxy ids in order; `[Block]` when blocked
     pub pids: Vec<String>,
     pub uid: String,
+    /// the destination was an ALG address
+    pub undid_alg: bool,
+    /// real addresses behind the destination (the destination itself when nothing is known)
+    pub realips: Vec<IpAddr>,
+    pub domains: String,
 }
 
 impl Verdict {
@@ -45,8 +51,33 @@ impl Verdict {
     }
 }
 
-/// firestack `onFlow` + `judge`. With translation (ALG) off: realips = dst ip; domains = names that recently
-/// resolved to the dst ip (the resolver's reverse map). Blocklists and /proc/net uid lookup are still to come.
+/// firestack `undoAlg`: (was ALG, real addresses, names, probable names, blocklists) for a destination.
+pub fn undo_alg(
+    resolver: &Resolver,
+    dst: IpAddr,
+    uid: &str,
+) -> (bool, Vec<IpAddr>, String, String, String) {
+    if dst.is_unspecified() {
+        return (
+            false,
+            Vec::new(),
+            String::new(),
+            String::new(),
+            String::new(),
+        );
+    }
+    let gw = resolver.gateway();
+    let (domains, forced) = gw.ptr(dst, uid, "", false);
+    let pdoms = if !forced && domains.is_empty() {
+        gw.ptr(dst, uid, "", true).0
+    } else {
+        String::new()
+    };
+    let (ips, undid) = gw.x(dst, uid, &[]);
+    (undid, ips, domains, pdoms, gw.rdnsbl(dst))
+}
+
+/// firestack `onFlow` + `judge`.
 pub async fn decide(
     bridge: &SharedBridge,
     resolver: &Resolver,
@@ -70,6 +101,7 @@ pub async fn decide(
 
     // FilterProc (Android 9 and older): the owner comes from /proc/net; otherwise Kotlin finds it in preflow
     let mut uid: i32 = -1;
+    let mut preuid = "-1".to_string();
     if block_mode == settings::BLOCK_MODE_FILTER_PROC {
         let proto = match protocol {
             fs_core::bridge::PROTO_TCP => "tcp",
@@ -81,17 +113,47 @@ pub async fn decide(
                 tokio::task::spawn_blocking(move || crate::netstat::find_uid(proto, src, dst)).await
         {
             uid = u as i32;
+            preuid = uid.to_string();
         }
     }
     let pre = tokio::time::timeout(
         PREFLOW_TIMEOUT,
         bridge.preflow(protocol, uid, src.to_string(), dst.to_string()),
     )
-    .await;
-    if let Ok(Some(pm)) = pre
+    .await
+    .ok()
+    .flatten();
+    if let Some(pm) = &pre
         && let Ok(u) = pm.uid.parse::<i32>()
     {
         uid = u;
+        // the gateway keys our own process by its uid (firestack SELF_UID)
+        preuid = if pm.is_uid_self {
+            resolver.gateway().my_uid().to_string()
+        } else {
+            pm.uid.clone()
+        };
+    }
+
+    let (undid_alg, mut realips, domains, pdoms, blocklists) =
+        undo_alg(resolver, dst.ip(), &preuid);
+    if undid_alg && realips.is_empty() {
+        // an expired translation: resolve its name again for this uid
+        if pre.is_some() {
+            for d in domains.split(',').filter(|d| !d.is_empty()) {
+                let fresh = resolver.resolve_for(d, &preuid).await;
+                if !fresh.is_empty() {
+                    realips = fresh;
+                    break;
+                }
+            }
+        }
+        if pre.is_none() || realips.is_empty() {
+            let mut v = judge(preset);
+            v.undid_alg = true;
+            v.domains = domains;
+            return v;
+        }
     }
 
     let args = FlowArgs {
@@ -99,11 +161,15 @@ pub async fn decide(
         uid,
         src: src.to_string(),
         dst: dst.to_string(),
-        origdsts: dst.ip().to_string(),
-        domains: resolver.domains_for(dst.ip()),
-        probable_domains: String::new(),
-        blocklists: String::new(),
-        dst_is_alg: false,
+        origdsts: realips
+            .iter()
+            .map(|i| i.to_string())
+            .collect::<Vec<_>>()
+            .join(","),
+        domains: domains.clone(),
+        probable_domains: pdoms,
+        blocklists,
+        dst_is_alg: undid_alg,
     };
     let mark = match tokio::time::timeout(FLOW_TIMEOUT, bridge.flow(args)).await {
         Ok(Some(m)) => m,
@@ -113,8 +179,41 @@ pub async fn decide(
             ..Default::default()
         }, // timeout or nil: block
     };
-    judge(mark)
+    let mut v = judge(mark);
+    v.undid_alg = undid_alg;
+    v.realips = realips;
+    v.domains = domains;
+    v
 }
+
+/// firestack `makeIPPorts` (both address families usable): the destination (after a `Mark.IP` override) first
+/// unless it was an ALG address, then the other real addresses in random order.
+pub fn targets(v: &Verdict, dst: SocketAddr) -> Vec<SocketAddr> {
+    let orig = target(v, dst);
+    let include_orig = !v.undid_alg;
+    let mut out: Vec<SocketAddr> = v
+        .realips
+        .iter()
+        .filter(|ip| !ip.is_unspecified() && !(include_orig && **ip == orig.ip()))
+        .map(|ip| SocketAddr::new(*ip, orig.port()))
+        .collect();
+    out.dedup();
+    shuffle(&mut out);
+    if include_orig || out.is_empty() {
+        out.insert(0, orig);
+    }
+    out
+}
+
+fn shuffle<T>(v: &mut [T]) {
+    for i in (1..v.len()).rev() {
+        let j = (jitter("shuffle", i as u32) % (i as u64 + 1)) as usize;
+        v.swap(i, j);
+    }
+}
+
+/// firestack `retryTimeout`: dialing moves on to the next real address until this much time has passed.
+pub const RETRY_TIMEOUT: Duration = Duration::from_secs(15);
 
 /// firestack `judge`: empty → Exit; any Block → [Block]; uid defaults to "-1".
 pub fn judge(mut mark: Mark) -> Verdict {
@@ -135,7 +234,12 @@ pub fn judge(mut mark: Mark) -> Verdict {
     } else {
         mark.uid.clone()
     };
-    Verdict { mark, pids, uid }
+    Verdict {
+        mark,
+        pids,
+        uid,
+        ..Default::default()
+    }
 }
 
 /// The dial owner (`who`) for the Phase 1 proxies: Base or Exit (other proxies arrive in Phase 2 and fall back to
@@ -219,6 +323,19 @@ mod tests {
             target(&b, "9.9.9.9:443".parse().unwrap()),
             "1.2.3.4:443".parse().unwrap()
         );
+        // dial order (firestack makeIPPorts): the destination first unless it was an ALG address
+        let dst: SocketAddr = "93.184.215.14:443".parse().unwrap();
+        let real: Vec<IpAddr> = vec!["93.184.215.14".parse().unwrap(), "93.184.215.15".parse().unwrap()];
+        let mut v = Verdict { realips: real.clone(), ..Default::default() };
+        let t = targets(&v, dst);
+        assert_eq!((t[0], t.len()), (dst, 2));
+        v.undid_alg = true;
+        let alg: SocketAddr = "100.80.1.2:443".parse().unwrap();
+        let t = targets(&v, alg);
+        assert_eq!(t.len(), 2);
+        assert!(t.iter().all(|a| real.contains(&a.ip()) && a.port() == 443));
+        v.realips = vec!["0.0.0.0".parse().unwrap()];
+        assert_eq!(targets(&v, alg), vec![alg], "nothing dialable: the destination as-is");
         let s = Stall::default();
         assert_eq!(s.delay("k"), Duration::ZERO);
         assert!(s.delay("k") >= Duration::from_secs(1));

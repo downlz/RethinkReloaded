@@ -183,7 +183,8 @@ pub async fn handle(sh: Arc<Shared>, ns: Arc<Netstack>, flood: Arc<Flood>, e: Ec
     };
     let (src, dst) = (SocketAddr::new(e.src, 0), SocketAddr::new(e.dst, 0));
     let v = flow::decide(&sh.bridge, &sh.resolver, proto, src, dst).await;
-    let target = flow::target(&v, dst).ip();
+    // firestack oneRealIPPort: the destination unless it was an ALG address, else a real address
+    let target = flow::targets(&v, dst)[0].ip();
     let mut smm = FlowSummary {
         proto: "icmp".into(),
         id: v.mark.cid.clone(),

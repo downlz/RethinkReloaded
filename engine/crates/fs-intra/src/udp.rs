@@ -356,7 +356,8 @@ async fn session(
 ) {
     let start = Instant::now();
     let v = flow::decide(&sh.bridge, &sh.resolver, PROTO_UDP, src, dst).await;
-    let target = flow::target(&v, dst);
+    let targets = flow::targets(&v, dst);
+    let target = targets[0];
     let mut smm = FlowSummary {
         proto: "udp".into(),
         id: v.mark.cid.clone(),
@@ -369,7 +370,11 @@ async fn session(
 
     if v.blocked() {
         smm.pid = BLOCK.into();
-        smm.msg = "udp: firewalled".into();
+        smm.msg = if v.undid_alg && v.realips.is_empty() && !v.domains.is_empty() {
+            "no ips for domain".into()
+        } else {
+            "udp: firewalled".into()
+        };
         // drop everything the app sends until it goes quiet
         while let Ok(Some(_)) = tokio::time::timeout(UDP_IDLE, rx.recv()).await {}
         return finish(&sh, smm, start);
@@ -413,7 +418,15 @@ async fn session(
         return relay_muxed(me, sh, out, rx, src, dst, target, v, smm, start).await;
     }
     let t0 = Instant::now();
-    let sock = match sh.protector.dial_udp(who, target).await {
+    let mut dialed = Err(std::io::Error::other("udp: no target"));
+    for t in &targets {
+        dialed = sh.protector.dial_udp(who, *t).await;
+        smm.target = t.ip().to_string();
+        if dialed.is_ok() || start.elapsed() > flow::RETRY_TIMEOUT {
+            break;
+        }
+    }
+    let sock = match dialed {
         Ok(s) => s,
         Err(e) => {
             smm.rtt = t0.elapsed().as_millis() as i64;

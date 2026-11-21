@@ -24,7 +24,8 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: SocketAddr) {
     let start = Instant::now();
     let v: Verdict = flow::decide(&sh.bridge, &sh.resolver, PROTO_TCP, src, dst).await;
-    let target = flow::target(&v, dst);
+    let targets = flow::targets(&v, dst);
+    let target = targets[0];
     let mut smm = FlowSummary {
         proto: "tcp".into(),
         id: v.mark.cid.clone(),
@@ -37,7 +38,11 @@ pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: S
 
     if v.blocked() {
         smm.pid = BLOCK.into();
-        smm.msg = "tcp: firewalled".into();
+        smm.msg = if v.undid_alg && v.realips.is_empty() && !v.domains.is_empty() {
+            "no ips for domain".into()
+        } else {
+            "tcp: firewalled".into()
+        };
         let delay = sh.stall.delay(&format!("{}|{}", v.uid, dst.ip()));
         tokio::time::sleep(delay).await;
         let _ = app.shutdown().await;
@@ -57,13 +62,21 @@ pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: S
     }
 
     let who = flow::who(&v);
-    let t0 = Instant::now();
-    let remote = sh
-        .protector
-        .dial_tcp(who, target, fs_dialers::DIAL_TIMEOUT)
-        .await;
-    smm.rtt = t0.elapsed().as_millis() as i64;
     smm.pid = who.into();
+    // firestack: the real addresses in turn, until one connects or the retry window closes
+    let mut remote = Err(std::io::Error::other("tcp: no target"));
+    for t in &targets {
+        let t0 = Instant::now();
+        remote = sh
+            .protector
+            .dial_tcp(who, *t, fs_dialers::DIAL_TIMEOUT)
+            .await;
+        smm.rtt = t0.elapsed().as_millis() as i64;
+        smm.target = t.ip().to_string();
+        if remote.is_ok() || start.elapsed() > flow::RETRY_TIMEOUT {
+            break;
+        }
+    }
     let mut remote = match remote {
         Ok(r) => r,
         Err(e) => {

@@ -25,6 +25,7 @@ replayed by the Rust tests (`crates/*/tests/oracle.rs`). At `d3d530ea3e`:
 | `wgkey.tsv` | 70 (parse, hex, base64, isZero, mult) | identical |
 | `settings.tsv` | 54 (mode2String, l3, engine, setDialerOpts, setAutoMode) | identical |
 | `rdns.tsv` | 7065 (flagsToStamp, stampToFlags, stampToNames, setStamp; b32/b64, padded/unpadded, v0, malformed) | identical, except 17 firestack panics |
+| `alg.tsv` | 3851 (ALG address generation, registrations, translate/split, transport stops, X, PTR, RDNSBL, resolv) | identical (lists compared as sets) |
 | `rdnstrie.tsv` | 25650 (trie lookups, blockQuery for A/HTTPS/TXT, blockAnswer on CNAME targets, 9 stamps) | identical |
 
 `rdnstrie.tsv` was recorded against the on-device blocklist with `tdmd5` `ae5d0e6e0dca1451aeb51fc7f3debc21` (about
@@ -63,11 +64,16 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
 * UDP endpoint-independent mapping/filtering (`Intra.transparency`) follows firestack's `udpmux`: one socket per
   (proxy, app source); unsolicited peers go through `inflow` only with filtering on. Muxers stop after three idle
   120 s windows.
+* The DNS gateway (ALG) is ported: translation to per-domain 100.64.0.0/10 and 64:ff9b:1:da19:100::/80 addresses,
+  the internal A/AAAA cache, secondary transports (`TIDSECCSV`), preset answers (`IPCSV`), `Fixed` answers, and on
+  the flow side `undoAlg` (real addresses, names, probable names, blocklists for Kotlin's `flow`), re-resolution of
+  expired translations for the app's uid, and dialing the real addresses in turn (15 s retry window). The gateway
+  runs with translation off too: it is the IP -> name map behind `flow`'s domains.
+* Kotlin receives normalized query names (no trailing dot, lowercase) in `onQuery` and every summary, as firestack.
+* Blocked answers carry TTL 0 (firestack's `BustDnsproxydResNetCache`), as do ALG answers.
 * Not yet ported:
-  * ALG translation (`Resolver.translate(true, …)`, a user opt-in, off by default and below Android 11). Until it is,
-    `translate` is accepted and answers are not translated (as with ALG off); domain rules still work through the
-    resolver's reverse map;
-  * undelegated / special-use domain handling in the cache (`CacheUndelegatedQueries`);
+  * DNS64/NAT64 (Phase 3): nothing is synthesized or un-NAT64'd;
+  * undelegated / special-use domains (`requiresGoosOrLocal`, `CacheUndelegatedQueries`) and mDNS (`Local`);
   * pcap.
   `Tunnel.stat()` still throws; Kotlin catches it.
 
@@ -80,6 +86,8 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   10040 operations. In firestack such a panic would take down the engine.
 * `Intra.connect` with `linkmtu <= 0`: firestack constructs two tunnels; the Rust engine will construct one.
 * `Intra.connect2` ignores its `dtr` argument in firestack; the Rust engine will honour it.
+* Choosing among several tids in `TIDCSV` picks at random among healthy transports; firestack also ranks remote,
+  recovered and proxied transports first (`Categorize`).
 * The DNS cache bounds its size (dropping expired entries, then those closest to expiry, beyond 64k entries per
   transport); firestack only logs an overflow. Non-ASCII query names bypass the cache; firestack fails those queries.
 * Blocklist files with an out-of-range `value` or a missing `uname` fail `setRdnsLocal`; firestack panics on them.

@@ -89,12 +89,12 @@ Carried forward:
 | TCP relay (half-close), UDP sessions (120 s idle), DNS over UDP/TCP to the fake DNS address | done |
 | Flow decision (preflow 5 s, flow 15 s, judge, Mark.IP, Block stall, CloseConns) | done |
 | ICMP echo (probe socket, synthesized reply, unreachable when blocked, flood stall) | done |
-| Domains in Flow (reverse map from DNS answers) | done |
+| Domains, real IPs and blocklists in Flow (through the gateway) | done |
 | `/proc/net` uid lookup (Android 9 and older) | done (unit-tested; needs an API ≤ 28 device) |
 | Rethink blocklists: gotrie port + blockstamps (`setRdnsLocal/Remote`, RDNS), remote stamps (`x-nile-flags`) | done (oracle: 32,715 firestack results reproduced) |
 | UDP endpoint-independent mapping/filtering (`Intra.transparency`, `inflow`) | done |
 | Per-transport caches: stale-while-revalidate, request barrier (coalescing), hangover | done |
-| ALG translation (`translate(true, …)`, opt-in) | deferred: answers stay untranslated (as with ALG off) |
+| DNS gateway: ALG translation, internal cache, secondary transports, presets, Fixed; flow-side undo + re-resolve | done (oracle: 3,851 firestack results reproduced) |
 | Performance gate vs the Go baseline (phone) | measured (below): memory, CPU, throughput, wakeups pass; cached DNS p95 borderline |
 
 Census: 151 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent

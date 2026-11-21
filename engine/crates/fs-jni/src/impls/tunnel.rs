@@ -377,10 +377,10 @@ pub fn r_status(env: &mut JNIEnv, this: &JObject) -> FsResult<i32> {
         dns_status::DEND
     })
 }
-/// `translate(alg, fix)`: ALG (fake-IP translation) arrives in Phase 1C; with translation off (Kotlin's default in
-/// DNS mode) this is a no-op.
-pub fn r_translate(env: &mut JNIEnv, this: &JObject, _alg: bool, _fix: bool) -> FsResult<()> {
-    resolver(env, this)?;
+/// `translate(alg, fix)`: ALG (answers rewritten to per-domain 100.64/10 and 64:ff9b:1:da19:100::/80 addresses);
+/// `fix` with per-app split tunnelling answers Fixed queries with fixed addresses.
+pub fn r_translate(env: &mut JNIEnv, this: &JObject, alg: bool, fix: bool) -> FsResult<()> {
+    resolver(env, this)?.resolver().translate(alg, fix);
     Ok(())
 }
 

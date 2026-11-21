@@ -13,14 +13,19 @@
 
 use hickory_proto::op::{Edns, Message, MessageType, ResponseCode};
 use hickory_proto::rr::rdata::opt::{EdnsCode, EdnsOption};
+use hickory_proto::rr::rdata::svcb::{IpHint, SvcParamKey, SvcParamValue};
 use hickory_proto::rr::rdata::{A, AAAA, HINFO};
 use hickory_proto::rr::{RData, Record, RecordType};
-use std::net::{Ipv4Addr, Ipv6Addr};
+use std::collections::HashSet;
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 
 /// RFC 8467 recommended padding block size (firestack `paddingBlockSize`).
 pub const PADDING_BLOCK_SIZE: usize = 128;
-/// TTL of synthesized blocked answers (firestack `blockTTL`).
-pub const BLOCK_TTL: u32 = 5;
+/// TTL of synthesized blocked answers (firestack `blockTTL`): 5, but `BustDnsproxydResNetCache` sets it to 0 at
+/// init so Android's resolver cache never keeps a block.
+pub const BLOCK_TTL: u32 = 0;
+/// TTL of synthesized answers (firestack `ansTTL`, also 0 for the same reason) and of ALG answers (`ZeroTTL`).
+pub const ANS_TTL: u32 = 0;
 
 pub fn parse(b: &[u8]) -> Option<Message> {
     Message::from_vec(b).ok()
@@ -180,6 +185,238 @@ pub fn servfail(q: &Message) -> Message {
 }
 
 /// Builds an A or AAAA query for internal lookups (bootstrap of DoH hostnames).
+/// Normalized qname of the first question (no trailing dot, ASCII lowercase), `""` without one.
+pub fn qname(m: &Message) -> String {
+    m.queries
+        .first()
+        .map(|q| normalize(&q.name().to_ascii()))
+        .unwrap_or_default()
+}
+
+/// firestack `NormalizeQName` (non-ASCII names keep their case).
+pub fn normalize(s: &str) -> String {
+    if s.is_empty() || s == "." {
+        return ".".into();
+    }
+    let s = s.strip_suffix('.').unwrap_or(s);
+    if s.is_ascii() {
+        s.to_ascii_lowercase()
+    } else {
+        s.to_string()
+    }
+}
+
+pub fn qtype(m: &Message) -> u16 {
+    m.queries
+        .first()
+        .map(|q| u16::from(q.query_type()))
+        .unwrap_or(0)
+}
+
+pub fn has_answers(m: &Message) -> bool {
+    !m.answers.is_empty()
+}
+
+pub fn a_answers(m: &Message) -> Vec<IpAddr> {
+    m.answers
+        .iter()
+        .filter_map(|r| match &r.data {
+            RData::A(a) => Some(IpAddr::V4(a.0)),
+            _ => None,
+        })
+        .collect()
+}
+
+pub fn aaaa_answers(m: &Message) -> Vec<IpAddr> {
+    m.answers
+        .iter()
+        .filter_map(|r| match &r.data {
+            RData::AAAA(a) => Some(IpAddr::V6(a.0)),
+            _ => None,
+        })
+        .collect()
+}
+
+/// firestack `AQuadAUnspecified`: any A 0.0.0.0 or AAAA :: (an upstream block).
+pub fn aquada_unspecified(m: &Message) -> bool {
+    m.answers.iter().any(|r| match &r.data {
+        RData::A(a) => a.0.is_unspecified(),
+        RData::AAAA(a) => a.0.is_unspecified(),
+        _ => false,
+    })
+}
+
+fn svcb_of(r: &Record) -> Option<&hickory_proto::rr::rdata::SVCB> {
+    match &r.data {
+        RData::SVCB(s) => Some(s),
+        RData::HTTPS(h) => Some(&h.0),
+        _ => None,
+    }
+}
+
+/// firestack `IPHints`: ip hints (`v6` selects ipv6hint) of SVCB/HTTPS answers to an SVCB/HTTPS question.
+pub fn ip_hints(m: &Message, v6: bool) -> Vec<IpAddr> {
+    if !matches!(qtype(m), 64 | 65) {
+        return Vec::new();
+    }
+    let mut out = Vec::new();
+    for r in &m.answers {
+        let Some(s) = svcb_of(r) else { continue };
+        for (_, v) in &s.svc_params {
+            match v {
+                SvcParamValue::Ipv4Hint(h) if !v6 => {
+                    out.extend(h.0.iter().map(|a| IpAddr::V4(a.0)))
+                }
+                SvcParamValue::Ipv6Hint(h) if v6 => out.extend(h.0.iter().map(|a| IpAddr::V6(a.0))),
+                _ => {}
+            }
+        }
+    }
+    out
+}
+
+/// firestack `Targets`: the qname, then the owner names of A/AAAA, CNAME targets and AliasMode SVCB/HTTPS
+/// targets (normalized, de-duplicated, in order).
+pub fn targets(m: &Message) -> Vec<String> {
+    let mut out = Vec::new();
+    let mut seen = HashSet::new();
+    let q = qname(m);
+    if !q.is_empty() && q.is_ascii() {
+        seen.insert(q.clone());
+        out.push(q);
+    }
+    for r in &m.answers {
+        let t = match &r.data {
+            RData::A(_) | RData::AAAA(_) => r.name.to_ascii(),
+            RData::CNAME(c) => c.0.to_ascii(),
+            _ => match svcb_of(r) {
+                Some(s) if s.svc_priority == 0 && !s.target_name.is_root() => {
+                    s.target_name.to_ascii()
+                }
+                _ => continue,
+            },
+        };
+        if t.is_empty() || t == "." || !t.is_ascii() {
+            continue;
+        }
+        let n = normalize(&t);
+        if seen.insert(n.clone()) {
+            out.push(n);
+        }
+    }
+    out
+}
+
+/// firestack `CopyAns`: AD, RD and CD cleared.
+pub fn copy_ans(m: &Message) -> Message {
+    let mut out = m.clone();
+    out.metadata.authentic_data = false;
+    out.metadata.recursion_desired = false;
+    out.metadata.checking_disabled = false;
+    out
+}
+
+/// firestack `SubstARecords` / `SubstAAAARecords`: one record per owner name, carrying `ip`, at the position of
+/// that name's first record; other records keep their order. Returns whether any record was substituted.
+pub fn subst_addr_records(m: &mut Message, ip: IpAddr, ttl: u32) -> bool {
+    let v4 = ip.to_canonical().is_ipv4();
+    let mut touched = HashSet::new();
+    let mut rrs = Vec::with_capacity(m.answers.len());
+    for r in m.answers.drain(..) {
+        let ours = matches!((&r.data, v4), (RData::A(_), true) | (RData::AAAA(_), false));
+        if !ours {
+            rrs.push(r);
+            continue;
+        }
+        if touched.insert(r.name.clone()) {
+            let data = match ip.to_canonical() {
+                IpAddr::V4(a) => RData::A(A(a)),
+                IpAddr::V6(a) => RData::AAAA(AAAA(a)),
+            };
+            rrs.push(Record::from_rdata(r.name.clone(), ttl, data));
+        }
+    }
+    m.answers = rrs;
+    !touched.is_empty()
+}
+
+/// firestack `SubstSVCBRecordIPs`: replaces the ipv4hint (or ipv6hint) of SVCB records, and of HTTPS records in
+/// ServiceMode with target `.`, by `ip` alone; clears the additional section when anything changed.
+pub fn subst_svcb_hints(m: &mut Message, v6: bool, ip: IpAddr, ttl: u32) -> bool {
+    let mut n = 0;
+    for r in m.answers.iter_mut() {
+        let svcb = match &mut r.data {
+            RData::SVCB(s) => s,
+            RData::HTTPS(h) => {
+                if h.0.svc_priority == 0 || !h.0.target_name.is_root() {
+                    continue;
+                }
+                &mut h.0
+            }
+            _ => continue,
+        };
+        let mut hit = false;
+        for (k, v) in svcb.svc_params.iter_mut() {
+            match (k, ip, v6) {
+                (SvcParamKey::Ipv4Hint, IpAddr::V4(a), false) => {
+                    *v = SvcParamValue::Ipv4Hint(IpHint(vec![A(a)]));
+                    hit = true;
+                }
+                (SvcParamKey::Ipv6Hint, IpAddr::V6(a), true) => {
+                    *v = SvcParamValue::Ipv6Hint(IpHint(vec![AAAA(a)]));
+                    hit = true;
+                }
+                _ => {}
+            }
+        }
+        if hit {
+            r.ttl = ttl;
+            n += 1;
+        }
+    }
+    if n > 0 {
+        m.additionals.clear();
+    }
+    n > 0
+}
+
+/// firestack `AQuadAForQueryTTL`: an answer to an A (or AAAA) question with the addresses of that family; `None`
+/// when none match.
+pub fn aquada_for_query(q: &Message, ttl: u32, ips: &[IpAddr]) -> Option<Message> {
+    let question = q.queries.first()?;
+    let qt = question.query_type();
+    let mut a = empty_response(q);
+    a.metadata.response_code = ResponseCode::NoError;
+    for ip in ips {
+        let data = match (qt, ip.to_canonical()) {
+            (RecordType::A, IpAddr::V4(v4)) => RData::A(A(v4)),
+            (RecordType::AAAA, IpAddr::V6(v6)) if ip.is_ipv6() => RData::AAAA(AAAA(v6)),
+            _ => continue,
+        };
+        a.add_answer(Record::from_rdata(question.name().clone(), ttl, data));
+    }
+    if a.answers.is_empty() { None } else { Some(a) }
+}
+
+/// firestack `BustAndroidCacheIfNeeded`: TTL 0 on A/AAAA/SVCB/HTTPS/CNAME answers unless DNSSEC-authenticated.
+pub fn bust_android_cache(m: &mut Message) {
+    if m.metadata.authentic_data {
+        return;
+    }
+    for r in m.answers.iter_mut() {
+        if matches!(
+            r.record_type(),
+            RecordType::A
+                | RecordType::AAAA
+                | RecordType::SVCB
+                | RecordType::HTTPS
+                | RecordType::CNAME
+        ) {
+            r.ttl = 0;
+        }
+    }
+}
+
 pub fn query(name: &str, qtype: RecordType, id: u16) -> Option<Message> {
     let mut m = Message::new(id, MessageType::Query, hickory_proto::op::OpCode::Query);
     m.metadata.recursion_desired = true;

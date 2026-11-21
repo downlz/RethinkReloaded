@@ -7,6 +7,7 @@
 
 //! The resolver behind the tunnel's fake DNS addresses.
 
+pub mod alg;
 pub mod cache;
 pub mod resolver;
 
