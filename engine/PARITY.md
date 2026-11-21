@@ -195,6 +195,15 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
     emulator's user-mode network does not deliver.
   * Desync is Linux-only, as in firestack; elsewhere the connection is plain.
   * `DialAny` (Auto's multi-dialer retrier) is not ported. The Auto proxy keeps its own fallback order.
+* ECH for DoH (and so for ODoH relays):
+  * The `ech` parameter of the server's HTTPS record is looked up through the Default transport, in the
+    background, as firestack does.
+  * On a rejection, the server's retry configs are used, else a fresh lookup.
+  * `DNSSummary.ECH` reports an accepted ECH.
+  * rustls performs the handshake, with client-side HPKE (X25519/HKDF-SHA256 and AES-GCM or ChaCha20-Poly1305)
+    supplied through the `hpke` crate.
+  * Live test: sky.rethinkdns.com accepts it.
+  * firestack's `DialWithTls` (ECH for other TLS dials) has no caller among the engine paths ported so far.
 * Census (Phase 3 exit):
   * Every native is implemented except the RPN stubs and 96 "unreachable" ones.
   * The unreachable natives belong to engine-side wrappers (`$proxyX`) of interfaces that the engine never hands

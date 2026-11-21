@@ -716,7 +716,11 @@ mod tests {
         let mut r = Retrier::dial_with(d, 443, SPLIT_AUTO, RETRY_AFTER_SPLIT)
             .await
             .unwrap();
-        assert_eq!(r.current_strat(), SPLIT_TCP, "auto splits the first attempt");
+        assert_eq!(
+            r.current_strat(),
+            SPLIT_TCP,
+            "auto splits the first attempt"
+        );
         assert_eq!(exchange(&mut r).await.unwrap().len(), 100);
         let seen = seen.lock().unwrap().clone();
         let hello: Vec<u8> = (0..200u8).collect();

@@ -45,7 +45,45 @@ pub struct DohTransport {
     use_get: AtomicBool,
     /// `http://` URL: skip certificate verification
     insecure: bool,
+    /// the server's ECH config list, once looked up (firestack `echconfig`)
+    ech: Arc<Mutex<Ech>>,
+    /// the current connection's ECH was accepted
+    ech_on: AtomicBool,
     stats: Stats,
+}
+
+#[derive(Default)]
+struct Ech {
+    list: Option<Vec<u8>>,
+    /// a lookup is running or done
+    asked: bool,
+}
+
+/// Looks up `host`'s ECH configs into `st` in the background (firestack: at construction, `doh.ech.<id>`).
+fn fetch_ech(host: String, st: Arc<Mutex<Ech>>) {
+    if host.parse::<IpAddr>().is_ok() {
+        return;
+    }
+    {
+        let mut g = st.lock();
+        if g.asked {
+            return;
+        }
+        g.asked = true;
+    }
+    if let Ok(rt) = tokio::runtime::Handle::try_current() {
+        rt.spawn(async move {
+            let l = crate::ech::config_for(&host).await;
+            let mut g = st.lock();
+            if g.list.is_none() {
+                // none: asked again on the next connection (firestack getOrCreateEchConfigIfNeeded)
+                g.asked = l.is_some();
+                g.list = l;
+            }
+        });
+    } else {
+        st.lock().asked = false;
+    }
 }
 
 impl DohTransport {
@@ -76,6 +114,8 @@ impl DohTransport {
             .trim_matches(['[', ']'])
             .to_string();
         let port = uri.port_u16().unwrap_or(443);
+        let ech = Arc::new(Mutex::new(Ech::default()));
+        fetch_ech(host.clone(), ech.clone());
         Ok(DohTransport {
             id: id.to_string(),
             url: uri,
@@ -87,6 +127,8 @@ impl DohTransport {
             conn: tokio::sync::Mutex::new(None),
             use_get: AtomicBool::new(false),
             insecure,
+            ech,
+            ech_on: AtomicBool::new(false),
             stats: Stats::default(),
         })
     }
@@ -129,23 +171,36 @@ impl DohTransport {
             };
             let name = ServerName::try_from(self.host.clone())
                 .map_err(|e| QueryError::new(dns_status::INTERNAL_ERROR, e.to_string()))?;
-            let tls = tokio_rustls::TlsConnector::from(if self.insecure {
-                tls::client_config_insecure(&[b"h2"])
-            } else {
-                tls::client_config(&[b"h2"])
-            });
-            let stream =
-                match tokio::time::timeout(TLS_HANDSHAKE_TIMEOUT, tls.connect(name, tcp)).await {
-                    Ok(Ok(s)) => s,
-                    Ok(Err(e)) => {
-                        last = format!("tls: {e}");
-                        continue;
+            fetch_ech(self.host.clone(), self.ech.clone()); // lazily, if construction had no runtime
+            let ech = self.ech.lock().list.clone();
+            let tls = tokio_rustls::TlsConnector::from(self.tls_config(ech.as_deref()));
+            let stream = match tokio::time::timeout(TLS_HANDSHAKE_TIMEOUT, tls.connect(name, tcp))
+                .await
+            {
+                Ok(Ok(s)) => s,
+                Ok(Err(e)) => {
+                    last = format!("tls: {e}");
+                    // firestack: on an ECH rejection, the server's retry configs (else a fresh lookup) next
+                    if let Some(re) = e.get_ref().and_then(|x| x.downcast_ref::<rustls::Error>())
+                        && ech.is_some()
+                        && crate::ech::rejected(re)
+                    {
+                        let retry = crate::ech::retry_configs(re);
+                        let mut g = self.ech.lock();
+                        g.asked = retry.is_some();
+                        g.list = retry;
                     }
-                    Err(_) => {
-                        last = "tls: handshake timeout".into();
-                        continue;
-                    }
-                };
+                    continue;
+                }
+                Err(_) => {
+                    last = "tls: handshake timeout".into();
+                    continue;
+                }
+            };
+            self.ech_on.store(
+                stream.get_ref().1.ech_status() == rustls::client::EchStatus::Accepted,
+                Ordering::Relaxed,
+            );
             if stream.get_ref().1.alpn_protocol() != Some(b"h2") {
                 last = "doh: server did not negotiate h2".into();
                 continue;
@@ -167,6 +222,20 @@ impl DohTransport {
             msg: last,
             server: self.host.clone(),
         })
+    }
+
+    /// TLS for a connection: with ECH when the server publishes configs (an unusable list falls back to none).
+    fn tls_config(&self, ech: Option<&[u8]>) -> Arc<rustls::ClientConfig> {
+        if let Some(l) = ech
+            && let Ok(c) = tls::client_config_ech(&[b"h2"], l, self.insecure)
+        {
+            return c;
+        }
+        if self.insecure {
+            tls::client_config_insecure(&[b"h2"])
+        } else {
+            tls::client_config(&[b"h2"])
+        }
     }
 
     async fn exchange(
@@ -403,6 +472,7 @@ impl Transport for DohTransport {
                 latency,
                 blocklists: hdrs.blocklists,
                 region: hdrs.region,
+                ech: me.ech_on.load(Ordering::Relaxed),
             })
         })
     }

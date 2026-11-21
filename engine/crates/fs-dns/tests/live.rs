@@ -141,3 +141,46 @@ async fn insecure_doh_and_dot() {
     );
     assert!(dot_insecure.query(q(), "Base".into()).await.is_ok());
 }
+
+/// ECH: sky.rethinkdns.com publishes ECH configs (HTTPS record); its DoH answers arrive over an ECH-accepted
+/// connection. The ECH lookup goes over plain DNS to 1.1.1.1 (the tunnel uses its Default transport).
+#[tokio::test]
+#[ignore]
+async fn doh_with_ech() {
+    let dns: Arc<Dns53Transport> = Arc::new(Dns53Transport::new(
+        "Default",
+        Dns53Transport::parse_servers("1.1.1.1"),
+        protector(),
+    ));
+    fs_dns::ech::set_lookup(Some(Arc::new(move |host: String| {
+        let dns = dns.clone();
+        Box::pin(async move {
+            let q =
+                msg::pack(&msg::query(&format!("{host}."), RecordType::HTTPS, 9).unwrap()).unwrap();
+            let a = dns.query(q, "Exit".into()).await.ok()?;
+            fs_dns::ech::from_answer(&msg::parse(&a.msg)?)
+        }) as fs_core::bridge::BoxFuture<Option<Vec<u8>>>
+    })));
+    let t = Arc::new(
+        DohTransport::new(
+            "Preferred",
+            "https://sky.rethinkdns.com/dns-query",
+            vec![],
+            protector(),
+            Some(Arc::new(|h: String| {
+                Box::pin(async move {
+                    tokio::net::lookup_host((h.as_str(), 443))
+                        .await
+                        .map(|i| i.map(|a| a.ip()).collect())
+                        .unwrap_or_default()
+                }) as fs_core::bridge::BoxFuture<Vec<std::net::IpAddr>>
+            })),
+        )
+        .unwrap(),
+    );
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await; // the background ECH lookup
+    let q = msg::pack(&msg::query("example.com.", RecordType::A, 1).unwrap()).unwrap();
+    let a = t.clone().query(q, "Exit".into()).await.expect("doh answer");
+    assert!(!msg::answer_ips(&msg::parse(&a.msg).unwrap()).is_empty());
+    assert!(a.ech, "answer over an ECH-accepted connection");
+}

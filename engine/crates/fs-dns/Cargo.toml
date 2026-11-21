@@ -30,6 +30,8 @@ x25519-dalek = "2"
 ring = "0.17"
 # ODoH (RFC 9230): HPKE-sealed queries (Cloudflare's odoh-rs, the counterpart of the odoh-go firestack uses)
 odoh-rs = "1"
+# ECH: client-side HPKE for rustls (its ring provider has none)
+hpke = { version = "0.14", default-features = false, features = ["getrandom", "alloc", "x25519", "aes", "chacha"] }
 rand_core = "0.10"
 
 [dev-dependencies]

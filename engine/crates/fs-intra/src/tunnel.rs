@@ -351,6 +351,18 @@ impl Tunnel {
         let hr = t.host_resolver();
         t.sh.proxies.set_host_resolver(hr);
         let r = Arc::downgrade(&t.sh.resolver);
+        fs_dns::ech::set_lookup(Some(Arc::new({
+            let r = r.clone();
+            move |host: String| -> BoxFuture<Option<Vec<u8>>> {
+                let r = r.clone();
+                Box::pin(async move {
+                    match r.upgrade() {
+                        Some(r) => r.lookup_ech(&host).await,
+                        None => None,
+                    }
+                })
+            }
+        })));
         fs_proxy::client::client().set_resolver(Arc::new(
             move |host: String, tid: String| -> BoxFuture<Vec<IpAddr>> {
                 let r = r.clone();

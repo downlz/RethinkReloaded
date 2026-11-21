@@ -58,6 +58,8 @@ pub struct Summ {
     pub blocklists: String,
     pub region: String,
     pub latency: f64,
+    /// answered over an ECH-protected connection
+    pub ech: bool,
 }
 
 /// An upstream exchange's outcome, as shared through the barrier.

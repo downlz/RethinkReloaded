@@ -114,3 +114,29 @@ pub fn client_config_insecure(alpn: &[&[u8]]) -> Arc<ClientConfig> {
     cfg.alpn_protocols = alpn.iter().map(|p| p.to_vec()).collect();
     Arc::new(cfg)
 }
+
+/// [`client_config`] (or [`client_config_insecure`]) offering ECH with `ech_list` (an ECHConfigList); TLS 1.3 only.
+pub fn client_config_ech(
+    alpn: &[&[u8]],
+    ech_list: &[u8],
+    insecure: bool,
+) -> Result<Arc<ClientConfig>, rustls::Error> {
+    static ROOTS: OnceLock<Arc<RootCertStore>> = OnceLock::new();
+    let provider = Arc::new(rustls::crypto::ring::default_provider());
+    let ech = rustls::client::EchConfig::new(
+        rustls_pki_types::EchConfigListBytes::from(ech_list.to_vec()),
+        crate::ech::SUITES,
+    )?;
+    let b = ClientConfig::builder_with_provider(provider.clone())
+        .with_ech(rustls::client::EchMode::Enable(ech))?;
+    let mut cfg = if insecure {
+        b.dangerous()
+            .with_custom_certificate_verifier(Arc::new(NoVerify(provider)))
+            .with_no_client_auth()
+    } else {
+        let roots = ROOTS.get_or_init(|| Arc::new(roots())).clone();
+        b.with_root_certificates(roots).with_no_client_auth()
+    };
+    cfg.alpn_protocols = alpn.iter().map(|p| p.to_vec()).collect();
+    Ok(Arc::new(cfg))
+}

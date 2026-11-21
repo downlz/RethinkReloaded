@@ -1406,6 +1406,24 @@ impl Resolver {
         }
         out
     }
+
+    /// The ECH config list in `host`'s HTTPS record, from the Default transport (firestack `dialers.ECH`).
+    pub async fn lookup_ech(&self, host: &str) -> Option<Vec<u8>> {
+        let t = self.get(ids::DEFAULT)?;
+        let name = if host.ends_with('.') {
+            host.to_string()
+        } else {
+            format!("{host}.")
+        };
+        let pid = if settings::LOOPINGBACK.load(Ordering::Relaxed) {
+            "Exit"
+        } else {
+            "Base"
+        };
+        let q = msg::query(&name, RecordType::HTTPS, 0x5e10).and_then(|m| msg::pack(&m))?;
+        let a = t.query(q, pid.into()).await.ok()?;
+        fs_dns::ech::from_answer(&msg::parse(&a.msg)?)
+    }
 }
 
 /// firestack `skipBlock`: block-free and ALG transports never apply on-device blocklists; Default and Bootstrap
@@ -1438,6 +1456,7 @@ fn summ_of(a: &fs_dns::transport::Answer, m: Option<&Message>) -> Summ {
         blocklists: a.blocklists.clone(),
         region: a.region.clone(),
         latency: a.latency.as_secs_f64(),
+        ech: a.ech,
     }
 }
 
@@ -1452,6 +1471,7 @@ fn fill_summary(out: &mut DnsSummary, s: &Summ) {
     if out.region.is_empty() {
         out.region = s.region.clone();
     }
+    out.ech |= s.ech;
     if !s.rdata.is_empty() {
         out.rdata = s.rdata.clone();
         out.ad = s.ad;
