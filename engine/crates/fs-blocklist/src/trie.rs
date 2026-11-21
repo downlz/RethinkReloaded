@@ -43,21 +43,34 @@ pub struct FrozenTrie {
     bcache: Mutex<HashMap<String, Vec<String>>>,
 }
 
-fn mmap(path: &Path) -> Result<Mmap, String> {
-    let f = std::fs::File::open(path).map_err(|e| format!("trie: {}: {e}", path.display()))?;
+/// Maps a blocklist file and returns its md5 (hex). The digest is computed with plain reads, not through the
+/// mapping (gotrie hashes the mapping, which leaves the whole ~170 MB trie resident in the process): only the
+/// pages that lookups touch become resident, and the kernel is told lookups are random (no read-ahead).
+fn mmap(path: &Path) -> Result<(Mmap, String), String> {
+    use std::io::Read;
+    let mut f = std::fs::File::open(path).map_err(|e| format!("trie: {}: {e}", path.display()))?;
+    let mut h = Md5::new();
+    let mut buf = vec![0u8; 256 * 1024];
+    loop {
+        let n = f.read(&mut buf).map_err(|e| format!("trie: {}: {e}", path.display()))?;
+        if n == 0 {
+            break;
+        }
+        h.update(&buf[..n]);
+    }
+    let md5 = h.finalize().iter().map(|x| format!("{x:02x}")).collect();
     // SAFETY: the blocklist files are written once by the app before they are handed to the engine and are
     // replaced by new files (new directory per timestamp), never modified in place.
-    unsafe { Mmap::map(&f) }.map_err(|e| format!("trie: mmap {}: {e}", path.display()))
-}
-
-fn md5hex(b: &[u8]) -> String {
-    Md5::digest(b).iter().map(|x| format!("{x:02x}")).collect()
+    let m = unsafe { Mmap::map(&f) }.map_err(|e| format!("trie: mmap {}: {e}", path.display()))?;
+    #[cfg(unix)]
+    let _ = m.advise(memmap2::Advice::Random);
+    Ok((m, md5))
 }
 
 /// gotrie `Build`: td, rd, basicconfig.json, filetag.json.
 pub fn build(td: &Path, rd: &Path, bc: &Path, ft: &Path) -> Result<FrozenTrie, String> {
-    let td = mmap(td)?;
-    let rd = mmap(rd)?;
+    let (td, tdmd5) = mmap(td)?;
+    let (rd, rdmd5) = mmap(rd)?;
     let bconf: serde_json::Value = serde_json::from_slice(
         &std::fs::read(bc).map_err(|e| format!("trie: {}: {e}", bc.display()))?,
     )
@@ -66,7 +79,6 @@ pub fn build(td: &Path, rd: &Path, bc: &Path, ft: &Path) -> Result<FrozenTrie, S
         .get("nodecount")
         .and_then(|v| v.as_f64())
         .ok_or("trie: basicconfig: no nodecount")? as i64;
-    let (tdmd5, rdmd5) = (md5hex(&td), md5hex(&rd));
     let want = |k: &str| {
         bconf
             .get(k)
