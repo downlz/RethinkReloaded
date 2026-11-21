@@ -5,7 +5,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 //
-// Derived-From: celzero/firestack@d3d530ea3e:intra/settings/config.go (DNSOptions, ProxyOptions)
+// Derived-From: celzero/firestack@d3d530ea3e:intra/settings/dnsopts.go (DNSOptions)
+// Derived-From: celzero/firestack@d3d530ea3e:intra/settings/proxyopts.go (ProxyOptions)
 
 //! `settings.DNSOptions` and `settings.ProxyOptions` (and their `Settings.new…` constructors), as firestack parses
 //! them. Neither is consumed by the engine; Kotlin may build them.
@@ -21,8 +22,12 @@ const C_PROXYOPTS: &str = "com/celzero/firestack/settings/ProxyOptions";
 /// Go `net.SplitHostPort`.
 fn split_host_port(s: &str) -> Result<(String, String), String> {
     if let Some(rest) = s.strip_prefix('[') {
-        let (h, tail) = rest.split_once(']').ok_or_else(|| format!("address {s}: missing ']' in address"))?;
-        let port = tail.strip_prefix(':').ok_or_else(|| format!("address {s}: missing port in address"))?;
+        let (h, tail) = rest
+            .split_once(']')
+            .ok_or_else(|| format!("address {s}: missing ']' in address"))?;
+        let port = tail
+            .strip_prefix(':')
+            .ok_or_else(|| format!("address {s}: missing port in address"))?;
         return Ok((h.to_string(), port.to_string()));
     }
     match s.rsplit_once(':') {
@@ -34,7 +39,11 @@ fn split_host_port(s: &str) -> Result<(String, String), String> {
 
 /// Go `net.JoinHostPort`.
 fn join_host_port(h: &str, p: &str) -> String {
-    if h.contains(':') { format!("[{h}]:{p}") } else { format!("{h}:{p}") }
+    if h.contains(':') {
+        format!("[{h}]:{p}")
+    } else {
+        format!("{h}:{p}")
+    }
 }
 
 fn unmap(ip: IpAddr) -> IpAddr {
@@ -47,7 +56,9 @@ fn unmap(ip: IpAddr) -> IpAddr {
 /// firestack `addrport(ip, port)`: `ip` with `port`, or `ip` itself an ip:port.
 fn addrport(ip: &str, port: &str) -> Result<SocketAddr, String> {
     if let Ok(a) = ip.parse::<IpAddr>() {
-        let p: i64 = port.parse().map_err(|e| format!("strconv.Atoi: parsing {port:?}: {e}"))?;
+        let p: i64 = port
+            .parse()
+            .map_err(|e| format!("strconv.Atoi: parsing {port:?}: {e}"))?;
         return Ok(SocketAddr::new(unmap(a), p as u16));
     }
     ip.parse::<SocketAddr>().map_err(|e| e.to_string())
@@ -116,16 +127,25 @@ fn dns_struct(env: &mut JNIEnv, this: &JObject) -> FsResult<std::sync::Arc<Struc
 
 /// `new DNSOptions(ipport)` (no error path in the Java constructor: an unparsable address leaves it empty)
 pub fn dns_new(_env: &mut JNIEnv, ipport: String) -> FsResult<i32> {
-    Ok(rt::alloc_refnum(new_dns(&ipport).unwrap_or_else(|_| dns_opts(String::new(), String::new(), 53))))
+    Ok(rt::alloc_refnum(new_dns(&ipport).unwrap_or_else(|_| {
+        dns_opts(String::new(), String::new(), 53)
+    })))
 }
 pub fn dns_new_from_hostname(_env: &mut JNIEnv, host: String, csv: String) -> FsResult<i32> {
-    Ok(rt::alloc_refnum(new_dns_from_hostname(&host, &csv).unwrap_or_else(|_| dns_opts(String::new(), String::new(), 53))))
+    Ok(rt::alloc_refnum(
+        new_dns_from_hostname(&host, &csv)
+            .unwrap_or_else(|_| dns_opts(String::new(), String::new(), 53)),
+    ))
 }
 pub fn settings_new_dns<'l>(env: &mut JNIEnv<'l>, ipport: String) -> FsResult<JObject<'l>> {
     let s = new_dns(&ipport).map_err(FsError::new)?;
     rt::new_struct_object(env, s)
 }
-pub fn settings_new_dns_from_hostname<'l>(env: &mut JNIEnv<'l>, host: String, csv: String) -> FsResult<JObject<'l>> {
+pub fn settings_new_dns_from_hostname<'l>(
+    env: &mut JNIEnv<'l>,
+    host: String,
+    csv: String,
+) -> FsResult<JObject<'l>> {
     let s = new_dns_from_hostname(&host, &csv).map_err(FsError::new)?;
     rt::new_struct_object(env, s)
 }
@@ -172,7 +192,9 @@ fn query_escape(s: &str) -> String {
     let mut o = String::new();
     for b in s.bytes() {
         match b {
-            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => o.push(b as char),
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                o.push(b as char)
+            }
             b' ' => o.push('+'),
             _ => o.push_str(&format!("%{b:02X}")),
         }
@@ -181,9 +203,15 @@ fn query_escape(s: &str) -> String {
 }
 
 pub fn proxy_new(_env: &mut JNIEnv, ip: String, port: String) -> FsResult<i32> {
-    Ok(rt::alloc_refnum(new_proxy_opts(&ip, &port).unwrap_or_else(|| Struct::new(C_PROXYOPTS))))
+    Ok(rt::alloc_refnum(
+        new_proxy_opts(&ip, &port).unwrap_or_else(|| Struct::new(C_PROXYOPTS)),
+    ))
 }
-pub fn settings_new_proxy<'l>(env: &mut JNIEnv<'l>, ip: String, port: String) -> FsResult<JObject<'l>> {
+pub fn settings_new_proxy<'l>(
+    env: &mut JNIEnv<'l>,
+    ip: String,
+    port: String,
+) -> FsResult<JObject<'l>> {
     match new_proxy_opts(&ip, &port) {
         Some(s) => rt::new_struct_object(env, s),
         None => Ok(JObject::null()),
@@ -248,13 +276,26 @@ mod tests {
         assert!(matches!(d.get("_port"), Field::I32(5353)));
         assert!(new_dns("1.2.3.4").is_err(), "needs a port");
         let h = new_dns_from_hostname("dns.example", "9.9.9.9:853,2620:fe::fe").unwrap();
-        assert_eq!((h.str("_addr"), h.str("_ips")), ("dns.example:853".into(), "9.9.9.9,2620:fe::fe".into()));
+        assert_eq!(
+            (h.str("_addr"), h.str("_ips")),
+            ("dns.example:853".into(), "9.9.9.9,2620:fe::fe".into())
+        );
         let h = new_dns_from_hostname("dns.example:5300", "9.9.9.9:853").unwrap();
         assert_eq!(h.str("_addr"), "dns.example:5300", "the host's port wins");
         let p = new_proxy_opts("10.0.0.1", "1080").unwrap();
-        assert_eq!((p.str("IPPort"), p.str("IP"), p.str("Scheme")), ("10.0.0.1:1080".into(), "10.0.0.1".into(), "http".into()));
+        assert_eq!(
+            (p.str("IPPort"), p.str("IP"), p.str("Scheme")),
+            ("10.0.0.1:1080".into(), "10.0.0.1".into(), "http".into())
+        );
         let p = new_proxy_opts("proxy.example:3128", "").unwrap();
-        assert_eq!((p.str("IPPort"), p.str("Host"), p.str("Port")), ("proxy.example:3128".into(), "proxy.example".into(), "3128".into()));
+        assert_eq!(
+            (p.str("IPPort"), p.str("Host"), p.str("Port")),
+            (
+                "proxy.example:3128".into(),
+                "proxy.example".into(),
+                "3128".into()
+            )
+        );
         assert!(new_proxy_opts("", "").is_none());
         assert_eq!(query_escape("a b@c"), "a+b%40c");
     }

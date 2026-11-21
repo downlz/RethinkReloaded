@@ -15,6 +15,7 @@
 //! WireGuard ones. Flows and DNS transports dial through [`Proxifier`], by proxy id.
 
 pub mod builtin;
+pub mod client;
 pub mod http1;
 pub mod proxifier;
 pub mod socks5;

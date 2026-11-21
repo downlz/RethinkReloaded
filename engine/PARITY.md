@@ -172,8 +172,31 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   * `memProfile` / `cpuProfile`: text reports of memory and of CPU time sampled over 10–120 s.
   * `crash`: report, then abort or not, per type.
   * `setFlightRecordOutput`: the path is remembered.
+* Settings and summaries:
+  * `DNSOptions` and `ProxyOptions` (with their `Settings.new…` constructors) parse addresses as firestack does.
+  * `DNSSummary`, `FlowSummary` and `DialerOpts` `string()` use firestack's formats, including `FmtBytes` /
+    `FmtPeriod`; unit tests pin the output.
+  * `DNSOpts` / `DomainOpts` `copy()` copy every field.
+* `Proxy.client()` `IP4/IP6` (the exit IP and location shown on the WireGuard screen):
+  * Plain HTTP/1.1 GETs over the proxy, with firestack's 4 s limit, 128 KiB body cap and DNS-transport choice.
+  * Providers in firestack's order: dl.rethinkdns.com/ip, Cloudflare trace, WARP, Mullvad.
+  * As in firestack, answers are cached per proxy, family and address for 1 h (12 min for built-ins), and the
+    proxy must have dialed (OK/KO status).
+* `Proxies.underlay(id, controller)` (an untracked Base) and `Intra.controlledRouter` (the router of an untracked
+  Exit) route sockets through the given `Controller`.
+* Census (Phase 3 exit):
+  * Every native is implemented except the RPN stubs and 96 "unreachable" ones.
+  * The unreachable natives belong to engine-side wrappers (`$proxyX`) of interfaces that the engine never hands
+    to Kotlin: Bridge, Controller, Console, the listeners, LogConsumer, and the provider interfaces.
+  * jni-gen derives this with a fixpoint over the API:
+    * returns of reachable natives;
+    * plus parameters of the callbacks the engine invokes on objects Kotlin passed in.
+  * A test asserts that nothing else remains.
 
 ## Deliberate deviations
+* `Proxy.client()` skips firestack's second provider, Windscribe's geo API, because firestack calls it with a made-up
+  bearer token and the fork does not send forged credentials to a third party. The remaining providers cover the
+  same fields, except latitude and longitude, which the Cloudflare trace lacks.
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.
 * `IpTree`: critbitgo panics (index out of range) when a route key is longer than its address family allows. That

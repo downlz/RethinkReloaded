@@ -237,6 +237,13 @@ impl Struct {
     pub fn bool(&self, name: &str) -> bool {
         matches!(self.get(name), Field::Bool(true))
     }
+    /// A new struct of the same class holding a copy of every field (Go's value copy).
+    pub fn copy(&self) -> Arc<Self> {
+        Arc::new(Struct {
+            class: self.class,
+            fields: Mutex::new(self.fields.lock().clone()),
+        })
+    }
     pub fn i64(&self, name: &str) -> i64 {
         match self.get(name) {
             Field::I64(v) => v,
@@ -442,6 +449,14 @@ pub fn unimplemented<T>(what: &'static str) -> FsResult<T> {
 pub fn rpn_unsupported<T>(what: &'static str) -> FsResult<T> {
     Err(FsError(format!(
         "rpn: unsupported in RethinkReloaded: {what}"
+    )))
+}
+
+/// Body of a native on the engine-side wrapper (`$proxyX`) of a callback interface X that the engine never hands
+/// to Kotlin (jni-gen proves no native returns an X and no callback receives one), so no such object exists.
+pub fn unreachable_proxy<T>(what: &'static str) -> FsResult<T> {
+    Err(FsError(format!(
+        "no engine-side object implements this interface: {what}"
     )))
 }
 

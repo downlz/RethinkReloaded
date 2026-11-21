@@ -69,6 +69,23 @@ impl Direct {
     pub fn base(protector: Protector) -> Arc<Self> {
         Self::new(BASE, BASE, FAKE_BASE_ADDR, protector)
     }
+    /// firestack `NewExitProxyWithID`: an untracked Exit (`Intra.controlledRouter`); a random id when empty.
+    pub fn exit_with_id(id: &str, addr: &str, protector: Protector) -> Arc<Self> {
+        let id = if id.is_empty() {
+            format!(
+                "{:08x}",
+                new_handle() as u32 ^ std::process::id().rotate_left(16)
+            )
+        } else {
+            id.to_string()
+        };
+        let addr = if addr.is_empty() {
+            FAKE_EXIT_ADDR
+        } else {
+            addr
+        };
+        Self::new(&id, EXIT, addr, protector)
+    }
     /// firestack `NewBasicProxy`: a config-less proxy, dialing like Base.
     pub fn basic(id: &str, protector: Protector) -> Arc<Self> {
         Self::new(id, BASE, FAKE_BASE_ADDR, protector)

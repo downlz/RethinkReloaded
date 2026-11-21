@@ -1373,7 +1373,13 @@ impl Resolver {
     /// Internal lookup (no Kotlin callbacks, no cache): resolves `host` via the Default transport, A and AAAA.
     /// Used to find the IPs of DoH servers configured by hostname.
     pub async fn lookup_ip(&self, host: &str) -> Vec<IpAddr> {
-        let Some(t) = self.get(ids::DEFAULT) else {
+        self.lookup_ip_on(host, ids::DEFAULT).await
+    }
+
+    /// A and AAAA of `host` from the transport `tid` (no cache, blocklists or translation; firestack
+    /// `dialers.Resolve(host, tid)`).
+    pub async fn lookup_ip_on(&self, host: &str, tid: &str) -> Vec<IpAddr> {
+        let Some(t) = self.get(tid) else {
             return Vec::new();
         };
         let name = if host.ends_with('.') {

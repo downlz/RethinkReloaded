@@ -350,6 +350,18 @@ impl Tunnel {
         // proxy hostnames resolve through the engine (firestack multihost)
         let hr = t.host_resolver();
         t.sh.proxies.set_host_resolver(hr);
+        let r = Arc::downgrade(&t.sh.resolver);
+        fs_proxy::client::client().set_resolver(Arc::new(
+            move |host: String, tid: String| -> BoxFuture<Vec<IpAddr>> {
+                let r = r.clone();
+                Box::pin(async move {
+                    match r.upgrade() {
+                        Some(r) => r.lookup_ip_on(&host, &tid).await,
+                        None => Vec::new(),
+                    }
+                })
+            },
+        ));
         Ok(t)
     }
 

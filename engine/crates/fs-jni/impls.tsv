@@ -230,3 +230,14 @@ com.celzero.firestack.settings.ProxyOptions	hasAuth	options::p_has_auth
 com.celzero.firestack.settings.ProxyOptions	url	options::p_url
 com.celzero.firestack.settings.ProxyOptions	fullUrl	options::p_full_url
 com.celzero.firestack.settings.ProxyOptions	string	options::p_string
+com.celzero.firestack.backend.DNSSummary	string	summary::dns_summary
+com.celzero.firestack.intra.FlowSummary	string	summary::flow_summary
+com.celzero.firestack.settings.DialerOpts	string	summary::dialer_opts
+com.celzero.firestack.backend.DNSOpts	copy	summary::copy
+com.celzero.firestack.backend.DomainOpts	copy	summary::copy
+com.celzero.firestack.backend.Strx	s	summary::strx_s
+com.celzero.firestack.backend.Backend$proxyProxies	underlay	proxies::underlay
+com.celzero.firestack.backend.Backend$proxyProxy	client	proxies::p_client
+com.celzero.firestack.backend.Backend$proxyClient	iP4	proxies::c_ip4
+com.celzero.firestack.backend.Backend$proxyClient	iP6	proxies::c_ip6
+com.celzero.firestack.intra.Intra	controlledRouter	proxies::controlled_router

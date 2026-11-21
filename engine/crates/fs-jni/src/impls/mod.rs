@@ -21,4 +21,5 @@ pub mod rdns;
 pub mod seq;
 pub mod services;
 pub mod settings;
+pub mod summary;
 pub mod tunnel;
