@@ -15,6 +15,7 @@ pub mod intra;
 pub mod log;
 pub mod mult;
 pub mod netstat;
+pub mod options;
 pub mod proxies;
 pub mod rdns;
 pub mod seq;

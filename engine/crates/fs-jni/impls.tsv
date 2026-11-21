@@ -206,3 +206,27 @@ com.celzero.firestack.intra.Intra	crash	diag::crash
 com.celzero.firestack.intra.Intra	setFlightRecordOutput	diag::set_flight_record_output
 com.celzero.firestack.intra.Intra	memProfile	diag::mem_profile
 com.celzero.firestack.intra.Intra	cpuProfile	diag::cpu_profile
+# --- phase 3: settings options structs
+com.celzero.firestack.settings.DNSOptions	__NewDNSOptions	options::dns_new
+com.celzero.firestack.settings.DNSOptions	__NewDNSOptionsFromHostname	options::dns_new_from_hostname
+com.celzero.firestack.settings.DNSOptions	addrPort	options::dns_addr_port
+com.celzero.firestack.settings.DNSOptions	resolvedAddrs	options::dns_resolved_addrs
+com.celzero.firestack.settings.DNSOptions	string	options::dns_string
+com.celzero.firestack.settings.Settings	newDNSOptions	options::settings_new_dns
+com.celzero.firestack.settings.Settings	newDNSOptionsFromHostname	options::settings_new_dns_from_hostname
+com.celzero.firestack.settings.Settings	newProxyOptions	options::settings_new_proxy
+com.celzero.firestack.settings.ProxyOptions	__NewProxyOptions	options::proxy_new
+com.celzero.firestack.settings.ProxyOptions	getHost	options::p_get_host
+com.celzero.firestack.settings.ProxyOptions	setHost	options::p_set_host
+com.celzero.firestack.settings.ProxyOptions	getIP	options::p_get_ip
+com.celzero.firestack.settings.ProxyOptions	setIP	options::p_set_ip
+com.celzero.firestack.settings.ProxyOptions	getPort	options::p_get_port
+com.celzero.firestack.settings.ProxyOptions	setPort	options::p_set_port
+com.celzero.firestack.settings.ProxyOptions	getIPPort	options::p_get_ipport
+com.celzero.firestack.settings.ProxyOptions	setIPPort	options::p_set_ipport
+com.celzero.firestack.settings.ProxyOptions	getScheme	options::p_get_scheme
+com.celzero.firestack.settings.ProxyOptions	setScheme	options::p_set_scheme
+com.celzero.firestack.settings.ProxyOptions	hasAuth	options::p_has_auth
+com.celzero.firestack.settings.ProxyOptions	url	options::p_url
+com.celzero.firestack.settings.ProxyOptions	fullUrl	options::p_full_url
+com.celzero.firestack.settings.ProxyOptions	string	options::p_string
