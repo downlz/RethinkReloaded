@@ -302,6 +302,9 @@ impl Tunnel {
             }
         });
         t.tasks.lock().extend([accept, writer, dispatch]);
+        // proxy hostnames resolve through the engine (firestack multihost)
+        let hr = t.host_resolver();
+        t.sh.proxies.set_host_resolver(hr);
         Ok(t)
     }
 

@@ -17,7 +17,7 @@
 //! Rethink-in-Rethink (loopback) is on, deliberately routing that traffic back through the tunnel.
 
 pub mod conn;
-pub use conn::{Dial, Fut, SharedDial, TcpConn, UdpConn};
+pub use conn::{Datagram, Dial, Fut, SharedDial, TcpConn, UdpConn};
 
 use fs_core::bridge::Controller;
 use socket2::{Domain, Protocol, SockAddr, Socket, Type};

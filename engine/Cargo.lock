@@ -395,10 +395,14 @@ version = "0.0.1"
 name = "fs-proxy"
 version = "0.0.1"
 dependencies = [
+ "base64",
  "fs-core",
  "fs-dialers",
+ "fs-dns",
  "parking_lot",
+ "rustls-pki-types",
  "tokio",
+ "tokio-rustls",
 ]
 
 [[package]]

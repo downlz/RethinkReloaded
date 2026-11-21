@@ -147,6 +147,7 @@ pub struct Proxifier {
     uid_pins: ExpMap<(String, SocketAddr), String>,
     events: mpsc::Sender<(Event, String, String)>,
     listener: Arc<dyn ProxyListener>,
+    resolver: RwLock<Option<crate::upstream::HostResolver>>,
 }
 
 fn hdlstr(p: &SharedProxy) -> String {
@@ -180,6 +181,7 @@ impl Proxifier {
             uid_pins: ExpMap::new(),
             events: tx,
             listener: listener.clone(),
+            resolver: RwLock::new(None),
         });
         tokio::spawn(async move {
             while let Some((ev, id, hdl)) = rx.recv().await {
@@ -204,6 +206,15 @@ impl Proxifier {
 
     pub fn protector(&self) -> &Protector {
         &self.protector
+    }
+
+    /// Resolves proxy hostnames (the engine's resolver).
+    pub fn set_host_resolver(&self, r: crate::upstream::HostResolver) {
+        *self.resolver.write() = Some(r);
+    }
+
+    pub fn host_resolver(&self) -> Option<crate::upstream::HostResolver> {
+        self.resolver.read().clone()
     }
 
     pub fn link_props(&self) -> LinkProps {

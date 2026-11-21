@@ -15,7 +15,10 @@
 //! WireGuard ones. Flows and DNS transports dial through [`Proxifier`], by proxy id.
 
 pub mod builtin;
+pub mod http1;
 pub mod proxifier;
+pub mod socks5;
+pub mod upstream;
 
 pub use proxifier::Proxifier;
 
@@ -380,11 +383,11 @@ pub fn add_proxy(px: &Arc<Proxifier>, id: &str, txt: &str) -> Result<SharedProxy
     } else if txt.is_empty() {
         builtin::Direct::basic(id, px.protector().clone())
     } else {
-        let scheme = txt
-            .split_once("://")
-            .map(|(s, _)| s.to_ascii_lowercase())
-            .unwrap_or_default();
-        match scheme.as_str() {
+        let opts = upstream::parse_url(txt)?;
+        let (prot, res) = (px.protector().clone(), px.host_resolver());
+        match opts.scheme.as_str() {
+            "socks5" => socks5::Socks5::new(id, opts, prot, res)?,
+            "http" | "https" => http1::Http1::new(id, opts, prot, res)?,
             "wg" => return Err(format!("proxy: id must be prefixed with {WG} in {id}")),
             _ => return Err("proxy: unsupported scheme".into()),
         }
