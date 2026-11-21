@@ -18,6 +18,7 @@
 //!   entries are kept (and served stale) until a scrub under high load evicts them.
 //! * concurrent identical requests share one upstream exchange (the barrier), whose outcome is reused for 30 s
 //!   (errors for 6 s).
+//! * undelegated / special-use names are never cached (firestack `CacheUndelegatedQueries = false`).
 //! * hangover: once a transport has failed to send for more than 10 s, nothing is served from its cache and
 //!   requests get no answer until it recovers (so apps do not think there is connectivity).
 
@@ -140,7 +141,12 @@ pub fn is_local(ip: &IpAddr) -> bool {
 
 /// firestack `put` admission: NOERROR, not truncated, not `.onion`, no local addresses.
 pub fn cacheable(key: &str, rcode_noerror: bool, truncated: bool, ips: &[IpAddr]) -> bool {
-    rcode_noerror && !truncated && !key.contains(".onion:") && !ips.iter().any(is_local)
+    let qname = key.split(':').next().unwrap_or_default();
+    rcode_noerror
+        && !truncated
+        && !key.contains(".onion:")
+        && !crate::undelegated::is_undelegated(qname) // CacheUndelegatedQueries = false
+        && !ips.iter().any(is_local)
 }
 
 impl Default for TCache {
@@ -366,6 +372,10 @@ mod tests {
         );
         assert!(!cacheable(&k, false, false, &[]));
         assert!(!cacheable("x.onion:1:0", true, false, &[]));
+        assert!(
+            !cacheable("router.lan:1:0", true, false, &[]),
+            "undelegated"
+        );
         for ip in [
             "192.168.1.1",
             "100.64.0.1",

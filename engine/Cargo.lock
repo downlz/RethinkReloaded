@@ -330,6 +330,7 @@ dependencies = [
  "fs-core",
  "fs-dialers",
  "fs-dns",
+ "fs-iptree",
  "hickory-proto",
  "parking_lot",
  "tokio",

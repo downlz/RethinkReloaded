@@ -10,5 +10,6 @@
 pub mod alg;
 pub mod cache;
 pub mod resolver;
+pub mod undelegated;
 
 pub use resolver::Resolver;

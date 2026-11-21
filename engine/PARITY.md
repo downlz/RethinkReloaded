@@ -69,11 +69,15 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   the flow side `undoAlg` (real addresses, names, probable names, blocklists for Kotlin's `flow`), re-resolution of
   expired translations for the app's uid, and dialing the real addresses in turn (15 s retry window). The gateway
   runs with translation off too: it is the IP -> name map behind `flow`'s domains.
+* Undelegated / special-use names (firestack's list of 148) go to the system resolver when Kotlin enables
+  `Intra.undelegatedDomains`, and are never cached. As in firestack, entries without a leading dot (the private reverse
+  zones) match only themselves.
 * Kotlin receives normalized query names (no trailing dot, lowercase) in `onQuery` and every summary, as firestack.
 * Blocked answers carry TTL 0 (firestack's `BustDnsproxydResNetCache`), as do ALG answers.
 * Not yet ported:
   * DNS64/NAT64 (Phase 3): nothing is synthesized or un-NAT64'd;
-  * undelegated / special-use domains (`requiresGoosOrLocal`, `CacheUndelegatedQueries`) and mDNS (`Local`);
+  * mDNS (`Local`, Phase 3): `.local` and link-local reverse names keep their normal route until there is an mDNS
+    transport;
   * pcap.
   `Tunnel.stat()` still throws; Kotlin catches it.
 
