@@ -424,9 +424,10 @@ where
     };
     if throws {
         throw_go_error(&mut env, &err.0);
-    } else {
-        crate::impls::log::warn(&format!("{what}: {}", err.0));
+        // no JNI calls with an exception pending (CheckJNI aborts); Java ignores the value
+        return R::zero();
     }
+    crate::impls::log::warn(&format!("{what}: {}", err.0));
     R::zero_env(&mut env)
 }
 

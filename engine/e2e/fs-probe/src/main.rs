@@ -10,6 +10,7 @@
 //!   fs-probe dns <server:port> <count> [uncached|cached]   UDP A-queries; latency p50/p95/max, failures
 //!   fs-probe tcp <host:port> <count>                        TCP connect latency
 //!   fs-probe get <host> <port> <path> [seconds]             plain HTTP/1.1 GET; bytes, seconds, Mbit/s
+//!   fs-probe lookup <server:port> <name>                    one A query; rcode and answer addresses
 
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream, ToSocketAddrs, UdpSocket};
@@ -106,6 +107,67 @@ fn dns(server: &str, count: usize, mode: &str) {
     );
 }
 
+/// Skips a (possibly compressed) name at `i`; returns the index after it.
+fn skip_name(b: &[u8], mut i: usize) -> Option<usize> {
+    loop {
+        let l = *b.get(i)? as usize;
+        if l == 0 {
+            return Some(i + 1);
+        }
+        if l & 0xc0 == 0xc0 {
+            return Some(i + 2);
+        }
+        i += 1 + l;
+    }
+}
+
+fn lookup(server: &str, name: &str) {
+    let addr: SocketAddr = server.parse().expect("server ip:port");
+    let sock = UdpSocket::bind(if addr.is_ipv4() {
+        "0.0.0.0:0"
+    } else {
+        "[::]:0"
+    })
+    .unwrap();
+    sock.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+    let t = Instant::now();
+    let mut b = [0u8; 1500];
+    let n = match sock
+        .send_to(&dns_query(0x5151, name), addr)
+        .and_then(|_| sock.recv(&mut b))
+    {
+        Ok(n) => n,
+        Err(e) => return fail("lookup", name, e),
+    };
+    let b = &b[..n];
+    let ms = t.elapsed().as_secs_f64() * 1e3;
+    let rcode = b.get(3).map(|x| x & 0x0f).unwrap_or(255);
+    let an = u16::from_be_bytes([b[6], b[7]]) as usize;
+    let mut ips = Vec::new();
+    let mut i = skip_name(b, 12).map(|i| i + 4).unwrap_or(n);
+    for _ in 0..an {
+        let Some(j) = skip_name(b, i) else { break };
+        if j + 10 > n {
+            break;
+        }
+        let (typ, len) = (
+            u16::from_be_bytes([b[j], b[j + 1]]),
+            u16::from_be_bytes([b[j + 8], b[j + 9]]) as usize,
+        );
+        let rd = &b[j + 10..(j + 10 + len).min(n)];
+        if typ == 1 && rd.len() == 4 {
+            ips.push(format!("\"{}.{}.{}.{}\"", rd[0], rd[1], rd[2], rd[3]));
+        } else {
+            ips.push(format!("\"type{typ}\""));
+        }
+        i = j + 10 + len;
+    }
+    println!(
+        "{{\"cmd\":\"lookup\",\"name\":\"{name}\",\"rcode\":{rcode},\"ms\":{ms:.2},\"answers\":[{}]}}",
+        ips.join(",")
+    );
+}
+
 fn fail(cmd: &str, what: &str, err: impl std::fmt::Display) {
     println!(
         "{{\"cmd\":\"{cmd}\",\"target\":\"{what}\",\"error\":\"{}\"}}",
@@ -194,6 +256,7 @@ fn main() {
             a.get(4).map(String::as_str).unwrap_or("uncached"),
         ),
         Some("tcp") => tcp(&a[2], a[3].parse().unwrap()),
+        Some("lookup") => lookup(&a[2], &a[3]),
         Some("get") => get(
             &a[2],
             a[3].parse().unwrap(),
@@ -202,7 +265,7 @@ fn main() {
         ),
         _ => {
             eprintln!(
-                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | get <host> <port> <path> [secs]"
+                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | lookup <ip:port> <name> | get <host> <port> <path> [secs]"
             );
             std::process::exit(2);
         }

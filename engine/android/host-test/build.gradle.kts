@@ -36,6 +36,10 @@ val cargoHost by tasks.registering(Exec::class) {
 tasks.test {
     dependsOn(cargoHost)
     systemProperty("java.library.path", File(engineDir, "target/debug").absolutePath)
+    // like Android's CheckJNI, where JNI misuse (e.g. a call with an exception pending) aborts the app. HotSpot only
+    // prints "WARNING in native method" to the worker's stdout, which CI greps for (.github/workflows/rr-ci.yml).
+    jvmArgs("-Xcheck:jni")
+    outputs.upToDateWhen { false } // the native library is not a declared input
     testLogging {
         events("passed", "skipped", "failed")
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL

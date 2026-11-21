@@ -83,7 +83,7 @@ Carried forward:
 | JNI callback executor (protect / flow / dns / notify lanes), Bridge over Kotlin | done |
 | Protected sockets (`bind4`/`bind6` before connect; tcp, udp, icmp) | done |
 | DNS messages (RData, padding, blocked answers), DoH (h2), DoT, DNS53, BlockAll | done (live-tested) |
-| Resolver: onQuery → `[Cache]tid[:pid]` → cache → upstream → onUpstreamAnswer → onResponse | done |
+| Resolver: onQuery → `[Cache]tid[:pid]` → cache → upstream → onUpstreamAnswer → onResponse | done (onUpstreamAnswer also for cached answers) |
 | Default DNS (DoH with seeds, DNS53, system), System DNS, DNS proxy | done |
 | TUN + netstack (netstack-smoltcp), fd swap / unlink / restart | done |
 | TCP relay (half-close), UDP sessions (120 s idle), DNS over UDP/TCP to the fake DNS address | done |
@@ -91,13 +91,37 @@ Carried forward:
 | ICMP echo (probe socket, synthesized reply, unreachable when blocked, flood stall) | done |
 | Domains in Flow (reverse map from DNS answers) | done |
 | `/proc/net` uid lookup (Android 9 and older) | done (unit-tested; needs an API ≤ 28 device) |
-| Rethink blocklists: gotrie port + blockstamps (`setRdnsLocal/Remote`, RDNS) | **next (1D)** |
-| UDP endpoint-independent mapping/filtering (`Intra.transparency`) | todo |
-| Cache stale-serving + query coalescing; ALG translation | todo |
-| Performance gate vs the Go baseline (phone) | todo (1E) |
+| Rethink blocklists: gotrie port + blockstamps (`setRdnsLocal/Remote`, RDNS), remote stamps (`x-nile-flags`) | done (oracle: 32,715 firestack results reproduced) |
+| UDP endpoint-independent mapping/filtering (`Intra.transparency`, `inflow`) | done |
+| Per-transport caches: stale-while-revalidate, request barrier (coalescing), hangover | done |
+| ALG translation (`translate(true, …)`, opt-in) | deferred: answers stay untranslated (as with ALG off) |
+| Performance gate vs the Go baseline (phone) | measured (below): memory, CPU, throughput, wakeups pass; cached DNS p95 borderline |
 
-Census: 137 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
-stubs and 194 natives remain.
+Census: 151 real implementations, 616 struct accessors and 9 runtime natives are done; 105 RPN natives are permanent
+stubs and 180 natives remain.
+
+### Phase 1 performance gate (2026-11-21)
+
+Same phone, build type (`fdroidFullReleaseDebug`, arm64), Wi-Fi (802.11ac, RSSI −59 vs −56), DNS (Cloudflare DoH)
+and LAN download target as the Go baseline. Files: `engine/perf/baseline-rust-2e51bbefe-edge60pro.json`, compared
+with `engine/perf/compare.py`.
+
+| Metric | Go | Rust | Gate | Result |
+|---|---|---|---|---|
+| Idle PSS (median) | 182 MB | **133 MB** (−27%) | ≤ 80% of Go | pass |
+| Threads | 86 | 71 | | |
+| Context switches / min, idle | 4,798 | **1,808** (−62%) | ≤ Go | pass |
+| LAN download | 133 Mbit/s | **201 Mbit/s** (+51%; no-VPN reference 206) | ≥ 95% of Go | pass |
+| App CPU per GB downloaded | 86.9 s | **30.1 s** (−65%) | ≤ Go | pass |
+| DNS cached p50 / p95, gate run | 23.5 / 26.2 ms | 27.5 / 84.7 ms | p50 ≤ Go + 1 ms, p95 ≤ Go | fail (one run) |
+| DNS cached p50 / p95, four more runs | | 22.1–25.4 / 25.9–28.5 ms | | p50 pass; p95 borderline |
+| DNS uncached (internet) | p50 79 ms, p95 2.19 s, 14/40 lost | p50 72–80 ms, p95 90–134 ms, 0/40 lost | informational | |
+| `libgojni.so`, stripped | 19.8 MB | **5.7 MB** | | |
+
+Cached DNS is dominated by four Kotlin callbacks per probe query (preflow, flow, onQuery, onUpstreamAnswer) in both
+engines; the gate run's 84.7 ms p95 did not reproduce in four further runs, and Go was measured once. Open items for
+the latency gate: repeat both engines several times in one session, and profile the callback lanes.
+Not yet measured: screen-off wakeups (Perfetto), `VpnStartupBenchmark`, a battery run, an armv7 device.
 
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the

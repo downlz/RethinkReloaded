@@ -113,6 +113,17 @@ public class JniFacadeTest {
     }
 
     @Test
+    public void throwingStringNativeLeavesNoPendingJniCall() {
+        // a String-returning native that throws must not touch JNI after raising (CheckJNI aborts the process)
+        try {
+            Intra.setFlightRecordOutput("/nonexistent");
+            fail("expected an exception");
+        } catch (Exception e) {
+            assertEquals("go.Universe$proxyerror", e.getClass().getName());
+        }
+    }
+
+    @Test
     public void unimplementedAndRpnStubsThrowGoErrors() {
         try {
             Intra.addDNSCryptRelay(null, "sdns://x"); // DNSCrypt is a Phase 3 native: still a stub

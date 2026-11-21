@@ -95,7 +95,11 @@ jobs:
           cargo clippy --workspace --locked -- -D warnings
           cargo fmt --all --check
       - name: JVM <-> Rust JNI tests (vendored facade against host libgojni)
-        run: ./gradlew --no-daemon -p engine/android :host-test:test
+        # -Xcheck:jni: HotSpot only warns on JNI misuse that aborts Android apps, so fail on any warning
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon -p engine/android :host-test:test 2>&1 | tee host-test.log
+          if grep -q "WARNING in native method" host-test.log; then echo "::error::CheckJNI warnings"; exit 1; fi
       - name: App with Rust engine (assemble + parity unit tests)
         # one retry: upstream TunFirewallManagerTest "RULE1B" races a Dispatchers.IO launch (see docs/fork/TESTING.md)
         run: |

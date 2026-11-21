@@ -14,7 +14,8 @@ pid=$(adb shell pidof "$pkg" | tr -d '\r')
 apk_dir=$(adb shell pm path "$pkg" | head -1 | sed 's/^package://; s/base.apk$//' | tr -d '\r')
 abi=$(adb shell getprop ro.product.cpu.abi | tr -d '\r')
 lib_size=$(adb shell "unzip -l ${apk_dir}base.apk lib/$abi/libgojni.so 2>/dev/null" | awk '/libgojni/ {print $1}' | tr -d '\r')
-engine=$(adb logcat -d -s GoLog:I | grep -q "rust engine loaded" && echo rust || echo go)
+# RR_ENGINE=rust|go overrides detection (the log line is lost if logcat was cleared after the app started)
+engine=${RR_ENGINE:-$(adb logcat -d -s GoLog:I | grep -q "rust engine loaded" && echo rust || echo go)}
 vpn=$(adb shell dumpsys connectivity | grep -c "VPN CONNECTED\|type: VPN\[" || true)
 samples=""
 for i in $(seq 1 "$n"); do
