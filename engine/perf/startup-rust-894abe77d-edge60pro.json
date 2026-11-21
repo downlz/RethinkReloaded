@@ -1,0 +1,6 @@
+{
+  "label": "rust-894abe77d-edge60pro",
+  "captured": "2026-11-21T10:38:21Z",
+  "device": "motorola edge 60 pro / Android 17",
+  "runs": [{"total_time_ms":150,"tun_up_ms":26,"dns_ready_ms":1127},{"total_time_ms":150,"tun_up_ms":14,"dns_ready_ms":1079},{"total_time_ms":150,"tun_up_ms":16,"dns_ready_ms":1208},{"total_time_ms":155,"tun_up_ms":38,"dns_ready_ms":1162},{"total_time_ms":173,"tun_up_ms":24,"dns_ready_ms":1163}]
+}

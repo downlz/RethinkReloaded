@@ -11,6 +11,9 @@
 //!   fs-probe tcp <host:port> <count>                        TCP connect latency
 //!   fs-probe get <host> <port> <path> [seconds]             plain HTTP/1.1 GET; bytes, seconds, Mbit/s
 //!   fs-probe lookup <server:port> <name>                    one A query; rcode and answer addresses
+//!   fs-probe udp <host:port> <message>                      one datagram; the echo and its round trip
+//!   fs-probe echo <host:port> <message>                     TCP: send, read the echo back
+//!   fs-probe ntp <host:port>                                one SNTP query (UDP); server time and round trip
 
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream, ToSocketAddrs, UdpSocket};
@@ -247,6 +250,68 @@ fn get(host: &str, port: u16, path: &str, max_secs: u64) {
     );
 }
 
+fn udp(target: &str, msg: &str) {
+    let to: SocketAddr = target.to_socket_addrs().unwrap().next().unwrap();
+    let s = UdpSocket::bind(if to.is_ipv4() { "0.0.0.0:0" } else { "[::]:0" }).unwrap();
+    s.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+    let t = Instant::now();
+    s.send_to(msg.as_bytes(), to).unwrap();
+    let mut b = [0u8; 2048];
+    match s.recv_from(&mut b) {
+        Ok((n, from)) => println!(
+            "{{\"cmd\":\"udp\",\"ok\":{},\"from\":\"{from}\",\"echo\":\"{}\",\"ms\":{:.2}}}",
+            &b[..n] == msg.as_bytes(),
+            String::from_utf8_lossy(&b[..n]),
+            t.elapsed().as_secs_f64() * 1e3
+        ),
+        Err(e) => println!("{{\"cmd\":\"udp\",\"ok\":false,\"err\":\"{e}\"}}"),
+    }
+}
+
+fn echo(target: &str, msg: &str) {
+    let to: SocketAddr = target.to_socket_addrs().unwrap().next().unwrap();
+    let t = Instant::now();
+    let r = TcpStream::connect_timeout(&to, Duration::from_secs(10)).and_then(|mut c| {
+        c.set_read_timeout(Some(Duration::from_secs(10)))?;
+        c.write_all(msg.as_bytes())?;
+        let mut b = vec![0u8; msg.len()];
+        c.read_exact(&mut b)?;
+        Ok(b)
+    });
+    match r {
+        Ok(b) => println!(
+            "{{\"cmd\":\"echo\",\"ok\":{},\"echo\":\"{}\",\"ms\":{:.2}}}",
+            b == msg.as_bytes(),
+            String::from_utf8_lossy(&b),
+            t.elapsed().as_secs_f64() * 1e3
+        ),
+        Err(e) => println!("{{\"cmd\":\"echo\",\"ok\":false,\"err\":\"{e}\"}}"),
+    }
+}
+
+fn ntp(target: &str) {
+    let to: SocketAddr = target.to_socket_addrs().unwrap().next().unwrap();
+    let s = UdpSocket::bind(if to.is_ipv4() { "0.0.0.0:0" } else { "[::]:0" }).unwrap();
+    s.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+    let mut q = [0u8; 48];
+    q[0] = 0x1b; // LI 0, version 3, client
+    let t = Instant::now();
+    s.send_to(&q, to).unwrap();
+    let mut b = [0u8; 512];
+    match s.recv_from(&mut b) {
+        Ok((n, from)) if n >= 48 => {
+            let secs = u32::from_be_bytes([b[40], b[41], b[42], b[43]]) as u64;
+            println!(
+                "{{\"cmd\":\"ntp\",\"ok\":true,\"from\":\"{from}\",\"unix\":{},\"ms\":{:.2}}}",
+                secs.saturating_sub(2_208_988_800),
+                t.elapsed().as_secs_f64() * 1e3
+            )
+        }
+        Ok((n, _)) => println!("{{\"cmd\":\"ntp\",\"ok\":false,\"err\":\"short reply {n}\"}}"),
+        Err(e) => println!("{{\"cmd\":\"ntp\",\"ok\":false,\"err\":\"{e}\"}}"),
+    }
+}
+
 fn main() {
     let a: Vec<String> = std::env::args().collect();
     match a.get(1).map(String::as_str) {
@@ -257,6 +322,9 @@ fn main() {
         ),
         Some("tcp") => tcp(&a[2], a[3].parse().unwrap()),
         Some("lookup") => lookup(&a[2], &a[3]),
+        Some("udp") => udp(&a[2], &a[3]),
+        Some("echo") => echo(&a[2], &a[3]),
+        Some("ntp") => ntp(&a[2]),
         Some("get") => get(
             &a[2],
             a[3].parse().unwrap(),
@@ -265,7 +333,7 @@ fn main() {
         ),
         _ => {
             eprintln!(
-                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | lookup <ip:port> <name> | get <host> <port> <path> [secs]"
+                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | lookup <ip:port> <name> | udp <ip:port> <msg> | echo <ip:port> <msg> | ntp <ip:port> | get <host> <port> <path> [secs]"
             );
             std::process::exit(2);
         }

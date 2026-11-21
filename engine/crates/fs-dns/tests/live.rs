@@ -10,8 +10,8 @@ use fs_dns::transport::Transport;
 use hickory_proto::rr::RecordType;
 use std::sync::Arc;
 
-fn protector() -> Protector {
-    Protector::new(Arc::new(AllowAllBridge))
+fn protector() -> fs_dialers::SharedDial {
+    Arc::new(Protector::new(Arc::new(AllowAllBridge)))
 }
 
 #[tokio::test]

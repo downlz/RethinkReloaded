@@ -15,6 +15,7 @@
 
 use crate::alg::{self, Gateway, IpType, SecAns};
 use crate::cache::{self, Caches, Summ, TCache};
+use crate::undelegated;
 use fs_blocklist::stamp::{Mode, Rdns};
 use fs_core::bridge::{DnsListener, DnsOpts, DnsSummary, dns_status};
 use fs_core::settings;
@@ -142,7 +143,7 @@ impl Resolver {
         };
         match tid {
             ids::DEFAULT | "CacheDefault" | ids::BOOTSTRAP => self.get(ids::DEFAULT),
-            ids::SYSTEM => self
+            ids::SYSTEM | ids::GOOS => self
                 .get(ids::SYSTEM)
                 .or_else(|| self.get(ids::GOOS))
                 .or_else(fallback),
@@ -272,11 +273,18 @@ fn override_proxy(pid: &str, ids_: &[&str]) -> String {
     pid.into()
 }
 
-/// Phase 1 dials only Base and Exit; other proxies (WireGuard, SOCKS5, …) arrive in Phase 2 and use Base.
+/// The proxies a transport dials through: Kotlin's pid csv (the dialer picks among them, firestack `ProxyTo`),
+/// Base when there are none.
 fn dial_pid(pidcsv: &str) -> String {
-    match pidcsv.split(',').next().map(str::trim) {
-        Some(EXIT) => EXIT.into(),
-        _ => BASE.into(),
+    let ids: Vec<&str> = pidcsv
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .collect();
+    if ids.is_empty() {
+        BASE.into()
+    } else {
+        ids.join(",")
     }
 }
 
@@ -419,8 +427,8 @@ fn from_internal_cache(
         return None;
     }
     let qt = msg::qtype(q);
-    if qt != 1 && qt != 28 {
-        return None;
+    if (qt != 1 && qt != 28) || undelegated::is_undelegated(&msg::qname(q)) {
+        return None; // firestack CacheUndelegatedQueries = false
     }
     let (ip4s, ip6s, until) = gw.resolv(&msg::qname(q), typ, tid, uid);
     let ips = if qt == 1 { ip4s } else { ip6s };
@@ -603,7 +611,24 @@ impl Resolver {
     }
 
     /// firestack `preferencesFrom` (tunnel queries: no pre-chosen tids; undelegated/mDNS overrides not ported).
-    fn preferences(&self, qtype: u16, opts: &DnsOpts) -> Prefs {
+    /// firestack `requiresGoosOrLocal`: mDNS names go to `Local`; undelegated names to the system resolver when
+    /// Kotlin asks for it (`Intra.undelegatedDomains`). The port has no mDNS transport yet (Phase 3), so `.local`
+    /// names keep their normal route until one exists.
+    fn requires_goos_or_local(&self, qname: &str) -> &'static str {
+        if (qname.ends_with(".local") || undelegated::is_mdns_query(qname))
+            && self.get(LOCAL).is_some()
+        {
+            LOCAL
+        } else if settings::SYSTEM_DNS_FOR_UNDELEGATED_DOMAINS.load(Ordering::Relaxed)
+            && undelegated::is_undelegated(qname)
+        {
+            ids::GOOS
+        } else {
+            ""
+        }
+    }
+
+    fn preferences(&self, qname: &str, qtype: u16, opts: &DnsOpts) -> Prefs {
         let (x, t1pids) = parse_all_tid_opts(&opts.tidcsv);
         let (xx, t2pids) = parse_all_tid_opts(&opts.tidseccsv);
         let mut p = Prefs {
@@ -616,7 +641,11 @@ impl Resolver {
             p.id2 = self.choose_one(&xx);
         }
         let any = |v: &[String], want: &str| v.iter().any(|i| is_id(want, i));
-        if any(&x, ids::FIXED) || any(&xx, ids::FIXED) {
+        let reqid = self.requires_goos_or_local(qname);
+        if !reqid.is_empty() {
+            p.id1 = reqid.into();
+            p.id2.clear();
+        } else if any(&x, ids::FIXED) || any(&xx, ids::FIXED) {
             if !is_id(ids::FIXED, &p.id1) {
                 p.id2 = std::mem::replace(&mut p.id1, ids::FIXED.into());
             }
@@ -786,7 +815,7 @@ impl Resolver {
         origin: &str,
         uid: &str,
     ) -> Step {
-        let p = self.preferences(msg::qtype(qmsg), opts);
+        let p = self.preferences(&msg::qname(qmsg), msg::qtype(qmsg), opts);
         let mut t1 = self.tr(&p.id1);
         let mut t2 = self.tr(&p.id2);
         if t1.is_none() {
@@ -1344,8 +1373,11 @@ async fn query_cached(
     let Some(key) = cache::key(&qname, qtype, smm.do_bit) else {
         return query_direct(t, q, pid, smm).await;
     };
+    // firestack CacheUndelegatedQueries = false: such answers are neither served from nor stored in the cache
+    let undel = undelegated::is_undelegated(&msg::qname(qmsg));
     let tc = caches.get(t.id());
     if tc.transport_ok()
+        && !undel
         && let Some(hit) = tc.fresh_copy(&key)
     {
         match as_response(qmsg, &hit.msg, hit.fresh) {

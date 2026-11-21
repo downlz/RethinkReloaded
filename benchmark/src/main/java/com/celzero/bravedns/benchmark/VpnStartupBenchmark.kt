@@ -17,7 +17,7 @@ class VpnStartupBenchmark {
 
     @Test
     fun startup() = benchmarkRule.measureRepeated(
-        packageName = "com.celzero.bravedns",
+        packageName = "io.github.downlz.rethinkreloaded", // [rr] the fork's applicationId (upstream's would launch the original app)
         metrics = listOf(StartupTimingMetric()),
         iterations = 5,
         startupMode = StartupMode.COLD
@@ -26,6 +26,6 @@ class VpnStartupBenchmark {
         startActivityAndWait()
         
         // Wait for the start button to be displayed
-        device.wait(Until.hasObject(By.res("com.celzero.bravedns", "fhs_dns_on_off_btn")), 5000)
+        device.wait(Until.hasObject(By.res("io.github.downlz.rethinkreloaded", "fhs_dns_on_off_btn") /* [rr] */), 5000)
     }
 }

@@ -123,6 +123,91 @@ engines; the gate run's 84.7 ms p95 did not reproduce in four further runs, and 
 the latency gate: repeat both engines several times in one session, and profile the callback lanes.
 Not yet measured: screen-off wakeups (Perfetto), `VpnStartupBenchmark`, a battery run, an armv7 device.
 
+### Phase 2 status (2026-11-21)
+
+| Area | Status |
+|---|---|
+| Proxy registry (`Proxies`): add/remove/get, `ProxyTo` (pins, stall, Auto → Exit), refresh, Router aggregates, listener callbacks | done |
+| SOCKS5 client (TCP, UDP associate, credentials), HTTP CONNECT client (Basic, 407 retry, TLS to `https://` proxies) | done |
+| WireGuard (gotatun + smoltcp per proxy): UAPI config, MTU reconciliation, status/stats, ping/refresh, pause/resume | done |
+| Hops (`hop` / `testHop`): firestack's rules; WireGuard family/announce/route/MTU checks; replaced vias keep origins | done |
+| DNS through Kotlin's proxies (`tid:pid`), `Intra.addProxyDNS` (WireGuard DNS transport, by address) | done |
+| Local servers (`Tunnel.getServices`, fs-rnet): SOCKS5 (CONNECT, UDP) and HTTP (CONNECT, plain) | done (unused by the v0.5.8 app) |
+| Exit gate, through the app on the Android 15 emulator against `engine/e2e/wg-peer` on the host | pass (below) |
+
+Exit gate runs (adb shell uid routed by the app; `fs-probe` echo/udp/get/ntp):
+
+| Check | Result |
+|---|---|
+| WireGuard to a local server (wg-peer, gotatun + userspace stack) | TCP echo, UDP echo, HTTP through the tunnel |
+| Multi-hop: inner peer reachable only inside the outer tunnel, set as a Relay in the app | TCP echo, UDP echo, HTTP two tunnels deep |
+| SOCKS5 UDP (app's SOCKS5 proxy → fs-rnet SOCKS5 server on the host) | NTP query and reply over UDP associate; TCP too |
+
+Bugs the e2e run found, now fixed and covered by tests: `getProxy`/`refreshProxies`/`hop` panicked off the runtime
+(Kotlin threads); a WireGuard hop never handshook (firestack refreshes on hop) and gotatun's unbounded
+`force_handshake` held the device lock; DNS ignored Kotlin's proxy choice; Kotlin's WireGuard DNS transport
+(`addProxyDNS`) was missing.
+
+### Measurement pass after Phase 2 (2026-11-21, same phone, both engines in one session)
+
+Both engines were built from `894abe77d` (`fdroidFullReleaseDebug`, arm64) and installed over each other on the
+Phase 1 phone, with the same Wi-Fi and LAN target. Files in `engine/perf/`:
+* `baseline-{go-d3d530ea3e,rust}-894abe77d-edge60pro.json`
+* `ab-894abe77d-edge60pro.json` (three alternating rounds)
+* `screenoff-*-894abe77d-edge60pro.json`
+* `startup-*-894abe77d-edge60pro.json`
+
+**Correction:** the Go baseline of 2026-11-18 overstated Go's idle cost: 182 MB PSS and 4,798 context switches/min,
+against 142–153 MB and 1,763–6,271/min measured today. Idle context switches swing widely with other apps' traffic,
+so single runs are not meaningful; the A/B rounds are.
+
+| Metric | Go | Rust | Gate | Result |
+|---|---|---|---|---|
+| Idle PSS, A/B median of 3 (screen on) | 143 MB | 123 MB (−14%) | ≤ 80% of Go | **fail**: about 86% of Go. One Rust round read 175 MB; 36 MB of it was graphics (UI), not the engine |
+| Idle context switches/min, A/B median of 3 | 5,037 | 1,337 (−73%) | ≤ Go | pass |
+| **Screen off, 15 min**: voluntary switches (wakeups)/min | 2,304 | **93** (−96%) | ≤ Go | pass |
+| Screen off, 15 min: app CPU | 9.03 s | **0.86 s** (−90%) | ≤ Go | pass |
+| Screen off, 15 min: battery estimate (batterystats) | 0.430 mAh | **0.079 mAh** (−82%) | | |
+| LAN download (baseline run) | 140 Mbit/s | 212 Mbit/s (+52%) | ≥ 95% of Go | pass |
+| App CPU per GB | 79.5 s | 29.7 s (−63%) | ≤ Go | pass |
+| DNS cached p50 / p95 (A/B, 3 runs each) | 32–34 / 87–96 ms | 25–32 / 82–86 ms | p50 ≤ Go + 1 ms, p95 ≤ Go | pass |
+| Cold start (`am start -W` TotalTime, median of 5) | 152 ms | 150 ms | regression ≤ 5% | pass |
+| Launch → first DNS answer through the VPN (median of 5) | 1,164 ms | 1,162 ms | | equal |
+
+Notes:
+* Screen-off windows: one per engine, back to back, with the charger reported unplugged and Doze not forced.
+* Startup runs: the phone was locked; TotalTime measures the same launch for both engines.
+* The memory gate is the one miss. Follow-up runs split it up (`ab2-*.json`, `offon-*.json`):
+
+  | Median (MB) | Go | Rust |
+  |---|---|---|
+  | Whole-app PSS, VPN on (A/B, 3 rounds) | 143.5 | 124.4 (−13%) |
+  | Same without graphics (equal for both engines: 34) | 109 | 90.5 (−17%) |
+  | Fresh process, VPN off (2 rounds) | 124, 116 | 108, 101 (−15) |
+  | Tunnel cost, VPN off → on (2 rounds) | +28, +30 | +22, +24 (−20%) |
+
+  * The engines' Java heap (13) and graphics are equal.
+  * Go keeps its heap outside "Native Heap", so Rust's higher native heap (37 against 30) is not an extra cost.
+  * On-device blocklists were off, and only 5 TCP connections were open, so neither the trie nor per-connection
+    buffers explain it.
+  * Of Rust's +24 MB tunnel cost, about 7 MB is native heap and 5 MB graphics. The rest is engine code pages and
+    thread stacks, so the next lever is code size (opt-level, codegen) rather than allocations (Phase 4).
+  * The gate compares whole-app PSS, which the app's fixed costs dominate. Consider restating it as the engine's own
+    footprint.
+
+Findings (app-side, both engines):
+* After an install, the app sometimes stops its own VPN right after starting it. Two "start VPN" calls race and the
+  second finds no tunnel ("Cannot handle vpn adapter changes, no tunnel"). This is upstream Kotlin behaviour; seen with
+  Go and Rust.
+* RethinkReloaded on the phone had the universal rules "Block when DNS is bypassed" and "Block port 80" on. They block
+  the probes (`fs-probe` by IP and over HTTP), so they were switched off for the runs.
+
+Not measured: armv7 (this phone is arm64-only), a multi-hour battery drain.
+
+Open items: the WireGuard list's rx/tx counters in the app did not visibly advance during the run, although engine
+counters do (unit-tested), so check the UI refresh path in the measurement pass. Kotlin does not restore a relay after
+a VPN restart (Kotlin's own state; check against the Go engine).
+
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the
   facade, but they permanently throw `rpn: unsupported`.

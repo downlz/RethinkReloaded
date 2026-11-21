@@ -1,7 +1,7 @@
 # RethinkReloaded network engine: a Rust port of celzero/firestack (MPL-2.0).
 [workspace]
 resolver = "3"
-members = ["crates/*", "tools/jni-gen", "e2e/fs-probe"]
+members = ["crates/*", "tools/jni-gen", "e2e/fs-probe", "e2e/wg-peer"]
 
 [workspace.package]
 version = "0.0.1"

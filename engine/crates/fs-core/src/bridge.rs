@@ -10,7 +10,7 @@
 // Derived-From: celzero/firestack@d3d530ea3e:intra/backend/protect.go
 
 //! Engine-side view of the callbacks Kotlin implements (`intra.Bridge` = Controller + FlowListener +
-//! DNSListener + ProxyListener). JNI-free: `fs-jni` implements these traits over the real Kotlin object, tests
+//! DNSListener + ProxyListener + ServerListener). JNI-free: `fs-jni` implements these traits over the real Kotlin object, tests
 //! implement them in Rust. Callbacks that return a value are async (they run on JVM-attached executor threads);
 //! notifications are fire-and-forget.
 
@@ -194,9 +194,46 @@ pub trait ProxyListener: Send + Sync {
     fn on_proxies_stopped(&self);
 }
 
+/// `backend.Tab`: verdict of `svcRoute` for a connection a local server accepted.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct Tab {
+    /// connection id (chosen by Kotlin)
+    pub cid: String,
+    pub block: bool,
+}
+
+/// `backend.ServerSummary`: one connection a local server relayed.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub struct ServerSummary {
+    /// `svcsocks5`, `pxsocks5`, `svchttp`, `pxhttp`
+    pub typ: String,
+    pub sid: String,
+    pub pid: String,
+    pub cid: String,
+    pub rx: i64,
+    pub tx: i64,
+    /// milliseconds
+    pub duration: i64,
+    pub msg: String,
+}
+
+/// Local server callbacks (`backend.ServerListener`).
+pub trait ServerListener: Send + Sync {
+    /// `svcRoute(sid, pid, network, src, dst)`
+    fn svc_route(
+        &self,
+        sid: String,
+        pid: String,
+        network: String,
+        src: String,
+        dst: String,
+    ) -> BoxFuture<Tab>;
+    fn on_svc_complete(&self, s: ServerSummary);
+}
+
 /// `intra.Bridge`.
-pub trait Bridge: Controller + FlowListener + DnsListener + ProxyListener {}
-impl<T: Controller + FlowListener + DnsListener + ProxyListener> Bridge for T {}
+pub trait Bridge: Controller + FlowListener + DnsListener + ProxyListener + ServerListener {}
+impl<T: Controller + FlowListener + DnsListener + ProxyListener + ServerListener> Bridge for T {}
 
 pub type SharedBridge = Arc<dyn Bridge>;
 
@@ -273,4 +310,11 @@ impl ProxyListener for AllowAllBridge {
     fn on_proxy_updated(&self, _: String, _: String) {}
     fn on_proxy_stopped(&self, _: String, _: String) {}
     fn on_proxies_stopped(&self) {}
+}
+
+impl ServerListener for AllowAllBridge {
+    fn svc_route(&self, _: String, _: String, _: String, _: String, _: String) -> BoxFuture<Tab> {
+        ready(Tab::default())
+    }
+    fn on_svc_complete(&self, _: ServerSummary) {}
 }

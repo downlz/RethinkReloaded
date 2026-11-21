@@ -1,0 +1,10 @@
+{
+  "label": "rust-894abe77d-edge60pro",
+  "captured": "2026-11-21T10:18:49Z",
+  "device": "motorola edge 60 pro / Android 17",
+  "minutes": 15,
+  "voluntary_switches_per_min": 93,
+  "involuntary_switches_per_min": 18,
+  "cpu_seconds": 0.86,
+  "battery_estimate_mah": 0.0794
+}

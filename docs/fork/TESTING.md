@@ -89,6 +89,15 @@ adb shell am start -n io.github.downlz.rethinkreloaded/com.celzero.bravedns.ui.a
 * Pre-authorize the VPN: `adb shell appops set io.github.downlz.rethinkreloaded ACTIVATE_VPN allow`.
 * `engine/e2e/fs-probe` is a small Rust CLI pushed to `/data/local/tmp`. It checks DoH resolution through the tunnel,
   that blocklisted domains are blocked, and TCP/UDP/ICMP reachability.
+* `engine/e2e/wg-peer` runs on the host (`cargo run -p wg-peer -- <out-dir> 10.0.2.2`). It provides:
+  * an outer WireGuard peer on udp/51820 (tunnel 10.9.0.1);
+  * an inner peer reachable only inside the outer tunnel (10.9.0.1:51821; tunnel 10.8.0.1), for multi-hop;
+  * echo on port 7 and HTTP on port 80 inside both tunnels;
+  * a fs-rnet SOCKS5 server with UDP on 127.0.0.1:10800.
+
+  It writes importable client configs (`wg-outer.conf`, `wg-inner.conf`) with fixed test keys. Probe with
+  `fs-probe echo|udp|get|ntp`. On macOS, the application firewall blocks inbound LAN traffic to the unsigned binary,
+  so use a public UDP target (`fs-probe ntp`) through SOCKS5.
 * `engine/e2e/probe-app` is a separate APK, so it has its own UID. It is used for per-app firewall rules.
 * WireGuard is tested against a host `wg` / gotatun server.
 

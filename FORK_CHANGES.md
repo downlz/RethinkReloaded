@@ -23,6 +23,7 @@ Fork-owned paths need no ledger entry because upstream never has them:
 | `app/src/main/java/com/celzero/bravedns/database/AppInfoDAO.kt` | `exemptRethinkApp` uses `$RETHINK_PACKAGE` | fork would exempt the *original* app from its firewall | yes |
 | `app/src/main/java/com/celzero/bravedns/database/ConnectionTrackerDAO.kt` | `RLOG_COLUMNS` uses `$RETHINK_PACKAGE` | own log rows had wrong package | yes |
 | `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt` | legacy prefs file name from `BuildConfig.APPLICATION_ID` | "LAN traffic" setting reset on every update | yes |
+| `benchmark/src/main/java/com/celzero/bravedns/benchmark/VpnStartupBenchmark.kt` | target package `io.github.downlz.rethinkreloaded` | upstream's package would benchmark the original Rethink app installed next to the fork | no |
 | `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt` | append fork credit (`R.string.rr_fork_credit`) under the About header | attribution to Celzero in-app | no |
 
 <!-- ledger:begin -->
@@ -34,6 +35,7 @@ Fork-owned paths need no ledger entry because upstream never has them:
 - `app/src/main/java/com/celzero/bravedns/database/ConnectionTrackerDAO.kt`
 - `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt`
 - `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt`
+- `benchmark/src/main/java/com/celzero/bravedns/benchmark/VpnStartupBenchmark.kt`
 <!-- ledger:end -->
 
 ## Disabled upstream workflows (via `gh workflow disable`, files untouched)
