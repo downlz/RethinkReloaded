@@ -556,3 +556,25 @@ mod tests {
         assert!(listen_addr("localhost:80").is_err(), "needs an ip");
     }
 }
+
+/// Entry points for the fuzzers (`cargo fuzz` sets `--cfg fuzzing`); absent from normal builds.
+#[cfg(fuzzing)]
+pub mod fuzz {
+    /// SOCKS5 UDP request header.
+    pub fn socks_udp(b: &[u8]) {
+        let _ = crate::socks::parse_udp(b);
+    }
+    /// HTTP proxy request head (and an absolute-form target), as read off a client connection.
+    pub fn http_head(b: &[u8]) {
+        static RT: std::sync::OnceLock<tokio::runtime::Runtime> = std::sync::OnceLock::new();
+        let rt = RT.get_or_init(|| {
+            tokio::runtime::Builder::new_current_thread()
+                .build()
+                .unwrap()
+        });
+        let mut r = b;
+        if let Some((h, _)) = rt.block_on(crate::http::read_head(&mut r)) {
+            let _ = crate::http::split_absolute(&h.target);
+        }
+    }
+}

@@ -1,0 +1,84 @@
+[package]
+name = "rr-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+license = "MPL-2.0"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+arbitrary = { version = "1", features = ["derive"] }
+fs-dns = { path = "../crates/fs-dns" }
+fs-dnsx = { path = "../crates/fs-dnsx" }
+fs-iptree = { path = "../crates/fs-iptree" }
+fs-proxy = { path = "../crates/fs-proxy" }
+fs-rnet = { path = "../crates/fs-rnet" }
+fs-netstack = { path = "../crates/fs-netstack" }
+fs-intra = { path = "../crates/fs-intra" }
+hickory-proto = { version = "0.26", default-features = false, features = ["std"] }
+
+# Not part of the engine workspace (cargo-fuzz needs nightly and its own build).
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "dns_msg"
+path = "fuzz_targets/dns_msg.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "stamp"
+path = "fuzz_targets/stamp.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "dnscrypt"
+path = "fuzz_targets/dnscrypt.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "odoh_config"
+path = "fuzz_targets/odoh_config.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "wg_config"
+path = "fuzz_targets/wg_config.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "iptree"
+path = "fuzz_targets/iptree.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "packets"
+path = "fuzz_targets/packets.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "proxy_server"
+path = "fuzz_targets/proxy_server.rs"
+test = false
+doc = false
+bench = false

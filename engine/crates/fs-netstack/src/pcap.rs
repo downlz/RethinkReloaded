@@ -181,3 +181,9 @@ mod tests {
         assert_eq!(summary(&pkt), "udp 10.0.0.1 > 1.1.1.1 20");
     }
 }
+
+/// Entry point for the fuzzers (`--cfg fuzzing`): the per-packet text log.
+#[cfg(fuzzing)]
+pub fn fuzz_summary(p: &[u8]) -> String {
+    summary(p)
+}

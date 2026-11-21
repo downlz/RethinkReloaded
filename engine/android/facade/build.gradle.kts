@@ -2,6 +2,7 @@
 //  * Java: gobind-generated facade vendored verbatim by engine/tools/facade-sync.sh (src/main/java)
 //  * JNI:  libgojni.so built from engine/crates/fs-jni by cargo-ndk (build/rustJniLibs)
 // Properties: -PrustAbis=arm64-v8a,x86_64 (default: all four)  -PrustProfile=release|android-dev (default: release)
+//             -PrustOptLevel=3|s|z (default: the profile's; for size/speed measurements)
 
 plugins {
     id("com.android.library")
@@ -14,6 +15,7 @@ val engineDir = rootDir.parentFile
 val rustAbis = (findProperty("rustAbis")?.toString() ?: "arm64-v8a,armeabi-v7a,x86,x86_64")
     .split(',').map { it.trim() }.filter { it.isNotEmpty() }
 val rustProfile = findProperty("rustProfile")?.toString() ?: "release"
+val rustOptLevel = findProperty("rustOptLevel")?.toString() ?: ""
 val rustOut = layout.buildDirectory.dir("rustJniLibs")
 
 android {
@@ -55,12 +57,20 @@ val cargoNdk by tasks.registering(Exec::class) {
     inputs.files(File(engineDir, "Cargo.toml"), File(engineDir, "Cargo.lock"), File(engineDir, "rust-toolchain.toml"))
     inputs.property("abis", rustAbis)
     inputs.property("profile", rustProfile)
+    inputs.property("optLevel", rustOptLevel)
     outputs.dir(rustOut)
     val out = rustOut.get().asFile
     val abiArgs = rustAbis.flatMap { listOf("-t", it) }
     val ndk = ndkDir
+    // plain values only: the configuration cache cannot capture script objects
+    val optEnv = if (rustOptLevel.isNotEmpty()) {
+        "CARGO_PROFILE_${rustProfile.uppercase().replace('-', '_')}_OPT_LEVEL" to rustOptLevel
+    } else {
+        null
+    }
     doFirst {
         environment("ANDROID_NDK_HOME", System.getenv("ANDROID_NDK_HOME") ?: ndk.get().asFile.absolutePath)
+        optEnv?.let { (k, v) -> environment(k, v) }
     }
     commandLine(
         listOf("cargo", "ndk", "--platform", "23") + abiArgs +

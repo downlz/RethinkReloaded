@@ -19,9 +19,9 @@ use tokio::net::TcpStream;
 
 const MAX_HEAD: usize = 16 * 1024;
 
-struct Head {
+pub(crate) struct Head {
     method: String,
-    target: String,
+    pub(crate) target: String,
     version: String,
     headers: Vec<(String, String)>,
 }
@@ -36,7 +36,9 @@ impl Head {
 }
 
 /// Reads up to the end of the request head; returns it and whatever followed it.
-async fn read_head(c: &mut TcpStream) -> Option<(Head, Vec<u8>)> {
+pub(crate) async fn read_head<R: tokio::io::AsyncRead + Unpin>(
+    c: &mut R,
+) -> Option<(Head, Vec<u8>)> {
     let mut buf = Vec::with_capacity(1024);
     let mut b = [0u8; 2048];
     let end = loop {
@@ -152,7 +154,7 @@ async fn tunnel(s: &Arc<Server>, mut c: TcpStream, from: SocketAddr, dst: &str, 
 }
 
 /// `http://host[:port]/path` → (`host:port`, `/path`)
-fn split_absolute(target: &str) -> Option<(String, String)> {
+pub(crate) fn split_absolute(target: &str) -> Option<(String, String)> {
     let rest = target.strip_prefix("http://").or_else(|| {
         target
             .get(..7)
