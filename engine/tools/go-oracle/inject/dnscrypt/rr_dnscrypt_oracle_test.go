@@ -120,8 +120,10 @@ func TestOracleDNSCrypt(t *testing.T) {
 	}
 
 	// certificate selection: a few certs per server, some expired, superseded or mis-signed
-	pub, sk, _ := ed25519.GenerateKey(nil)
-	_, otherSk, _ := ed25519.GenerateKey(nil)
+	// keys from seeds of the seeded generator, so the fixture is reproducible
+	sk := ed25519.NewKeyFromSeed(rbytes(g, ed25519.SeedSize))
+	otherSk := ed25519.NewKeyFromSeed(rbytes(g, ed25519.SeedSize))
+	pub := sk.Public().(ed25519.PublicKey)
 	now := uint32(1795000000)
 	for i := 0; i < 48; i++ {
 		var txts []string

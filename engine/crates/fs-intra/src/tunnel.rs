@@ -131,6 +131,8 @@ pub struct Tunnel {
     services: Arc<fs_rnet::Services>,
     /// DNSCrypt servers and relays (firestack's `DcProxy` transport-mult)
     dnscrypt: Arc<fs_dns::dnscrypt::DcMulti>,
+    /// multicast DNS (`Local`)
+    mdns: Arc<fs_dns::mdns::MdnsTransport>,
     netstack: Arc<Netstack>,
     sessions: Arc<Sessions>,
     tasks: Mutex<Vec<JoinHandle<()>>>,
@@ -225,11 +227,15 @@ impl Tunnel {
         let protector = Protector::new(bridge.clone());
         let proxies = Proxifier::new("46", link_mtu as i64, protector, bridge.clone());
         let resolver = Arc::new(Resolver::new(fakedns, bridge.clone()));
+        // the link starts dual-stack, as the proxies' ("46"), until setLinkAndRoutes says otherwise
+        resolver.natpt().set_has6(true);
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         let mtu = if tun_mtu > 0 { tun_mtu as usize } else { 1500 };
         let services = fs_rnet::Services::new(proxies.clone(), bridge.clone());
         let dnscrypt = fs_dns::dnscrypt::DcMulti::new(proxies.clone());
+        let mdns = Arc::new(fs_dns::mdns::MdnsTransport::new(proxies.clone()));
+        resolver.add(mdns.clone());
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
@@ -269,6 +275,7 @@ impl Tunnel {
             sh: sh.clone(),
             services,
             dnscrypt,
+            mdns,
             netstack,
             sessions: Arc::new(Sessions::default()),
             tasks: Mutex::new(Vec::new()),
@@ -452,6 +459,13 @@ impl Tunnel {
         self.sh
             .resolver
             .add(Arc::new(Dns53Transport::new(id, servers, self.dialer())));
+        if id == fs_dns::ids::SYSTEM {
+            // firestack Add64 after adding the System transport: the network's NAT64 prefix, if any
+            let r = self.sh.resolver.clone();
+            crate::runtime().spawn(async move {
+                r.discover64(fs_dns::ids::SYSTEM).await;
+            });
+        }
         Ok(())
     }
 
@@ -492,9 +506,11 @@ impl Tunnel {
             return Err("tunnel closed".into());
         }
         // firestack RefreshProto: proxies follow the link's families and MTU
-        self.sh
-            .proxies
-            .refresh_proto(settings::l3(engine), link_mtu as i64);
+        let l3 = settings::l3(engine);
+        self.sh.proxies.refresh_proto(l3, link_mtu as i64);
+        // DNS64 in PT mode auto follows whether the network has IPv6; mDNS asks on the link's families
+        self.sh.resolver.natpt().set_has6(l3.contains('6'));
+        self.mdns.refresh_proto(l3);
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         self.netstack.swap(tun);

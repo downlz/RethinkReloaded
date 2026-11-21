@@ -24,7 +24,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: SocketAddr) {
     let start = Instant::now();
     let v: Verdict = flow::decide(&sh.bridge, &sh.resolver, PROTO_TCP, src, dst).await;
-    let targets = flow::targets(&v, dst);
+    let targets = flow::xlat(&sh, flow::targets(&v, dst));
     let target = targets[0];
     let mut smm = FlowSummary {
         proto: "tcp".into(),

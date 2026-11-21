@@ -205,6 +205,37 @@ pub fn targets(v: &Verdict, dst: SocketAddr) -> Vec<SocketAddr> {
     out
 }
 
+/// NAT64 on the way out (firestack `makeIPPorts` with `X46`, and the local-464 undo): addresses under the engine's
+/// local prefix are dialed as the IPv4 they encode; IPv4 targets go through the network's NAT64 prefix when the
+/// link is IPv6-only (or PT mode `force46`).
+pub fn xlat(sh: &crate::tunnel::Shared, ts: Vec<SocketAddr>) -> Vec<SocketAddr> {
+    use fs_dnsx::x64;
+    let nat = sh.resolver.natpt();
+    let only6 = sh.proxies.link_props().l3 == "6";
+    let force46 = fs_core::settings::PT_MODE.load(std::sync::atomic::Ordering::Relaxed)
+        == fs_core::settings::PT_MODE_FORCE46;
+    let mut out: Vec<SocketAddr> = ts
+        .into_iter()
+        .map(|t| match t.ip() {
+            std::net::IpAddr::V6(v6) if nat.is_nat64(x64::LOCAL464, t.ip()) => {
+                match nat.x64(x64::LOCAL464, v6) {
+                    Some(v4) => SocketAddr::new(v4.into(), t.port()),
+                    None => t,
+                }
+            }
+            std::net::IpAddr::V4(v4) if (only6 || force46) && !v4.is_unspecified() => {
+                match nat.x46(fs_dns::ids::SYSTEM, v4) {
+                    Some(v6) => SocketAddr::new(v6.into(), t.port()),
+                    None => t,
+                }
+            }
+            _ => t,
+        })
+        .collect();
+    out.dedup();
+    out
+}
+
 fn shuffle<T>(v: &mut [T]) {
     for i in (1..v.len()).rev() {
         let j = (jitter("shuffle", i as u32) % (i as u64 + 1)) as usize;

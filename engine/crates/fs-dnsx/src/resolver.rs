@@ -50,6 +50,8 @@ pub struct Resolver {
     transports: Arc<RwLock<HashMap<String, Arc<dyn Transport>>>>,
     /// Rethink Plus, over the `Plus…` transports (registered as `Plus`)
     plus: Arc<crate::plus::Plus>,
+    /// DNS64 / NAT64
+    natpt: Arc<crate::x64::NatPt>,
     caches: Arc<Caches>,
     rdnsl: RwLock<Option<Arc<fs_blocklist::RdnsLocal>>>,
     rdnsr: RwLock<Option<Arc<Rdns>>>,
@@ -77,6 +79,7 @@ impl Resolver {
         Resolver {
             transports,
             plus,
+            natpt: Arc::new(crate::x64::NatPt::default()),
             caches: Arc::new(Caches::default()),
             rdnsl: RwLock::new(None),
             rdnsr: RwLock::new(None),
@@ -140,6 +143,73 @@ impl Resolver {
 
     pub fn plus(&self) -> &Arc<crate::plus::Plus> {
         &self.plus
+    }
+
+    pub fn natpt(&self) -> &Arc<crate::x64::NatPt> {
+        &self.natpt
+    }
+
+    /// firestack `Add64`: asks transport `id` for `ipv4only.arpa AAAA` (RFC 7050) and keeps the NAT64 prefixes it
+    /// reveals. firestack does this for the System transport (the network's resolver).
+    pub async fn discover64(&self, id: &str) -> bool {
+        let Some(t) = self.get(id) else { return false };
+        let Some(q) = msg::query(
+            crate::x64::RFC7050_WKN,
+            hickory_proto::rr::RecordType::AAAA,
+            0x6464,
+        ) else {
+            return false;
+        };
+        let ans = match t
+            .query(msg::pack(&q).unwrap_or_default(), BASE.into())
+            .await
+        {
+            Ok(a) => a,
+            Err(_) => {
+                self.natpt.remove_resolver(id);
+                return false;
+            }
+        };
+        let ips: Vec<std::net::Ipv6Addr> = msg::parse(&ans.msg)
+            .map(|m| {
+                msg::aaaa_answers(&m)
+                    .into_iter()
+                    .filter_map(|ip| match ip {
+                        IpAddr::V6(v6) => Some(v6),
+                        IpAddr::V4(_) => None,
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        self.natpt.add_resolver(id, &ips)
+    }
+
+    /// firestack dns64 `eval`/`query64`: replaces an AAAA answer without AAAA records by one synthesized from the
+    /// name's A records, asked of the same transport.
+    async fn dns64(
+        &self,
+        req: &Req,
+        t1: &Tr,
+        ans6: &Message,
+        pid: &str,
+        smm: &mut DnsSummary,
+    ) -> Option<Message> {
+        if !self.natpt.wants64(ans6) {
+            return None;
+        }
+        let q4 = crate::x64::NatPt::request4(ans6)?;
+        let b4 = msg::pack(&q4)?;
+        let mut scratch = smm.clone();
+        let a4 = req
+            .send(t1, &q4, &b4, &dial_pid(pid), &mut scratch)
+            .await
+            .and_then(|a| msg::parse(&a))?;
+        let a64 = self.natpt.synthesize(&t1.id(), ans6, &a4)?;
+        // firestack withDNS64Summary
+        smm.rcode = u16::from(a64.metadata.response_code) as i64;
+        smm.rdata = msg::interesting_rdata(Some(&a64));
+        smm.rttl = msg::max_ttl(&a64) as i64;
+        Some(a64)
     }
 
     pub fn live_transports(&self) -> String {
@@ -1028,14 +1098,18 @@ impl Resolver {
                 .await
                 .and_then(|a| msg::parse(&a))
         };
-        let Some(ansin) = ansin else {
+        let Some(mut ansin) = ansin else {
             return Err(GwErr::NoAnswer);
         };
+        // DNS64 (not for preset / Fixed answers, which carry their own addresses)
+        if !synth && let Some(a64) = self.dns64(&req, &t1, &ansin, pid, smm).await {
+            ansin = a64;
+        }
         let rgood = ansin.metadata.response_code == ResponseCode::NoError;
         if !rgood {
             return Ok((ansin, None));
         }
-        smm.ad = false; // firestack: AD only when the DNS64 answer is authenticated too (no DNS64 yet)
+        smm.ad = false; // firestack: AD only when the DNS64 answer is authenticated too
         let qname = msg::qname(&ansin);
         let hasq = matches!(msg::qtype(&ansin), 1 | 28 | 64 | 65);
         let hasans = msg::has_answers(&ansin);

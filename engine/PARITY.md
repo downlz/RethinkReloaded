@@ -75,9 +75,6 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
 * Kotlin receives normalized query names (no trailing dot, lowercase) in `onQuery` and every summary, as firestack.
 * Blocked answers carry TTL 0 (firestack's `BustDnsproxydResNetCache`), as do ALG answers.
 * Not yet ported:
-  * DNS64/NAT64 (Phase 3): nothing is synthesized or un-NAT64'd;
-  * mDNS (`Local`, Phase 3): `.local` and link-local reverse names keep their normal route until there is an mDNS
-    transport;
   * pcap.
   `Tunnel.stat()` still throws; Kotlin catches it.
 
@@ -142,6 +139,23 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   relay proxy registered under its id.
 * As firestack, `http://` DoH URLs mean HTTPS without certificate verification, and DoT verifies certificates only
   for `tls:`/`tls://` URLs. Kotlin uses both for resolvers the user marked insecure, as Plus members.
+
+* DNS64 / NAT64 (firestack `x64`):
+  * NAT64 prefixes per resolver come from `ipv4only.arpa AAAA` (RFC 7050): the System transport's answer is the
+    network's prefix. The engine's local 464 prefix `64:ff9b:1:fffe::/96` is always the last resort.
+  * Active per PT mode: `none` off, `auto` only when the link has IPv6, `force*` on.
+  * AAAA questions answered without AAAA records (and not authenticated, unless forced) are answered from the name's
+    A records, asked of the same transport, under that resolver's prefix, else the network's, else the local one.
+  * Flows to the local prefix are dialed over the IPv4 they encode. IPv4 targets go through the network's prefix
+    on IPv6-only links or with `force46`.
+  * Address arithmetic reproduces firestack's, including its two `ip4to6` variants: synthesis skips RFC 6052's
+    byte 8, `X46` does not. The oracle covers 520 cases.
+  * The stdlib resolver's prefix (`net.DefaultResolver`) is not looked up.
+* mDNS (`Local`, firestack's one-shot mode):
+  * The question goes from protected unicast sockets to 224.0.0.251 and ff02::fb (port 5353) on the link's
+    families.
+  * The first response within 3 s carrying an address for the name (or for an alias of it) answers.
+  * The answer is rebuilt around the app's question and id; firestack returns the raw mDNS message.
 
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.

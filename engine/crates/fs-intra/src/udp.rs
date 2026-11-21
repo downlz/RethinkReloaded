@@ -356,7 +356,7 @@ async fn session(
 ) {
     let start = Instant::now();
     let v = flow::decide(&sh.bridge, &sh.resolver, PROTO_UDP, src, dst).await;
-    let targets = flow::targets(&v, dst);
+    let targets = flow::xlat(&sh, flow::targets(&v, dst));
     let target = targets[0];
     let mut smm = FlowSummary {
         proto: "udp".into(),
