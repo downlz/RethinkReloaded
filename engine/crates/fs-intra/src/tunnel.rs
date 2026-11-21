@@ -66,8 +66,8 @@ pub fn parse_ips(csv: &str) -> Vec<IpAddr> {
         .collect()
 }
 
-/// cid -> (uid, pid, closer)
-type ConnMap = HashMap<String, (String, String, Arc<Notify>)>;
+/// cid -> (uid, pid, closer, protocol)
+type ConnMap = HashMap<String, (String, String, Arc<Notify>, &'static str)>;
 
 /// Connection registry for `Tunnel.closeConns`.
 #[derive(Default)]
@@ -84,13 +84,19 @@ impl ConnHandle {
 }
 
 impl Conns {
-    pub fn track(&self, cid: &str, uid: &str, pid: &str) -> ConnHandle {
+    /// `proto`: "tcp" or "udp".
+    pub fn track(&self, proto: &'static str, cid: &str, uid: &str, pid: &str) -> ConnHandle {
         let n = Arc::new(Notify::new());
         self.m.lock().insert(
             cid.to_string(),
-            (uid.to_string(), pid.to_string(), n.clone()),
+            (uid.to_string(), pid.to_string(), n.clone(), proto),
         );
         ConnHandle(n)
+    }
+
+    /// Open connections of `proto`.
+    pub fn count(&self, proto: &str) -> usize {
+        self.m.lock().values().filter(|v| v.3 == proto).count()
     }
 
     pub fn untrack(&self, cid: &str) {
@@ -106,7 +112,7 @@ impl Conns {
             .collect();
         let m = self.m.lock();
         let mut closed = Vec::new();
-        for (cid, (uid, pid, n)) in m.iter() {
+        for (cid, (uid, pid, n, _)) in m.iter() {
             if keys.is_empty() || keys.iter().any(|k| k == cid || k == uid || k == pid) {
                 n.notify_one();
                 closed.push(cid.clone());
@@ -114,6 +120,30 @@ impl Conns {
         }
         closed.join(",")
     }
+}
+
+/// `Tunnel.stat()` contents.
+#[derive(Clone, Debug, Default)]
+pub struct NetStatInfo {
+    pub open: bool,
+    pub up: bool,
+    pub mtu: i32,
+    pub link_mtu: i32,
+    pub rx_pkts: i64,
+    pub rx_bytes: i64,
+    pub tx_pkts: i64,
+    pub tx_bytes: i64,
+    pub errs: i64,
+    pub tcp_open: i64,
+    pub udp_open: i64,
+    pub dns: String,
+    pub dns64: String,
+    pub proxies: String,
+    pub proxies4: bool,
+    pub proxies6: bool,
+    pub alg: bool,
+    pub l3: String,
+    pub pcap: String,
 }
 
 /// State shared by the handlers.
@@ -129,6 +159,10 @@ pub struct Tunnel {
     sh: Arc<Shared>,
     /// local proxy servers (`Tunnel.getServices`)
     services: Arc<fs_rnet::Services>,
+    /// DNSCrypt servers and relays (firestack's `DcProxy` transport-mult)
+    dnscrypt: Arc<fs_dns::dnscrypt::DcMulti>,
+    /// multicast DNS (`Local`)
+    mdns: Arc<fs_dns::mdns::MdnsTransport>,
     netstack: Arc<Netstack>,
     sessions: Arc<Sessions>,
     tasks: Mutex<Vec<JoinHandle<()>>>,
@@ -223,10 +257,15 @@ impl Tunnel {
         let protector = Protector::new(bridge.clone());
         let proxies = Proxifier::new("46", link_mtu as i64, protector, bridge.clone());
         let resolver = Arc::new(Resolver::new(fakedns, bridge.clone()));
+        // the link starts dual-stack, as the proxies' ("46"), until setLinkAndRoutes says otherwise
+        resolver.natpt().set_has6(true);
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         let mtu = if tun_mtu > 0 { tun_mtu as usize } else { 1500 };
         let services = fs_rnet::Services::new(proxies.clone(), bridge.clone());
+        let dnscrypt = fs_dns::dnscrypt::DcMulti::new(proxies.clone());
+        let mdns = Arc::new(fs_dns::mdns::MdnsTransport::new(proxies.clone()));
+        resolver.add(mdns.clone());
         let sh = Arc::new(Shared {
             bridge,
             resolver: resolver.clone(),
@@ -265,6 +304,8 @@ impl Tunnel {
         let t = Arc::new(Tunnel {
             sh: sh.clone(),
             services,
+            dnscrypt,
+            mdns,
             netstack,
             sessions: Arc::new(Sessions::default()),
             tasks: Mutex::new(Vec::new()),
@@ -309,6 +350,30 @@ impl Tunnel {
         // proxy hostnames resolve through the engine (firestack multihost)
         let hr = t.host_resolver();
         t.sh.proxies.set_host_resolver(hr);
+        let r = Arc::downgrade(&t.sh.resolver);
+        fs_dns::ech::set_lookup(Some(Arc::new({
+            let r = r.clone();
+            move |host: String| -> BoxFuture<Option<Vec<u8>>> {
+                let r = r.clone();
+                Box::pin(async move {
+                    match r.upgrade() {
+                        Some(r) => r.lookup_ech(&host).await,
+                        None => None,
+                    }
+                })
+            }
+        })));
+        fs_proxy::client::client().set_resolver(Arc::new(
+            move |host: String, tid: String| -> BoxFuture<Vec<IpAddr>> {
+                let r = r.clone();
+                Box::pin(async move {
+                    match r.upgrade() {
+                        Some(r) => r.lookup_ip_on(&host, &tid).await,
+                        None => Vec::new(),
+                    }
+                })
+            },
+        ));
         Ok(t)
     }
 
@@ -318,6 +383,47 @@ impl Tunnel {
 
     pub fn proxies(&self) -> &Arc<Proxifier> {
         &self.sh.proxies
+    }
+
+    /// `Tunnel.setPcap(path)`.
+    pub fn set_pcap(&self, path: &str) -> Result<(), String> {
+        self.netstack
+            .pcap()
+            .set(path)
+            .map_err(|e| format!("tun: pcap({path}): {e}"))
+    }
+
+    /// `Tunnel.stat()`: what the engine knows about the tunnel (firestack fills gVisor's stack counters).
+    pub fn net_stat(&self) -> NetStatInfo {
+        let st = self.netstack.stats();
+        let ld = |a: &std::sync::atomic::AtomicU64| a.load(Ordering::Relaxed) as i64;
+        let nat = self.sh.resolver.natpt();
+        let dns64: Vec<String> = [fs_dnsx::x64::UNDERLAY, fs_dnsx::x64::LOCAL464]
+            .iter()
+            .flat_map(|id| nat.get(id))
+            .map(|p| p.to_string())
+            .collect();
+        NetStatInfo {
+            open: self.is_connected(),
+            up: self.enabled(),
+            mtu: self.mtu(),
+            link_mtu: self.link_mtu(),
+            rx_pkts: ld(&st.rx_pkts),
+            rx_bytes: ld(&st.rx_bytes),
+            tx_pkts: ld(&st.tx_pkts),
+            tx_bytes: ld(&st.tx_bytes),
+            errs: ld(&st.errs),
+            tcp_open: self.sh.conns.count("tcp") as i64,
+            udp_open: self.sh.conns.count("udp") as i64,
+            dns: self.sh.resolver.live_transports(),
+            dns64: dns64.join(","),
+            proxies: self.sh.proxies.live_proxies(),
+            proxies4: self.sh.proxies.router_ip4(),
+            proxies6: self.sh.proxies.router_ip6(),
+            alg: self.sh.resolver.gateway().translating(),
+            l3: self.sh.proxies.link_props().l3,
+            pcap: self.netstack.pcap().mode().into(),
+        }
     }
 
     pub fn services(&self) -> &Arc<fs_rnet::Services> {
@@ -399,6 +505,47 @@ impl Tunnel {
         Ok(())
     }
 
+    /// `Intra.addODoHTransport(t, id, relay, target, ipcsv)`: `ipcsv` are the relay's addresses, or the target's
+    /// when there is no relay.
+    pub fn add_odoh(&self, id: &str, relay: &str, target: &str, ipcsv: &str) -> Result<(), String> {
+        let t = fs_dns::odoh::OdohTransport::new(
+            id,
+            relay,
+            target,
+            parse_ips(ipcsv),
+            self.dialer(),
+            Some(self.host_resolver()),
+        )?;
+        self.sh.resolver.add(Arc::new(t));
+        Ok(())
+    }
+
+    /// `Intra.addDNSCryptTransport(t, id, stamp)`: fetches the server's certificate (blocking the caller, as
+    /// firestack), then serves `id` from it. Call from outside the runtime (JNI threads are).
+    pub fn add_dnscrypt(&self, id: &str, stamp: &str) -> Result<(), String> {
+        let dc = self.dnscrypt.clone();
+        let t = crate::runtime().block_on(async move { dc.add(id, stamp).await })?;
+        if !self.sh.resolver.add(t) {
+            return Err("dns: add failed".into());
+        }
+        Ok(())
+    }
+
+    /// `Intra.addDNSCryptRelay(t, stamp)`: relays are not resolver transports; `DNSResolver.remove(stamp)` drops them.
+    pub fn add_dnscrypt_relay(&self, stamp: &str) -> Result<(), String> {
+        self.dnscrypt.add_relay(stamp)
+    }
+
+    /// `DNSResolver.remove(id)`: a transport, and a DNSCrypt server or relay of that id.
+    pub fn remove_transport(&self, id: &str) -> bool {
+        let dc = self.dnscrypt.remove(id);
+        self.sh.resolver.remove(id) || dc
+    }
+
+    pub fn dnscrypt(&self) -> &Arc<fs_dns::dnscrypt::DcMulti> {
+        &self.dnscrypt
+    }
+
     pub fn add_dns53(&self, id: &str, csv: &str) -> Result<(), String> {
         let servers = Dns53Transport::parse_servers(csv);
         if servers.is_empty() {
@@ -407,6 +554,13 @@ impl Tunnel {
         self.sh
             .resolver
             .add(Arc::new(Dns53Transport::new(id, servers, self.dialer())));
+        if id == fs_dns::ids::SYSTEM {
+            // firestack Add64 after adding the System transport: the network's NAT64 prefix, if any
+            let r = self.sh.resolver.clone();
+            crate::runtime().spawn(async move {
+                r.discover64(fs_dns::ids::SYSTEM).await;
+            });
+        }
         Ok(())
     }
 
@@ -447,9 +601,11 @@ impl Tunnel {
             return Err("tunnel closed".into());
         }
         // firestack RefreshProto: proxies follow the link's families and MTU
-        self.sh
-            .proxies
-            .refresh_proto(settings::l3(engine), link_mtu as i64);
+        let l3 = settings::l3(engine);
+        self.sh.proxies.refresh_proto(l3, link_mtu as i64);
+        // DNS64 in PT mode auto follows whether the network has IPv6; mDNS asks on the link's families
+        self.sh.resolver.natpt().set_has6(l3.contains('6'));
+        self.mdns.refresh_proto(l3);
         let dup = !settings::OWN_TUN_FD.load(Ordering::SeqCst);
         let tun = Tun::from_fd(fd, tun_mtu, dup).map_err(|e| format!("tun: {e}"))?;
         self.netstack.swap(tun);

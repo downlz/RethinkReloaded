@@ -36,6 +36,8 @@ pub struct Answer {
     pub blocklists: String,
     /// RethinkDNS upstreams: serving region (`x-nile-region`, or the `cf-ray` suffix)
     pub region: String,
+    /// over a connection whose ECH the server accepted (`DNSSummary.ECH`)
+    pub ech: bool,
 }
 
 /// A failed exchange, with the `DNSSummary.Status` it maps to.

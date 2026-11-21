@@ -295,7 +295,7 @@ async fn ingress(
     let key = (app, remote);
     let (tx_app, mut from_app) = mpsc::channel(SESSION_QUEUE);
     ctx.sessions.m.lock().insert(key, tx_app);
-    let conn = ctx.sh.conns.track(&v.mark.cid, &v.uid, &smm.pid);
+    let conn = ctx.sh.conns.track("udp", &v.mark.cid, &v.uid, &smm.pid);
     loop {
         tokio::select! {
             r = tokio::time::timeout(UDP_IDLE, from_remote.recv()) => match r {
@@ -356,7 +356,7 @@ async fn session(
 ) {
     let start = Instant::now();
     let v = flow::decide(&sh.bridge, &sh.resolver, PROTO_UDP, src, dst).await;
-    let targets = flow::targets(&v, dst);
+    let targets = flow::xlat(&sh, flow::targets(&v, dst));
     let target = targets[0];
     let mut smm = FlowSummary {
         proto: "udp".into(),
@@ -445,7 +445,7 @@ async fn session(
         uid: v.uid.clone(),
         ip: smm.target.clone(),
     });
-    let conn = sh.conns.track(&v.mark.cid, &v.uid, &smm.pid);
+    let conn = sh.conns.track("udp", &v.mark.cid, &v.uid, &smm.pid);
     let idle = UDP_IDLE.max(Duration::from_secs(
         settings::dialer_opts().read_timeout_sec.max(0) as u64,
     ));
@@ -528,7 +528,7 @@ async fn relay_muxed(
         uid: v.uid.clone(),
         ip: smm.target.clone(),
     });
-    let conn = sh.conns.track(&v.mark.cid, &v.uid, &smm.pid);
+    let conn = sh.conns.track("udp", &v.mark.cid, &v.uid, &smm.pid);
     loop {
         tokio::select! {
             q = tokio::time::timeout(UDP_IDLE, rx.recv()) => match q {

@@ -10,11 +10,15 @@ import static org.junit.Assert.*;
 
 import com.celzero.firestack.backend.Backend;
 import com.celzero.firestack.backend.DNSOpts;
+import com.celzero.firestack.backend.DNSSummary;
 import com.celzero.firestack.backend.IpTree;
 import com.celzero.firestack.backend.RadixTree;
 import com.celzero.firestack.backend.WgKey;
 import com.celzero.firestack.intra.Intra;
+import com.celzero.firestack.intra.FlowSummary;
 import com.celzero.firestack.intra.Mark;
+import com.celzero.firestack.settings.DialerOpts;
+import com.celzero.firestack.settings.ProxyOptions;
 import com.celzero.firestack.settings.Settings;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,11 +130,11 @@ public class JniFacadeTest {
     @Test
     public void unimplementedAndRpnStubsThrowGoErrors() {
         try {
-            Intra.addDNSCryptRelay(null, "sdns://x"); // DNSCrypt is a Phase 3 native: still a stub
+            Intra.addDNSCryptRelay(null, "sdns://x"); // implemented (Phase 3): a nil tunnel is a Go error
             fail("expected an exception");
         } catch (Exception e) {
             assertEquals("go.Universe$proxyerror", e.getClass().getName());
-            assertTrue(e.getMessage(), e.getMessage().contains("unimplemented"));
+            assertTrue(e.getMessage(), !e.getMessage().contains("unimplemented"));
         }
         try {
             Intra.connect(-1, 1500, 1500, "", "", null, null); // implemented: rejects a nil bridge
@@ -145,6 +149,35 @@ public class JniFacadeTest {
         } catch (Exception e) {
             assertTrue(e.getMessage(), e.getMessage().contains("rpn: unsupported"));
         }
+    }
+
+    @Test
+    public void structStringsAndCopiesAsFirestack() throws Exception {
+        DNSOpts o = new DNSOpts();
+        o.setUID("10123");
+        o.setNOBLOCK(true);
+        DNSOpts c = o.copy();
+        o.setUID("changed");
+        assertEquals("10123", c.getUID());
+        assertTrue(c.getNOBLOCK());
+
+        FlowSummary f = new FlowSummary();
+        f.setProto("udp");
+        f.setRx(1536);
+        f.setDuration(1500);
+        assertEquals("udp: id= pid=: uid= to= down=1.50kb up=0 bytes dur=1.500000s synack=0ns msg=", f.string());
+
+        DialerOpts d = new DialerOpts();
+        d.setStrat(4);
+        assertEquals("SplitNever,RetryAfterSplit,rw: 0b,DefaultKeepAlive,0s,0s", d.string());
+
+        DNSSummary s = new DNSSummary();
+        s.setQName("example.com");
+        assertTrue(s.string(), s.string().contains("q: example.com (do? false)"));
+
+        ProxyOptions p = Settings.newProxyOptions("10.0.0.1", "8080");
+        assertEquals("http://10.0.0.1:8080", p.url());
+        assertNull(Settings.newProxyOptions("", ""));
     }
 
     @Test

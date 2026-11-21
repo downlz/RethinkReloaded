@@ -94,3 +94,93 @@ async fn dot_cloudflare() {
     assert_eq!(m.metadata.id, 0x77);
     assert!(!msg::answer_ips(&m).is_empty());
 }
+
+/// `http://` DoH skips certificate checks (firestack's insecure resolvers): `dns.google` pointed at Cloudflare's
+/// address fails verification over https, and works over http.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+#[ignore]
+async fn insecure_doh_and_dot() {
+    let q = || msg::pack(&msg::query("example.com.", RecordType::A, 9).unwrap()).unwrap();
+    let cf: Vec<std::net::IpAddr> = vec!["1.1.1.1".parse().unwrap()];
+    let secure = Arc::new(
+        DohTransport::new(
+            "s",
+            "https://dns.google/dns-query",
+            cf.clone(),
+            protector(),
+            None,
+        )
+        .unwrap(),
+    );
+    assert!(
+        secure.query(q(), "Base".into()).await.is_err(),
+        "certificate mismatch must fail"
+    );
+    let insecure = Arc::new(
+        DohTransport::new(
+            "i",
+            "http://dns.google/dns-query",
+            cf.clone(),
+            protector(),
+            None,
+        )
+        .unwrap(),
+    );
+    // past TLS: Cloudflare answers (or refuses the foreign Host with an HTTP status), no certificate error
+    if let Err(e) = insecure.query(q(), "Base".into()).await {
+        assert!(e.msg.starts_with("doh: http"), "{e:?}");
+    }
+
+    let dot_secure = Arc::new(
+        fs_dns::dot::DotTransport::new("ds", "tls://dns.google", cf.clone(), protector(), None)
+            .unwrap(),
+    );
+    assert!(dot_secure.query(q(), "Base".into()).await.is_err());
+    let dot_insecure = Arc::new(
+        fs_dns::dot::DotTransport::new("di", "dns.google", cf, protector(), None).unwrap(),
+    );
+    assert!(dot_insecure.query(q(), "Base".into()).await.is_ok());
+}
+
+/// ECH: sky.rethinkdns.com publishes ECH configs (HTTPS record); its DoH answers arrive over an ECH-accepted
+/// connection. The ECH lookup goes over plain DNS to 1.1.1.1 (the tunnel uses its Default transport).
+#[tokio::test]
+#[ignore]
+async fn doh_with_ech() {
+    let dns: Arc<Dns53Transport> = Arc::new(Dns53Transport::new(
+        "Default",
+        Dns53Transport::parse_servers("1.1.1.1"),
+        protector(),
+    ));
+    fs_dns::ech::set_lookup(Some(Arc::new(move |host: String| {
+        let dns = dns.clone();
+        Box::pin(async move {
+            let q =
+                msg::pack(&msg::query(&format!("{host}."), RecordType::HTTPS, 9).unwrap()).unwrap();
+            let a = dns.query(q, "Exit".into()).await.ok()?;
+            fs_dns::ech::from_answer(&msg::parse(&a.msg)?)
+        }) as fs_core::bridge::BoxFuture<Option<Vec<u8>>>
+    })));
+    let t = Arc::new(
+        DohTransport::new(
+            "Preferred",
+            "https://sky.rethinkdns.com/dns-query",
+            vec![],
+            protector(),
+            Some(Arc::new(|h: String| {
+                Box::pin(async move {
+                    tokio::net::lookup_host((h.as_str(), 443))
+                        .await
+                        .map(|i| i.map(|a| a.ip()).collect())
+                        .unwrap_or_default()
+                }) as fs_core::bridge::BoxFuture<Vec<std::net::IpAddr>>
+            })),
+        )
+        .unwrap(),
+    );
+    tokio::time::sleep(std::time::Duration::from_secs(2)).await; // the background ECH lookup
+    let q = msg::pack(&msg::query("example.com.", RecordType::A, 1).unwrap()).unwrap();
+    let a = t.clone().query(q, "Exit".into()).await.expect("doh answer");
+    assert!(!msg::answer_ips(&msg::parse(&a.msg).unwrap()).is_empty());
+    assert!(a.ech, "answer over an ECH-accepted connection");
+}

@@ -24,7 +24,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: SocketAddr) {
     let start = Instant::now();
     let v: Verdict = flow::decide(&sh.bridge, &sh.resolver, PROTO_TCP, src, dst).await;
-    let targets = flow::targets(&v, dst);
+    let targets = flow::xlat(&sh, flow::targets(&v, dst));
     let target = targets[0];
     let mut smm = FlowSummary {
         proto: "tcp".into(),
@@ -96,7 +96,7 @@ pub async fn handle(sh: Arc<Shared>, mut app: TcpStream, src: SocketAddr, dst: S
         uid: v.uid.clone(),
         ip: smm.target.clone(),
     });
-    let conn = sh.conns.track(&v.mark.cid, &v.uid, &smm.pid);
+    let conn = sh.conns.track("tcp", &v.mark.cid, &v.uid, &smm.pid);
     let relay = tokio::io::copy_bidirectional(&mut app, &mut remote);
     tokio::select! {
         r = relay => match r {

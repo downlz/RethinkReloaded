@@ -204,9 +204,61 @@ Findings (app-side, both engines):
 
 Not measured: armv7 (this phone is arm64-only), a multi-hour battery drain.
 
-Open items: the WireGuard list's rx/tx counters in the app did not visibly advance during the run, although engine
-counters do (unit-tested), so check the UI refresh path in the measurement pass. Kotlin does not restore a relay after
-a VPN restart (Kotlin's own state; check against the Go engine).
+Open items:
+* WireGuard rx/tx counters: resolved in the Phase 3 run, which saw them advance in the list (below).
+* Kotlin does not restore a relay after a VPN restart. This is Kotlin's own state; it is still to be compared with
+  the Go engine.
+
+### Phase 3 status (2026-11-22)
+
+**Phase 3: exit gate met.** The stub census has 0 unimplemented natives:
+
+| Category | Natives |
+|---|---|
+| Implemented by hand | 235 |
+| Struct accessors | 616 |
+| Runtime | 9 |
+| RPN stubs | 105 |
+| Unreachable | 96 |
+| **Total** | **1061** |
+
+The 96 unreachable natives belong to engine-side wrappers of callback interfaces that the engine never hands to
+Kotlin. jni-gen derives this with a fixpoint over the API, and a test asserts that nothing else remains.
+
+| Area | Status | Verified by |
+|---|---|---|
+| DNSCrypt + relays | done | Go-oracle crypto and certificates; live AdGuard and OpenDNS; live public relays |
+| ODoH | done | live Cloudflare and crypto.sx, plus a Fastly relay |
+| Plus (Smart DNS), `DNSTransportMult`, measure, `getRelay` | done | unit tests |
+| DNS64 / NAT64 / NAT-PT | done | Go oracle (520 address cases); resolver tests |
+| mDNS one-shot | done | unit test with a simulated responder |
+| `Tunnel.stat` / NetStat, pcap | done | unit tests |
+| memfd console + `LogConsumer` | done | unit test |
+| Diagnostics stand-ins | done | — |
+| Settings / summary structs (`DNSOptions`, `ProxyOptions`, `string()`, `copy()`) | done | unit tests; JVM host test |
+| `Proxy.client` exit IP (WireGuard screen), `underlay`, `controlledRouter` | done | loopback provider test; live lookup over Exit |
+| Split / desync / retry (`DialerOpts`) for Exit/Base TCP to :443/:853 | done | strategy and timing tests; live TLS with every strategy; desync mechanics on an Android kernel |
+| ECH for DoH | done | live: sky.rethinkdns.com accepts it |
+
+Through the app on the Android 15 emulator (`fs-probe` as the shell uid):
+
+| Check | Result |
+|---|---|
+| DNSCrypt (AdGuard preset) | transport added; names resolve |
+| DNSCrypt relay | relay added. The app's relays reject the AdGuard preset's port 5443, because anonymizing relays forward only to standard ports; firestack is affected the same way. Our relay path answers live through two of the app's relays to OpenDNS on port 443. The Netherlands relay is down. |
+| ODoH (Cloudflare, crypto.sx presets) | names resolve |
+| Smart DNS (Unfiltered) | queries go to `CachePlus`; names resolve |
+| DNS64 + NAT64 (IPv6-only VPN, protocol translation on) | github.com (IPv4-only) is synthesized into `64:ff9b:1:fffe::/96`; TCP and HTTP work over NAT64. With ALG on, the ALG IPv6 address also works. |
+| WireGuard list counters (Phase 2 open item) | connected; "active since"; rx/tx advance with traffic |
+
+Not covered on the emulator, so left for the end-of-phase phone check:
+* mDNS: the emulator network has no multicast LAN.
+* Desync TTL measurement: the emulator network does not return the ICMP "time exceeded" replies.
+* The WireGuard exit-IP card: the test peer has no internet.
+
+Found and fixed during the run:
+* The engine did not compile for 32-bit Android ABIs (`socklen_t`), so the app shipped a stale `libgojni`.
+* CI now lints armeabi-v7a and arm64-v8a with cargo-ndk.
 
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the

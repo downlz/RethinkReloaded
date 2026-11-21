@@ -53,12 +53,15 @@ pub fn log_level(_env: &mut JNIEnv, level: i32, console: i32, _depth: i32) -> Fs
 }
 
 /// `Intra.setupConsole(Console)`: Kotlin sink for user-visible logs (wired to the logger in Phase 3).
+/// `Intra.setupConsole(console)`: engine logs at or above the console level go to Kotlin (memfd when possible).
 pub fn setup_console(env: &mut JNIEnv, console: JObject) -> FsResult<()> {
-    *CONSOLE.lock() = if console.is_null() {
-        None
-    } else {
-        Some(env.new_global_ref(console)?)
-    };
+    if console.is_null() {
+        return Ok(());
+    }
+    let g = env.new_global_ref(console)?;
+    *CONSOLE.lock() = Some(g.clone());
+    // the memfd handshake upcalls Kotlin: off this (app) thread, so setupConsole returns promptly
+    std::thread::spawn(move || crate::impls::console::setup(g));
     Ok(())
 }
 

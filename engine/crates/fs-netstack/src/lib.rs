@@ -16,6 +16,7 @@
 //! off) and UDP datagrams. If the Phase 1 performance gate requires it, this crate is where a direct smoltcp
 //! integration replaces `netstack-smoltcp` without touching the handlers.
 
+pub mod pcap;
 pub mod tun;
 
 use futures::{SinkExt, StreamExt};
@@ -173,6 +174,16 @@ impl Netstack {
 
     pub fn is_linked(&self) -> bool {
         self.tun.is_linked()
+    }
+
+    /// TUN traffic counters.
+    pub fn stats(&self) -> &tun::LinkStats {
+        &self.tun.stats
+    }
+
+    /// Packet capture (`Tunnel.setPcap`).
+    pub fn pcap(&self) -> &pcap::Pcap {
+        &self.tun.pcap
     }
 
     pub fn stop(&self) {

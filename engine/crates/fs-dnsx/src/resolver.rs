@@ -47,7 +47,11 @@ fn unix_millis() -> i64 {
 }
 
 pub struct Resolver {
-    transports: RwLock<HashMap<String, Arc<dyn Transport>>>,
+    transports: Arc<RwLock<HashMap<String, Arc<dyn Transport>>>>,
+    /// Rethink Plus, over the `Plus…` transports (registered as `Plus`)
+    plus: Arc<crate::plus::Plus>,
+    /// DNS64 / NAT64
+    natpt: Arc<crate::x64::NatPt>,
     caches: Arc<Caches>,
     rdnsl: RwLock<Option<Arc<fs_blocklist::RdnsLocal>>>,
     rdnsr: RwLock<Option<Arc<Rdns>>>,
@@ -63,8 +67,19 @@ impl Resolver {
             .split(',')
             .filter_map(|s| s.trim().parse::<SocketAddr>().ok())
             .collect();
+        let transports: Arc<RwLock<HashMap<String, Arc<dyn Transport>>>> =
+            Arc::new(RwLock::new(HashMap::new()));
+        let tr = transports.clone();
+        let plus = Arc::new(crate::plus::Plus::new(Box::new(move || {
+            tr.read().get(ids::DEFAULT).cloned()
+        })));
+        transports
+            .write()
+            .insert(crate::plus::PLUS.to_string(), plus.clone());
         Resolver {
-            transports: RwLock::new(HashMap::new()),
+            transports,
+            plus,
+            natpt: Arc::new(crate::x64::NatPt::default()),
             caches: Arc::new(Caches::default()),
             rdnsl: RwLock::new(None),
             rdnsr: RwLock::new(None),
@@ -90,9 +105,13 @@ impl Resolver {
         }
     }
 
-    /// Adds or replaces a transport; notifies Kotlin (`onDNSAdded`).
+    /// Adds or replaces a transport; notifies Kotlin (`onDNSAdded`). `Plus…` ids join Plus instead (silently,
+    /// as firestack).
     pub fn add(&self, t: Arc<dyn Transport>) -> bool {
         let id = t.id().to_string();
+        if id != crate::plus::PLUS && crate::plus::is_plus(&id) {
+            return self.plus.add(t);
+        }
         self.transports.write().insert(id.clone(), t);
         self.caches.drop_tid(&id); // firestack recreates the caching transport
         self.listener.on_dns_added(id);
@@ -100,6 +119,9 @@ impl Resolver {
     }
 
     pub fn remove(&self, id: &str) -> bool {
+        if id != crate::plus::PLUS && crate::plus::is_plus(id) {
+            return self.plus.remove(id);
+        }
         let removed = self.transports.write().remove(id).is_some();
         self.caches.drop_tid(id);
         // firestack onStopped: what the transport (and its cache) answered expires
@@ -111,8 +133,83 @@ impl Resolver {
         removed
     }
 
+    /// A `Plus…` id resolves to Plus itself (firestack `determineTransport`).
     pub fn get(&self, id: &str) -> Option<Arc<dyn Transport>> {
+        if crate::plus::is_plus(id) {
+            return Some(self.plus.clone());
+        }
         self.transports.read().get(id).cloned()
+    }
+
+    pub fn plus(&self) -> &Arc<crate::plus::Plus> {
+        &self.plus
+    }
+
+    pub fn natpt(&self) -> &Arc<crate::x64::NatPt> {
+        &self.natpt
+    }
+
+    /// firestack `Add64`: asks transport `id` for `ipv4only.arpa AAAA` (RFC 7050) and keeps the NAT64 prefixes it
+    /// reveals. firestack does this for the System transport (the network's resolver).
+    pub async fn discover64(&self, id: &str) -> bool {
+        let Some(t) = self.get(id) else { return false };
+        let Some(q) = msg::query(
+            crate::x64::RFC7050_WKN,
+            hickory_proto::rr::RecordType::AAAA,
+            0x6464,
+        ) else {
+            return false;
+        };
+        let ans = match t
+            .query(msg::pack(&q).unwrap_or_default(), BASE.into())
+            .await
+        {
+            Ok(a) => a,
+            Err(_) => {
+                self.natpt.remove_resolver(id);
+                return false;
+            }
+        };
+        let ips: Vec<std::net::Ipv6Addr> = msg::parse(&ans.msg)
+            .map(|m| {
+                msg::aaaa_answers(&m)
+                    .into_iter()
+                    .filter_map(|ip| match ip {
+                        IpAddr::V6(v6) => Some(v6),
+                        IpAddr::V4(_) => None,
+                    })
+                    .collect()
+            })
+            .unwrap_or_default();
+        self.natpt.add_resolver(id, &ips)
+    }
+
+    /// firestack dns64 `eval`/`query64`: replaces an AAAA answer without AAAA records by one synthesized from the
+    /// name's A records, asked of the same transport.
+    async fn dns64(
+        &self,
+        req: &Req,
+        t1: &Tr,
+        ans6: &Message,
+        pid: &str,
+        smm: &mut DnsSummary,
+    ) -> Option<Message> {
+        if !self.natpt.wants64(ans6) {
+            return None;
+        }
+        let q4 = crate::x64::NatPt::request4(ans6)?;
+        let b4 = msg::pack(&q4)?;
+        let mut scratch = smm.clone();
+        let a4 = req
+            .send(t1, &q4, &b4, &dial_pid(pid), &mut scratch)
+            .await
+            .and_then(|a| msg::parse(&a))?;
+        let a64 = self.natpt.synthesize(&t1.id(), ans6, &a4)?;
+        // firestack withDNS64Summary
+        smm.rcode = u16::from(a64.metadata.response_code) as i64;
+        smm.rdata = msg::interesting_rdata(Some(&a64));
+        smm.rttl = msg::max_ttl(&a64) as i64;
+        Some(a64)
     }
 
     pub fn live_transports(&self) -> String {
@@ -127,6 +224,7 @@ impl Resolver {
 
     pub fn stop_all(&self) {
         self.transports.write().clear();
+        self.plus.stop_all();
         self.caches.clear();
         self.gw.clear();
         self.listener.on_dns_stopped();
@@ -1000,14 +1098,18 @@ impl Resolver {
                 .await
                 .and_then(|a| msg::parse(&a))
         };
-        let Some(ansin) = ansin else {
+        let Some(mut ansin) = ansin else {
             return Err(GwErr::NoAnswer);
         };
+        // DNS64 (not for preset / Fixed answers, which carry their own addresses)
+        if !synth && let Some(a64) = self.dns64(&req, &t1, &ansin, pid, smm).await {
+            ansin = a64;
+        }
         let rgood = ansin.metadata.response_code == ResponseCode::NoError;
         if !rgood {
             return Ok((ansin, None));
         }
-        smm.ad = false; // firestack: AD only when the DNS64 answer is authenticated too (no DNS64 yet)
+        smm.ad = false; // firestack: AD only when the DNS64 answer is authenticated too
         let qname = msg::qname(&ansin);
         let hasq = matches!(msg::qtype(&ansin), 1 | 28 | 64 | 65);
         let hasans = msg::has_answers(&ansin);
@@ -1271,7 +1373,13 @@ impl Resolver {
     /// Internal lookup (no Kotlin callbacks, no cache): resolves `host` via the Default transport, A and AAAA.
     /// Used to find the IPs of DoH servers configured by hostname.
     pub async fn lookup_ip(&self, host: &str) -> Vec<IpAddr> {
-        let Some(t) = self.get(ids::DEFAULT) else {
+        self.lookup_ip_on(host, ids::DEFAULT).await
+    }
+
+    /// A and AAAA of `host` from the transport `tid` (no cache, blocklists or translation; firestack
+    /// `dialers.Resolve(host, tid)`).
+    pub async fn lookup_ip_on(&self, host: &str, tid: &str) -> Vec<IpAddr> {
+        let Some(t) = self.get(tid) else {
             return Vec::new();
         };
         let name = if host.ends_with('.') {
@@ -1297,6 +1405,24 @@ impl Resolver {
             }
         }
         out
+    }
+
+    /// The ECH config list in `host`'s HTTPS record, from the Default transport (firestack `dialers.ECH`).
+    pub async fn lookup_ech(&self, host: &str) -> Option<Vec<u8>> {
+        let t = self.get(ids::DEFAULT)?;
+        let name = if host.ends_with('.') {
+            host.to_string()
+        } else {
+            format!("{host}.")
+        };
+        let pid = if settings::LOOPINGBACK.load(Ordering::Relaxed) {
+            "Exit"
+        } else {
+            "Base"
+        };
+        let q = msg::query(&name, RecordType::HTTPS, 0x5e10).and_then(|m| msg::pack(&m))?;
+        let a = t.query(q, pid.into()).await.ok()?;
+        fs_dns::ech::from_answer(&msg::parse(&a.msg)?)
     }
 }
 
@@ -1330,6 +1456,7 @@ fn summ_of(a: &fs_dns::transport::Answer, m: Option<&Message>) -> Summ {
         blocklists: a.blocklists.clone(),
         region: a.region.clone(),
         latency: a.latency.as_secs_f64(),
+        ech: a.ech,
     }
 }
 
@@ -1344,6 +1471,7 @@ fn fill_summary(out: &mut DnsSummary, s: &Summ) {
     if out.region.is_empty() {
         out.region = s.region.clone();
     }
+    out.ech |= s.ech;
     if !s.rdata.is_empty() {
         out.rdata = s.rdata.clone();
         out.ad = s.ad;

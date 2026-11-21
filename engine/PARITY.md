@@ -75,11 +75,7 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
 * Kotlin receives normalized query names (no trailing dot, lowercase) in `onQuery` and every summary, as firestack.
 * Blocked answers carry TTL 0 (firestack's `BustDnsproxydResNetCache`), as do ALG answers.
 * Not yet ported:
-  * DNS64/NAT64 (Phase 3): nothing is synthesized or un-NAT64'd;
-  * mDNS (`Local`, Phase 3): `.local` and link-local reverse names keep their normal route until there is an mDNS
-    transport;
-  * pcap.
-  `Tunnel.stat()` still throws; Kotlin catches it.
+  * (pcap and `Tunnel.stat()`: see Phase 3 notes)
 
 ## Phase 2 notes
 * Proxies follow firestack's `ipn`: Base/Exit/Block/Auto (Auto → Exit; RPN is excluded), SOCKS5 (TCP, UDP
@@ -104,7 +100,128 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   the server or through the bridged proxy, and summarized (`onSvcComplete`, 50 ms later). HTTPS servers are
   unimplemented, as in firestack. v0.5.8's app never starts a server.
 
+## Phase 3 notes
+* DNSCrypt (firestack `dnscrypt`, from dnscrypt-proxy):
+  * Stamps are parsed as by the go-dnsstamps version firestack pins: DNSCrypt, DoH and DNSCrypt-relay stamps
+    only, default port 443.
+  * Certificates are fetched over Exit, never through relays. Four racing attempts alternate UDP and TCP; the first
+    answer wins (firestack prefers the fastest, which only matters when several answer).
+  * The newest valid certificate is kept; certificates are refreshed every 4 h. When none is valid, timestamps are
+    ignored on retry.
+  * Queries: XSalsa20 or XChaCha20 secretbox, padded as firestack. UDP (two tries) then TCP. A random relay gets
+    the anonymization header, and the relay is reported as the summary's pid.
+  * Relays are kept by stamp and removed with `DNSResolver.remove(stamp)`.
+  * Not ported: a proxy registered under the server's id acting as its relay.
+  * Answers are not truncated for UDP clients (as DoH and DNS53 in this engine). firestack truncates DNSCrypt answers
+    above the client's EDNS size.
+
+* ODoH (RFC 9230, firestack `doh/odoh.go`):
+  * HPKE via Cloudflare's odoh-rs.
+  * Queries go to the target, or through the relay with `targethost`/`targetpath`. Relay paths default to `/proxy`,
+    target paths to `/dns-query`.
+  * The target config comes from its HTTPS record (SvcParam 32769) and is cached for the record's TTL. firestack asks
+    the default DNS first, then 1.1.1.1 over DoH; here 1.1.1.1 over DoH is asked directly. Otherwise the config comes
+    from `/.well-known/odohconfigs`, cached 1 h. The source that worked last goes first.
+  * A client error (4xx) drops the cached config.
+
+* Rethink Plus (firestack `dnsx/plus.go`):
+  * Transports with ids prefixed `Plus` join Plus, without `onDNSAdded`; `get` of such an id is Plus itself.
+  * Each query tries up to six members in this order: the one that answered last, the complete ones by p50,
+    Default, fresh or soft-failed ones, then recoverable ones. Errored ones are added when fewer than six remain.
+  * The order follows the Plus strategy (safest, random, fastest, robust) and the Plus filter (ad-block, security,
+    family; matched on the member's address, as firestack). The order is reused for 10 s.
+  * SERVFAIL, blocked and error answers move on to the next member. Empty answers do too, until half the tries are
+    spent.
+  * `DNSResolver.getMult` serves `Plus` and `DcProxy`.
+* `DNSTransport.measure` follows firestack `Perf`, but uses its preset domains instead of hosts sampled from the IP
+  map. Percentiles are exact rather than P² estimates. `getRelay` is null: no transport here dials through a
+  relay proxy registered under its id.
+* As firestack, `http://` DoH URLs mean HTTPS without certificate verification, and DoT verifies certificates only
+  for `tls:`/`tls://` URLs. Kotlin uses both for resolvers the user marked insecure, as Plus members.
+
+* DNS64 / NAT64 (firestack `x64`):
+  * NAT64 prefixes per resolver come from `ipv4only.arpa AAAA` (RFC 7050): the System transport's answer is the
+    network's prefix. The engine's local 464 prefix `64:ff9b:1:fffe::/96` is always the last resort.
+  * Active per PT mode: `none` off, `auto` only when the link has IPv6, `force*` on.
+  * AAAA questions answered without AAAA records (and not authenticated, unless forced) are answered from the name's
+    A records, asked of the same transport, under that resolver's prefix, else the network's, else the local one.
+  * Flows to the local prefix are dialed over the IPv4 they encode. IPv4 targets go through the network's prefix
+    on IPv6-only links or with `force46`.
+  * Address arithmetic reproduces firestack's, including its two `ip4to6` variants: synthesis skips RFC 6052's
+    byte 8, `X46` does not. The oracle covers 520 cases.
+  * The stdlib resolver's prefix (`net.DefaultResolver`) is not looked up.
+* mDNS (`Local`, firestack's one-shot mode):
+  * The question goes from protected unicast sockets to 224.0.0.251 and ff02::fb (port 5353) on the link's
+    families.
+  * The first response within 3 s carrying an address for the name (or for an alias of it) answers.
+  * The answer is rebuilt around the app's question and id; firestack returns the raw mDNS message.
+
+* `Tunnel.stat()` (Kotlin's network stats screen):
+  * Reports what this engine tracks: TUN packets and bytes, open TCP and UDP connections, link, resolver, proxy and
+    settings state.
+  * firestack fills these structs from gVisor's counters; the remaining counters read 0.
+* `setPcap`: as firestack, "" turns it off, one character logs a line per packet, and a path is appended to in
+  pcap format (raw IP link type).
+* Engine logs reach Kotlin's console (they did not before):
+  * Over firestack's memfd double buffer (`logMemFD`, 801-byte slots, drained when a buffer is full or 2.5 s after
+    its first line).
+  * Without memfd, via `Console.log` per line; the pipe (`logFD`) is not used.
+* Go runtime diagnostics, reproduced in shape only:
+  * `goMet`: process memory, threads and CPUs.
+  * `printStack`: the engine's threads and the caller's backtrace.
+  * `memProfile` / `cpuProfile`: text reports of memory and of CPU time sampled over 10–120 s.
+  * `crash`: report, then abort or not, per type.
+  * `setFlightRecordOutput`: the path is remembered.
+* Settings and summaries:
+  * `DNSOptions` and `ProxyOptions` (with their `Settings.new…` constructors) parse addresses as firestack does.
+  * `DNSSummary`, `FlowSummary` and `DialerOpts` `string()` use firestack's formats, including `FmtBytes` /
+    `FmtPeriod`; unit tests pin the output.
+  * `DNSOpts` / `DomainOpts` `copy()` copy every field.
+* `Proxy.client()` `IP4/IP6` (the exit IP and location shown on the WireGuard screen):
+  * Plain HTTP/1.1 GETs over the proxy, with firestack's 4 s limit, 128 KiB body cap and DNS-transport choice.
+  * Providers in firestack's order: dl.rethinkdns.com/ip, Cloudflare trace, WARP, Mullvad.
+  * As in firestack, answers are cached per proxy, family and address for 1 h (12 min for built-ins), and the
+    proxy must have dialed (OK/KO status).
+* `Proxies.underlay(id, controller)` (an untracked Base) and `Intra.controlledRouter` (the router of an untracked
+  Exit) route sockets through the given `Controller`.
+* Split, desync and retry (`DialerOpts`) for Exit/Base TCP to public servers on ports 443 and 853 (firestack's
+  `doSplit`; as in Go, loopback counts as public):
+  * Strategies per attempt, reply timeouts (`calcTimeout`), the replay of everything written before the first
+    reply, and the "short TLS reply to a split" retry all follow `retrier.go`; table and timing tests pin them.
+  * The TCP split happens at 32–64 bytes, and the TLS record fragmentation at 6–64 bytes, as in firestack.
+  * Desync sends firestack's decoy POST through `sendfile` from a memfd page, at the largest TTL that a UDP
+    traceroute saw expire (cached 30 s per address), then overwrites the page and restores TTL 64.
+  * The mechanics are tested on an Android kernel (emulator). Measuring the TTL needs real ICMP, which the
+    emulator's user-mode network does not deliver.
+  * Desync is Linux-only, as in firestack; elsewhere the connection is plain.
+  * `DialAny` (Auto's multi-dialer retrier) is not ported. The Auto proxy keeps its own fallback order.
+* ECH for DoH (and so for ODoH relays):
+  * The `ech` parameter of the server's HTTPS record is looked up through the Default transport, in the
+    background, as firestack does.
+  * On a rejection, the server's retry configs are used, else a fresh lookup.
+  * `DNSSummary.ECH` reports an accepted ECH.
+  * rustls performs the handshake, with client-side HPKE (X25519/HKDF-SHA256 and AES-GCM or ChaCha20-Poly1305)
+    supplied through the `hpke` crate.
+  * Live test: sky.rethinkdns.com accepts it.
+  * firestack's `DialWithTls` (ECH for other TLS dials) has no caller among the engine paths ported so far.
+* Census (Phase 3 exit):
+  * Every native is implemented except the RPN stubs and 96 "unreachable" ones.
+  * The unreachable natives belong to engine-side wrappers (`$proxyX`) of interfaces that the engine never hands
+    to Kotlin: Bridge, Controller, Console, the listeners, LogConsumer, and the provider interfaces.
+  * jni-gen derives this with a fixpoint over the API:
+    * returns of reachable natives;
+    * plus parameters of the callbacks the engine invokes on objects Kotlin passed in.
+  * A test asserts that nothing else remains.
+
+* DNSCrypt relays (anonymized DNSCrypt) only work with servers on standard ports. Public relays refuse to forward
+  to non-standard ports such as AdGuard's 5443, so the app's AdGuard preset gets no answers once a relay is on. That is
+  the relays' policy, and it affects firestack the same way. The emulator run and a live test through the app's
+  relays to OpenDNS on port 443 confirm the relay path works.
+
 ## Deliberate deviations
+* `Proxy.client()` skips firestack's second provider, Windscribe's geo API, because firestack calls it with a made-up
+  bearer token and the fork does not send forged credentials to a third party. The remaining providers cover the
+  same fields, except latitude and longitude, which the Cloudflare trace lacks.
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.
 * `IpTree`: critbitgo panics (index out of range) when a route key is longer than its address family allows. That

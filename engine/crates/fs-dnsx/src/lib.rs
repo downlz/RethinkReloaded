@@ -9,7 +9,10 @@
 
 pub mod alg;
 pub mod cache;
+pub mod perf;
+pub mod plus;
 pub mod resolver;
 pub mod undelegated;
+pub mod x64;
 
 pub use resolver::Resolver;

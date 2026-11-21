@@ -1204,11 +1204,11 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_token<'l>(env:
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyClient_iP4<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Client.iP4", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.Client.iP4") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Client.iP4", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::proxies::c_ip4(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyClient_iP6<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Client.iP6", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.Client.iP6") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Client.iP6", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::proxies::c_ip6(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyConsole_log<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jint, a1: sys::jstring) -> () {
@@ -1276,7 +1276,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSR
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSResolver_getMult<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSResolver.getMult", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Backend.DNSResolver.getMult") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSResolver.getMult", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::mult::get_mult(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSResolver_getRdnsLocal<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
@@ -1324,7 +1324,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNST
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransport_getRelay<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransport.getRelay", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransport.getRelay", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::tunnel::tr_get_relay(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransport_id<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -1332,7 +1332,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNST
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransport_measure<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring, a1: sys::jint, a2: sys::jint) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransport.measure", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?;   rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransport.measure", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?;   crate::impls::tunnel::tr_measure(env, &this, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransport_originalAddr<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -1352,35 +1352,35 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNST
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_add<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jobject) -> sys::jboolean {
-    unsafe { rt::enter::<'l, bool, _>(env, "Backend.DNSTransportMult.add", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = unsafe { JObject::from_raw(a0) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, bool, _>(env, "Backend.DNSTransportMult.add", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = unsafe { JObject::from_raw(a0) }; crate::impls::mult::m_add(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_get<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportMult.get", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Backend.DNSTransportMult.get") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportMult.get", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::mult::m_get(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_getIPs<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.getIPs", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.getIPs", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::mult::m_get_ips(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_liveTransports<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.liveTransports", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.liveTransports", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::mult::m_live_transports(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_refresh<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.refresh", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Backend.DNSTransportMult.refresh") }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Backend.DNSTransportMult.refresh", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::mult::m_refresh(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMult_remove<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jboolean {
-    unsafe { rt::enter::<'l, bool, _>(env, "Backend.DNSTransportMult.remove", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, bool, _>(env, "Backend.DNSTransportMult.remove", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::mult::m_remove(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportMultProvider_getMult<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportMultProvider.getMult", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Backend.DNSTransportMultProvider.getMult") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportMultProvider.getMult", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unreachable_proxy("Backend.DNSTransportMultProvider.getMult") }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportProvider_get<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportProvider.get", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Backend.DNSTransportProvider.get") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.DNSTransportProvider.get", true, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unreachable_proxy("Backend.DNSTransportProvider.get") }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyDNSTransportProvider_getIPs<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> sys::jstring {
@@ -1524,11 +1524,11 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyProx
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyProxies_underlay<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring, a1: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Proxies.underlay", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = unsafe { JObject::from_raw(a1) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Proxies.underlay", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = unsafe { JObject::from_raw(a1) }; crate::impls::proxies::underlay(env, &this, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyProxy_client<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Proxy.client", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Backend.Proxy.client", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::proxies::p_client(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Backend_00024proxyProxy_dns<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -2128,7 +2128,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_DNSOpts__1_1New<'l>(en
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DNSOpts_copy<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "DNSOpts.copy", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "DNSOpts.copy", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::copy(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DNSOpts_getIPCSV<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -2416,7 +2416,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_DNSSummary_setUpstream
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DNSSummary_string<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "DNSSummary.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "DNSSummary.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::dns_summary(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DomainOpts__1_1New<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jint {
@@ -2424,7 +2424,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_DomainOpts__1_1New<'l>
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DomainOpts_copy<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "DomainOpts.copy", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "DomainOpts.copy", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::copy(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_DomainOpts_getFID<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -2500,7 +2500,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_GoMetrics_getM<'l>(env
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_GoMetrics_go<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "GoMetrics.go", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "GoMetrics.go", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::diag::gm_go(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_GoMetrics_setC<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
@@ -3340,39 +3340,39 @@ pub extern "system" fn Java_com_celzero_firestack_backend_NetStat__1_1New<'l>(en
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_fwd<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.fwd", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.fwd", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_fwd(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_icmp<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.icmp", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.icmp", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_icmp(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_ip<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.ip", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.ip", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_ip(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_nic<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.nic", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.nic", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_nic(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_nicinfo<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.nicinfo", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.nicinfo", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_nicinfo(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_rdnsinfo<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.rdnsinfo", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.rdnsinfo", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_rdnsinfo(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_tcp<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.tcp", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.tcp", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_tcp(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_tun<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.tun", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.tun", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_tun(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_NetStat_udp<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.udp", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "NetStat.udp", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::ns_udp(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_PipKey__1_1New<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jint {
@@ -4180,7 +4180,7 @@ pub extern "system" fn Java_com_celzero_firestack_backend_Strx__1_1New<'l>(env: 
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_Strx_s<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Strx.s", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Strx.s", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::strx_s(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_backend_TCPStat__1_1New<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jint {
@@ -4572,7 +4572,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_FlowSummary_setUID<'l>(e
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_FlowSummary_string<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "FlowSummary.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "FlowSummary.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::flow_summary(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra__1init<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> () {
@@ -4580,11 +4580,11 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra__1init<'l>(env: *m
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSCryptRelay<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptRelay", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::unimplemented("Intra.addDNSCryptRelay") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptRelay", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::tunnel::add_dnscrypt_relay(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSCryptTransport<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; rt::unimplemented("Intra.addDNSCryptTransport") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addDNSCryptTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; crate::impls::tunnel::add_dnscrypt(env, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDNSProxy<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring) -> () {
@@ -4608,7 +4608,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addDoTTransport<'l
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addODoHTransport<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring, a3: sys::jstring, a4: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addODoHTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; let a3 = rt::jstr(env, &unsafe { JString::from_raw(a3) })?; let a4 = rt::jstr(env, &unsafe { JString::from_raw(a4) })?; rt::unimplemented("Intra.addODoHTransport") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addODoHTransport", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; let a3 = rt::jstr(env, &unsafe { JString::from_raw(a3) })?; let a4 = rt::jstr(env, &unsafe { JString::from_raw(a4) })?; crate::impls::tunnel::add_odoh(env, a0, a1, a2, a3, a4) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addProxyDNS<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jobject) -> () {
@@ -4632,15 +4632,15 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_connect3<'l>(env: 
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_controlledRouter<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jstring, a2: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.controlledRouter", false, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.controlledRouter", false, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; let a2 = rt::jstr(env, &unsafe { JString::from_raw(a2) })?; crate::impls::proxies::controlled_router(env, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_cpuProfile<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring, a2: sys::jint) -> sys::jint {
-    unsafe { rt::enter::<'l, i32, _>(env, "Intra.cpuProfile", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?;  rt::unimplemented("Intra.cpuProfile") }) }
+    unsafe { rt::enter::<'l, i32, _>(env, "Intra.cpuProfile", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?;  crate::impls::diag::cpu_profile(env, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_crash<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jlong, a1: sys::jlong) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.crash", false, |env| {   rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.crash", false, |env| {   crate::impls::diag::crash(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_defaultDNSAsFallback<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jboolean) -> () {
@@ -4660,7 +4660,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_getSELF_1UID<'l>(e
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_goMet<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.goMet", false, |env| { rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.goMet", false, |env| { crate::impls::diag::go_met(env, ) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_logLevel<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jint, a1: sys::jint, a2: sys::jint) -> () {
@@ -4676,7 +4676,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_lowMem<'l>(env: *m
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_memProfile<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jint, a1: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.memProfile", true, |env| {  let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::unimplemented("Intra.memProfile") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.memProfile", true, |env| {  let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::diag::mem_profile(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_newBuiltinDefaultDNS<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jobject {
@@ -4696,7 +4696,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_newTunnel2<'l>(env
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_printStack<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jint) -> sys::jbyteArray {
-    unsafe { rt::enter::<'l, Vec<u8>, _>(env, "Intra.printStack", false, |env| {  rt::zero_value() }) }
+    unsafe { rt::enter::<'l, Vec<u8>, _>(env, "Intra.printStack", false, |env| {  crate::impls::diag::print_stack(env, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_setCrashOutput<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring) -> sys::jboolean {
@@ -4704,7 +4704,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_setCrashOutput<'l>
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_setFlightRecordOutput<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "Intra.setFlightRecordOutput", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Intra.setFlightRecordOutput") }) }
+    unsafe { rt::enter::<'l, String, _>(env, "Intra.setFlightRecordOutput", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::diag::set_flight_record_output(env, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_setSELF_1UID<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring) -> () {
@@ -4876,7 +4876,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultD
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultDNS_getRelay<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.DefaultDNS.getRelay", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.DefaultDNS.getRelay", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::tunnel::tr_get_relay(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultDNS_id<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -4884,7 +4884,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultD
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultDNS_measure<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring, a1: sys::jint, a2: sys::jint) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.DefaultDNS.measure", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?;   rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.DefaultDNS.measure", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?;   crate::impls::tunnel::tr_measure(env, &this, a0, a1, a2) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyDefaultDNS_originalAddr<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
@@ -5080,7 +5080,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_s
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_stat<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.Tunnel.stat", true, |env| { let this = unsafe { JObject::from_raw(this) }; rt::unimplemented("Intra.Tunnel.stat") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Intra.Tunnel.stat", true, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::netstat::t_stat(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_00024proxyTunnel_unlink<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> () {
@@ -5144,23 +5144,23 @@ pub extern "system" fn Java_com_celzero_firestack_intra_PreMark_setUID<'l>(env: 
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DNSOptions__1_1NewDNSOptions<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring) -> sys::jint {
-    unsafe { rt::enter::<'l, i32, _>(env, "DNSOptions.__NewDNSOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, i32, _>(env, "DNSOptions.__NewDNSOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::dns_new(env, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DNSOptions__1_1NewDNSOptionsFromHostname<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring) -> sys::jint {
-    unsafe { rt::enter::<'l, i32, _>(env, "DNSOptions.__NewDNSOptionsFromHostname", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, i32, _>(env, "DNSOptions.__NewDNSOptionsFromHostname", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::options::dns_new_from_hostname(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DNSOptions_addrPort<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.addrPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.addrPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::dns_addr_port(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DNSOptions_resolvedAddrs<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.resolvedAddrs", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.resolvedAddrs", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::dns_resolved_addrs(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DNSOptions_string<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "DNSOptions.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::dns_string(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DialerOpts__1_1New<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> sys::jint {
@@ -5224,67 +5224,67 @@ pub extern "system" fn Java_com_celzero_firestack_settings_DialerOpts_setWriteTi
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_DialerOpts_string<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "DialerOpts.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "DialerOpts.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::summary::dialer_opts(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions__1_1NewProxyOptions<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring) -> sys::jint {
-    unsafe { rt::enter::<'l, i32, _>(env, "ProxyOptions.__NewProxyOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, i32, _>(env, "ProxyOptions.__NewProxyOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::options::proxy_new(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_fullUrl<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.fullUrl", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.fullUrl", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_full_url(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_getHost<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getHost", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getHost", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_get_host(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_getIP<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getIP", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getIP", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_get_ip(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_getIPPort<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getIPPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getIPPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_get_ipport(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_getPort<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_get_port(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_getScheme<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getScheme", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.getScheme", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_get_scheme(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_hasAuth<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jboolean {
-    unsafe { rt::enter::<'l, bool, _>(env, "ProxyOptions.hasAuth", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, bool, _>(env, "ProxyOptions.hasAuth", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_has_auth(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_setHost<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setHost", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setHost", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::p_set_host(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_setIP<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setIP", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setIP", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::p_set_ip(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_setIPPort<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setIPPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setIPPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::p_set_ipport(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_setPort<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setPort", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::p_set_port(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_setScheme<'l>(env: *mut sys::JNIEnv, this: sys::jobject, a0: sys::jstring) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setScheme", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, (), _>(env, "ProxyOptions.setScheme", false, |env| { let this = unsafe { JObject::from_raw(this) }; let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::p_set_scheme(env, &this, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_string<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.string", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_string(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_ProxyOptions_url<'l>(env: *mut sys::JNIEnv, this: sys::jobject) -> sys::jstring {
-    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.url", false, |env| { let this = unsafe { JObject::from_raw(this) }; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, String, _>(env, "ProxyOptions.url", false, |env| { let this = unsafe { JObject::from_raw(this) }; crate::impls::options::p_url(env, &this) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_Settings__1init<'l>(env: *mut sys::JNIEnv, _class: sys::jclass) -> () {
@@ -5332,15 +5332,15 @@ pub extern "system" fn Java_com_celzero_firestack_settings_Settings_mode2String<
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_Settings_newDNSOptions<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newDNSOptions", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; rt::unimplemented("Settings.newDNSOptions") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newDNSOptions", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; crate::impls::options::settings_new_dns(env, a0) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_Settings_newDNSOptionsFromHostname<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newDNSOptionsFromHostname", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::unimplemented("Settings.newDNSOptionsFromHostname") }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newDNSOptionsFromHostname", true, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::options::settings_new_dns_from_hostname(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_Settings_newProxyOptions<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jstring, a1: sys::jstring) -> sys::jobject {
-    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newProxyOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; rt::zero_value() }) }
+    unsafe { rt::enter::<'l, JObject<'l>, _>(env, "Settings.newProxyOptions", false, |env| { let a0 = rt::jstr(env, &unsafe { JString::from_raw(a0) })?; let a1 = rt::jstr(env, &unsafe { JString::from_raw(a1) })?; crate::impls::options::settings_new_proxy(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_settings_Settings_setAutoDialsParallel<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jboolean) -> sys::jboolean {
@@ -5396,5 +5396,7 @@ pub extern "system" fn Java_go_Universe_00024proxyerror_error<'l>(env: *mut sys:
 }
 
 /// Natives with a real implementation (impls + struct accessors + runtime).
-pub const fn implemented_count() -> usize { 795 }
-pub const STUB_CENSUS: (usize, usize) = (161, 105); // (unimplemented, rpn)
+pub const fn implemented_count() -> usize { 860 }
+pub const STUB_CENSUS: (usize, usize) = (0, 105); // (unimplemented, rpn)
+/// natives of engine-side wrappers of callback interfaces the engine never hands out
+pub const UNREACHABLE_COUNT: usize = 96;

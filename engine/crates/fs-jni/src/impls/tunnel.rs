@@ -234,6 +234,28 @@ pub fn add_proxy_dns(env: &mut JNIEnv, t: JObject, p: JObject) -> FsResult<()> {
     Ok(tun.add_dns53(px.id(), first)?)
 }
 
+/// `Intra.addODoHTransport(t, id, relay, target, ipcsv)`
+pub fn add_odoh(
+    env: &mut JNIEnv,
+    t: JObject,
+    id: String,
+    relay: String,
+    target: String,
+    ipcsv: String,
+) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_odoh(&id, &relay, &target, &ipcsv)?)
+}
+
+/// `Intra.addDNSCryptTransport(t, id, stamp)`
+pub fn add_dnscrypt(env: &mut JNIEnv, t: JObject, id: String, stamp: String) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_dnscrypt(&id, &stamp)?)
+}
+
+/// `Intra.addDNSCryptRelay(t, stamp)`
+pub fn add_dnscrypt_relay(env: &mut JNIEnv, t: JObject, stamp: String) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_dnscrypt_relay(&stamp)?)
+}
+
 /// `Intra.setSystemDNS(t, ipcsv)`
 pub fn set_system_dns(env: &mut JNIEnv, t: JObject, csv: String) -> FsResult<()> {
     Ok(tunnel_of(env, &t)?.add_dns53(fs_dns::ids::SYSTEM, &csv)?)
@@ -318,13 +340,9 @@ pub fn t_restart(
 pub fn t_close_conns(env: &mut JNIEnv, this: &JObject, csv: String) -> FsResult<String> {
     Ok(this_tunnel(env, this)?.close_conns(&csv))
 }
-/// `setPcap(path)`: packet capture is not ported yet (Phase 3); accepted and ignored except to log it.
+/// `setPcap(path)`: "" off, one character: a log line per packet, else a pcap file (appended to).
 pub fn t_set_pcap(env: &mut JNIEnv, this: &JObject, path: String) -> FsResult<()> {
-    this_tunnel(env, this)?;
-    if !path.is_empty() {
-        crate::impls::log::warn(&format!("tunnel: pcap not supported yet ({path})"));
-    }
-    Ok(())
+    Ok(this_tunnel(env, this)?.set_pcap(&path)?)
 }
 pub fn t_get_resolver<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
     let t = this_tunnel(env, this)?;
@@ -365,7 +383,7 @@ pub fn r_get<'l>(env: &mut JNIEnv<'l>, this: &JObject, id: String) -> FsResult<J
     rt::new_iface_proxy(env, C_TRANSPORT, Arc::new(TransportRef(tr)))
 }
 pub fn r_remove(env: &mut JNIEnv, this: &JObject, id: String) -> FsResult<bool> {
-    Ok(resolver(env, this)?.resolver().remove(&id))
+    Ok(resolver(env, this)?.remove_transport(&id))
 }
 /// `add(DNSTransport)`: only transports created by this engine can be (re-)added.
 pub fn r_add(env: &mut JNIEnv, this: &JObject, t: JObject) -> FsResult<bool> {
@@ -457,6 +475,46 @@ pub fn tr_status(env: &mut JNIEnv, this: &JObject) -> FsResult<i32> {
         AnyTransport::T(t) => t.status(),
         AnyTransport::D(_) => dns_status::START,
     })
+}
+/// `measure(mid, n, seconds)`: blocks for up to `seconds` (10..60) while it queries.
+pub fn tr_measure<'l>(
+    env: &mut JNIEnv<'l>,
+    this: &JObject,
+    mid: String,
+    n: i32,
+    seconds: i32,
+) -> FsResult<JObject<'l>> {
+    let t = match transport(env, this)? {
+        AnyTransport::T(t) => Some(t),
+        AnyTransport::D(_) => None, // a Default spec outside a tunnel has nothing to measure
+    };
+    let m = fs_intra::runtime().block_on(fs_dnsx::perf::measure(t, &mid, n, seconds));
+    let s = rt::Struct::new("com/celzero/firestack/backend/DNSMeasurement");
+    for (k, v) in [
+        ("MID", m.mid),
+        ("Domains", m.domains),
+        ("Errors", m.errors),
+        ("Addrs", m.addrs),
+    ] {
+        s.set(k, rt::Field::Str(v));
+    }
+    for (k, v) in [
+        ("Max", m.max),
+        ("Min", m.min),
+        ("P50", m.p50),
+        ("P95", m.p95),
+        ("Jitter", m.jitter),
+    ] {
+        s.set(k, rt::Field::I64(v));
+    }
+    s.set("Success", rt::Field::I32(m.success));
+    s.set("Seconds", rt::Field::I32(m.seconds));
+    rt::new_struct_object(env, s)
+}
+/// `getRelay()`: no transport here dials through a relay proxy of its own (firestack: DoH/DNSCrypt with a proxy
+/// registered under the transport's id), so null.
+pub fn tr_get_relay<'l>(_env: &mut JNIEnv<'l>, _this: &JObject) -> FsResult<JObject<'l>> {
+    Ok(JObject::null())
 }
 pub fn tr_p50(env: &mut JNIEnv, this: &JObject) -> FsResult<i64> {
     Ok(match transport(env, this)? {

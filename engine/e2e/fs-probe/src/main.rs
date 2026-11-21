@@ -10,7 +10,7 @@
 //!   fs-probe dns <server:port> <count> [uncached|cached]   UDP A-queries; latency p50/p95/max, failures
 //!   fs-probe tcp <host:port> <count>                        TCP connect latency
 //!   fs-probe get <host> <port> <path> [seconds]             plain HTTP/1.1 GET; bytes, seconds, Mbit/s
-//!   fs-probe lookup <server:port> <name>                    one A query; rcode and answer addresses
+//!   fs-probe lookup <server:port> <name> [A|AAAA|HTTPS]     one query; rcode and answer addresses
 //!   fs-probe udp <host:port> <message>                      one datagram; the echo and its round trip
 //!   fs-probe echo <host:port> <message>                     TCP: send, read the echo back
 //!   fs-probe ntp <host:port>                                one SNTP query (UDP); server time and round trip
@@ -28,6 +28,10 @@ fn rand64(state: &mut u64) -> u64 {
 }
 
 fn dns_query(id: u16, name: &str) -> Vec<u8> {
+    dns_query_t(id, name, 1)
+}
+
+fn dns_query_t(id: u16, name: &str, qtype: u16) -> Vec<u8> {
     let mut q = Vec::with_capacity(64);
     q.extend_from_slice(&id.to_be_bytes());
     q.extend_from_slice(&[0x01, 0x00, 0, 1, 0, 0, 0, 0, 0, 0]); // RD; 1 question
@@ -35,7 +39,9 @@ fn dns_query(id: u16, name: &str) -> Vec<u8> {
         q.push(label.len() as u8);
         q.extend_from_slice(label.as_bytes());
     }
-    q.extend_from_slice(&[0, 0, 1, 0, 1]); // root, A, IN
+    q.push(0); // root
+    q.extend_from_slice(&qtype.to_be_bytes());
+    q.extend_from_slice(&[0, 1]); // IN
     q
 }
 
@@ -124,7 +130,7 @@ fn skip_name(b: &[u8], mut i: usize) -> Option<usize> {
     }
 }
 
-fn lookup(server: &str, name: &str) {
+fn lookup(server: &str, name: &str, qtype: u16) {
     let addr: SocketAddr = server.parse().expect("server ip:port");
     let sock = UdpSocket::bind(if addr.is_ipv4() {
         "0.0.0.0:0"
@@ -136,7 +142,7 @@ fn lookup(server: &str, name: &str) {
     let t = Instant::now();
     let mut b = [0u8; 1500];
     let n = match sock
-        .send_to(&dns_query(0x5151, name), addr)
+        .send_to(&dns_query_t(0x5151, name, qtype), addr)
         .and_then(|_| sock.recv(&mut b))
     {
         Ok(n) => n,
@@ -160,6 +166,9 @@ fn lookup(server: &str, name: &str) {
         let rd = &b[j + 10..(j + 10 + len).min(n)];
         if typ == 1 && rd.len() == 4 {
             ips.push(format!("\"{}.{}.{}.{}\"", rd[0], rd[1], rd[2], rd[3]));
+        } else if typ == 28 && rd.len() == 16 {
+            let a: [u8; 16] = rd.try_into().unwrap();
+            ips.push(format!("\"{}\"", std::net::Ipv6Addr::from(a)));
         } else {
             ips.push(format!("\"type{typ}\""));
         }
@@ -321,7 +330,15 @@ fn main() {
             a.get(4).map(String::as_str).unwrap_or("uncached"),
         ),
         Some("tcp") => tcp(&a[2], a[3].parse().unwrap()),
-        Some("lookup") => lookup(&a[2], &a[3]),
+        Some("lookup") => lookup(
+            &a[2],
+            &a[3],
+            match a.get(4).map(String::as_str) {
+                Some("AAAA") => 28,
+                Some("HTTPS") => 65,
+                _ => 1,
+            },
+        ),
         Some("udp") => udp(&a[2], &a[3]),
         Some("echo") => echo(&a[2], &a[3]),
         Some("ntp") => ntp(&a[2]),
@@ -333,7 +350,7 @@ fn main() {
         ),
         _ => {
             eprintln!(
-                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | lookup <ip:port> <name> | udp <ip:port> <msg> | echo <ip:port> <msg> | ntp <ip:port> | get <host> <port> <path> [secs]"
+                "usage: fs-probe dns <ip:port> <n> [uncached|cached] | tcp <host:port> <n> | lookup <ip:port> <name> [A|AAAA|HTTPS] | udp <ip:port> <msg> | echo <ip:port> <msg> | ntp <ip:port> | get <host> <port> <path> [secs]"
             );
             std::process::exit(2);
         }

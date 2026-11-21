@@ -8,9 +8,14 @@
 //! DNS messages and transports.
 
 pub mod dns53;
+pub mod dnscrypt;
 pub mod doh;
 pub mod dot;
+pub mod ech;
+pub mod mdns;
 pub mod msg;
+pub mod odoh;
+pub mod stamp;
 pub mod tls;
 pub mod transport;
 

@@ -22,5 +22,24 @@ pub mod impls;
 pub mod rt;
 
 pub use exports::{
-    FIRESTACK_PIN, NATIVE_COUNT, NATIVE_SYMBOLS, PROXY_CLASSES, STUB_CENSUS, implemented_count,
+    FIRESTACK_PIN, NATIVE_COUNT, NATIVE_SYMBOLS, PROXY_CLASSES, STUB_CENSUS, UNREACHABLE_COUNT,
+    implemented_count,
 };
+
+#[cfg(test)]
+mod census {
+    /// Phase 3 exit gate: every native is implemented, except RPN (not offered) and the engine-side wrappers of
+    /// callback interfaces that the engine never hands out (jni-gen's reachability fixpoint).
+    #[test]
+    fn only_rpn_and_unreachable_remain() {
+        let (unimplemented, rpn) = super::STUB_CENSUS;
+        assert_eq!(
+            unimplemented, 0,
+            "run `cargo run -p jni-gen -- --list-stubs`"
+        );
+        assert_eq!(
+            super::implemented_count() + rpn + super::UNREACHABLE_COUNT,
+            super::NATIVE_COUNT
+        );
+    }
+}

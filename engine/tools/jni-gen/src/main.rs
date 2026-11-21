@@ -7,7 +7,8 @@
 //! jni-gen: emits `crates/fs-jni/src/exports.rs` from `api/natives.tsv` (written by `tools/facade-sync.sh`) and
 //! `crates/fs-jni/impls.tsv` (hand-maintained list of natives with real Rust implementations).
 //!
-//! Usage (from engine/): `cargo run -p jni-gen` ; `cargo run -p jni-gen -- --check` fails if exports.rs is stale.
+//! Usage (from engine/): `cargo run -p jni-gen` ; `cargo run -p jni-gen -- --check` fails if exports.rs is stale;
+//! `--list-stubs` prints the natives that are still stubs (class, method) to stderr.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
@@ -211,6 +212,7 @@ fn runtime_body(n: &Native) -> Option<&'static str> {
 fn main() {
     let check = env::args().any(|a| a == "--check");
     let symbols = env::args().any(|a| a == "--symbols");
+    let list_stubs = env::args().any(|a| a == "--list-stubs");
     let engine = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let tsv = fs::read_to_string(engine.join("api/natives.tsv"))
         .expect("api/natives.tsv (run tools/facade-sync.sh)");
@@ -269,6 +271,78 @@ fn main() {
         .map(|n| n.class.as_str())
         .collect();
 
+    // Which engine-side wrappers (`$proxyX`, an engine object of interface X) can exist? A fixpoint over what the
+    // engine hands to Kotlin: returns of reachable natives, and parameters of callbacks the engine invokes on Kotlin
+    // objects (interfaces whose instances Kotlin passes in as native parameters, with their superinterfaces). The
+    // rest are wrappers of callback interfaces Kotlin implements (Bridge, Controller, Console, listeners, ...).
+    let api =
+        fs::read_to_string(engine.join("api/firestack-api.txt")).expect("api/firestack-api.txt");
+    let mut iface_params: BTreeMap<String, Vec<String>> = BTreeMap::new(); // L..; -> callback param types
+    let mut supers: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    let (mut cur, mut prev_abstract) = (String::new(), false);
+    for l in api.lines() {
+        let t = l.trim();
+        if let Some(rest) = t.strip_prefix("public interface ") {
+            let rest = rest.trim_end_matches('{').trim();
+            let (name, ext) = rest.split_once(" extends ").unwrap_or((rest, ""));
+            cur = format!("L{};", jni_class(name.trim()));
+            supers.insert(
+                cur.clone(),
+                ext.split(',')
+                    .map(str::trim)
+                    .filter(|x| !x.is_empty())
+                    .map(|x| format!("L{};", jni_class(x)))
+                    .collect(),
+            );
+        } else if t.starts_with("public ") && t.contains(" class ") {
+            cur.clear();
+        }
+        if let Some(d) = t.strip_prefix("descriptor: ")
+            && prev_abstract
+            && !cur.is_empty()
+            && d.starts_with('(')
+        {
+            iface_params
+                .entry(cur.clone())
+                .or_default()
+                .extend(parse_desc(d).0);
+        }
+        if !t.starts_with("descriptor:") {
+            prev_abstract = t.contains(" abstract ");
+        }
+    }
+    let iface_of = |n: &Native| -> Option<String> {
+        n.class.split_once("$proxy").map(|(outer, iface)| {
+            let pkg = &outer[..outer.rfind('.').unwrap()];
+            format!("L{};", jni_class(&format!("{pkg}.{iface}")))
+        })
+    };
+    let mut handed_out: BTreeSet<String> = BTreeSet::new();
+    let mut from_kotlin: BTreeSet<String> = BTreeSet::new();
+    loop {
+        let before = (handed_out.len(), from_kotlin.len());
+        for n in &natives {
+            if iface_of(n).is_none_or(|i| handed_out.contains(&i)) {
+                handed_out.insert(n.ret.clone());
+                from_kotlin.extend(n.params.iter().cloned());
+            }
+        }
+        let mut todo: Vec<String> = from_kotlin.iter().cloned().collect();
+        let mut seen = BTreeSet::new();
+        while let Some(i) = todo.pop() {
+            if !seen.insert(i.clone()) {
+                continue;
+            }
+            handed_out.extend(iface_params.get(&i).into_iter().flatten().cloned());
+            todo.extend(supers.get(&i).into_iter().flatten().cloned());
+        }
+        if (handed_out.len(), from_kotlin.len()) == before {
+            break;
+        }
+    }
+    let unreachable =
+        |n: &Native| -> bool { iface_of(n).is_some_and(|i| !handed_out.contains(&i)) };
+
     let mut proxies: BTreeMap<String, String> = BTreeMap::new();
     for n in &natives {
         if let Some((outer, iface)) = n.class.split_once("$proxy") {
@@ -294,7 +368,8 @@ fn main() {
     );
     let _ = writeln!(o, "pub const FIRESTACK_PIN: &str = \"{pin}\";");
     let _ = writeln!(o, "pub const NATIVE_COUNT: usize = {};", natives.len());
-    let (mut n_impl, mut n_struct, mut n_rt, mut n_rpn, mut n_stub) = (0, 0, 0, 0, 0);
+    let (mut n_impl, mut n_struct, mut n_rt, mut n_rpn, mut n_unreach, mut n_stub) =
+        (0, 0, 0, 0, 0, 0);
 
     o.push_str("/// (Go-side interface, Java proxy class) pairs, JNI names.\npub const PROXY_CLASSES: &[(&str, &str)] = &[\n");
     for (i, p) in &proxies {
@@ -342,6 +417,9 @@ fn main() {
             b.to_string()
         } else if let Some(path) = impls.get(&(n.class.clone(), n.method.clone())) {
             n_impl += 1;
+            if list_stubs && unreachable(n) {
+                eprintln!("impl-on-unreachable\t{}\t{}", n.class, n.method);
+            }
             format!("crate::impls::{path}(env, {})", args.join(", "))
         } else if let Some(b) = structs
             .contains(n.class.as_str())
@@ -357,8 +435,18 @@ fn main() {
             } else {
                 "rt::zero_value()".into()
             }
+        } else if unreachable(n) {
+            n_unreach += 1;
+            if n.throws {
+                format!("rt::unreachable_proxy(\"{what}\")")
+            } else {
+                "rt::zero_value()".into()
+            }
         } else {
             n_stub += 1;
+            if list_stubs {
+                eprintln!("stub\t{}\t{}", n.class, n.method);
+            }
             if n.throws {
                 format!("rt::unimplemented(\"{what}\")")
             } else {
@@ -387,6 +475,10 @@ fn main() {
         o,
         "pub const STUB_CENSUS: (usize, usize) = ({n_stub}, {n_rpn}); // (unimplemented, rpn)"
     );
+    let _ = writeln!(
+        o,
+        "/// natives of engine-side wrappers of callback interfaces the engine never hands out\npub const UNREACHABLE_COUNT: usize = {n_unreach};"
+    );
 
     if symbols {
         for n in &natives {
@@ -405,7 +497,7 @@ fn main() {
         fs::write(&out, &o).expect("write exports.rs");
     }
     eprintln!(
-        "jni-gen: {} natives @ firestack {pin}: impl {n_impl}, struct {n_struct}, runtime {n_rt}, rpn-stub {n_rpn}, unimplemented {n_stub}",
+        "jni-gen: {} natives @ firestack {pin}: impl {n_impl}, struct {n_struct}, runtime {n_rt}, rpn-stub {n_rpn}, unreachable {n_unreach}, unimplemented {n_stub}",
         natives.len()
     );
 }

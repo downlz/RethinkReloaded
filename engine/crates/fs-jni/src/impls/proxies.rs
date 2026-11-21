@@ -21,6 +21,11 @@ use std::sync::Arc;
 const C_ROUTER: &str = "com/celzero/firestack/backend/Router";
 const C_PROXY: &str = "com/celzero/firestack/backend/Proxy";
 const C_ROUTER_STATS: &str = "com/celzero/firestack/backend/RouterStats";
+const C_CLIENT: &str = "com/celzero/firestack/backend/Client";
+const C_IPMETA: &str = "com/celzero/firestack/backend/IPMetadata";
+
+/// `Proxy.client()`: IP metadata lookups over that proxy.
+pub struct ClientRef(pub SharedProxy);
 
 pub struct ProxyRef(pub SharedProxy);
 
@@ -220,4 +225,71 @@ fn stats_struct(s: &RouterStats) -> Arc<Struct> {
         o.set(k, Field::I64(v));
     }
     o
+}
+
+fn controller(env: &mut JNIEnv, c: &JObject) -> FsResult<fs_dialers::Protector> {
+    if c.is_null() {
+        return Err(FsError::new("proxy: nil controller"));
+    }
+    let b =
+        crate::impls::bridge::JniBridge::new(env, c).map_err(|e| FsError::new(e.to_string()))?;
+    Ok(fs_dialers::Protector::new(Arc::new(b)))
+}
+
+/// `Proxies.underlay(id, controller)`: an untracked Base-like proxy whose sockets go to `controller`.
+pub fn underlay<'l>(
+    env: &mut JNIEnv<'l>,
+    _this: &JObject,
+    id: String,
+    c: JObject,
+) -> FsResult<JObject<'l>> {
+    let p = fs_proxy::builtin::Direct::basic(&id, controller(env, &c)?);
+    proxy_obj(env, p)
+}
+
+/// `Intra.controlledRouter(controller, id, addrport)`: the router of an untracked Exit using `controller`.
+pub fn controlled_router<'l>(
+    env: &mut JNIEnv<'l>,
+    c: JObject,
+    id: String,
+    addrport: String,
+) -> FsResult<JObject<'l>> {
+    let p: SharedProxy =
+        fs_proxy::builtin::Direct::exit_with_id(&id, &addrport, controller(env, &c)?);
+    rt::new_iface_proxy(env, C_ROUTER, Arc::new(RouterRef::Of(p)))
+}
+
+pub fn p_client<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
+    let p = proxy(env, this)?;
+    rt::new_iface_proxy(env, C_CLIENT, Arc::new(ClientRef(p)))
+}
+
+fn ip_meta<'l>(env: &mut JNIEnv<'l>, this: &JObject, v6: bool) -> FsResult<JObject<'l>> {
+    let p = rt::obj_of::<ClientRef>(env, this)?.0.clone();
+    let m = fs_intra::runtime()
+        .block_on(fs_proxy::client::client().ip_metadata(p, v6))
+        .map_err(FsError::new)?;
+    let s = Struct::new(C_IPMETA);
+    for (k, v) in [
+        ("ID", m.id),
+        ("ProviderURL", m.provider_url),
+        ("IP", m.ip),
+        ("ASN", m.asn),
+        ("ASNOrg", m.asn_org),
+        ("ASNDom", m.asn_dom),
+        ("CC", m.cc),
+        ("City", m.city),
+        ("Addr", m.addr),
+    ] {
+        s.set(k, Field::Str(v));
+    }
+    s.set("Lat", Field::F64(m.lat));
+    s.set("Lon", Field::F64(m.lon));
+    rt::new_struct_object(env, s)
+}
+pub fn c_ip4<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
+    ip_meta(env, this, false)
+}
+pub fn c_ip6<'l>(env: &mut JNIEnv<'l>, this: &JObject) -> FsResult<JObject<'l>> {
+    ip_meta(env, this, true)
 }
