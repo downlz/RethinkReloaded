@@ -23,7 +23,7 @@ pub const TYPE_DNSCRYPT: &str = "DNSCrypt";
 pub const TYPE_ODOH: &str = "Oblivious DNS-over-HTTPS";
 
 /// A successful upstream exchange.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Answer {
     /// wire-format response (with the caller's query id restored)
     pub msg: Vec<u8>,
@@ -32,6 +32,10 @@ pub struct Answer {
     /// proxy used
     pub pid: String,
     pub latency: Duration,
+    /// RethinkDNS upstreams: blockstamp of the lists that blocked the answer (`x-nile-flags`)
+    pub blocklists: String,
+    /// RethinkDNS upstreams: serving region (`x-nile-region`, or the `cf-ray` suffix)
+    pub region: String,
 }
 
 /// A failed exchange, with the `DNSSummary.Status` it maps to.

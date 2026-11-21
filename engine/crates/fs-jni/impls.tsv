@@ -138,3 +138,17 @@ com.celzero.firestack.backend.Backend$proxyProxy	resume	tunnel::p_resume
 com.celzero.firestack.backend.Backend$proxyProxy	refresh	tunnel::p_refresh
 com.celzero.firestack.backend.Backend$proxyProxy	stop	tunnel::p_stop
 com.celzero.firestack.intra.Intra	addDoTTransport	tunnel::add_dot
+com.celzero.firestack.backend.Backend$proxyDNSResolver	setRdnsLocal	rdns::set_local
+com.celzero.firestack.backend.Backend$proxyDNSResolver	setRdnsRemote	rdns::set_remote
+com.celzero.firestack.backend.Backend$proxyDNSResolver	getRdnsLocal	rdns::get_local
+com.celzero.firestack.backend.Backend$proxyDNSResolver	getRdnsRemote	rdns::get_remote
+com.celzero.firestack.backend.Backend$proxyRDNSResolver	setRdnsLocal	rdns::set_local
+com.celzero.firestack.backend.Backend$proxyRDNSResolver	setRdnsRemote	rdns::set_remote
+com.celzero.firestack.backend.Backend$proxyRDNSResolver	getRdnsLocal	rdns::get_local
+com.celzero.firestack.backend.Backend$proxyRDNSResolver	getRdnsRemote	rdns::get_remote
+com.celzero.firestack.backend.Backend$proxyRDNSResolver	translate	tunnel::r_translate
+com.celzero.firestack.backend.Backend$proxyRDNS	flagsToStamp	rdns::flags_to_stamp
+com.celzero.firestack.backend.Backend$proxyRDNS	getStamp	rdns::get_stamp
+com.celzero.firestack.backend.Backend$proxyRDNS	setStamp	rdns::set_stamp
+com.celzero.firestack.backend.Backend$proxyRDNS	stampToFlags	rdns::stamp_to_flags
+com.celzero.firestack.backend.Backend$proxyRDNS	stampToNames	rdns::stamp_to_names

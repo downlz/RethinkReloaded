@@ -156,7 +156,11 @@ impl DohTransport {
         })
     }
 
-    async fn exchange(&self, body: Vec<u8>, pid: &str) -> Result<Vec<u8>, QueryError> {
+    async fn exchange(
+        &self,
+        body: Vec<u8>,
+        pid: &str,
+    ) -> Result<(Vec<u8>, RdnsHeaders), QueryError> {
         let mut guard = self.conn.lock().await;
         let send = match guard.as_ref() {
             Some(s) => s.clone(),
@@ -184,7 +188,7 @@ impl DohTransport {
         &self,
         send: h2::client::SendRequest<Bytes>,
         body: Vec<u8>,
-    ) -> Result<Vec<u8>, QueryError> {
+    ) -> Result<(Vec<u8>, RdnsHeaders), QueryError> {
         let sendfail = |e: h2::Error| QueryError::new(dns_status::SEND_FAILED, format!("h2: {e}"));
         let mut send = send.ready().await.map_err(sendfail)?;
         let get = self.use_get.load(Ordering::Relaxed);
@@ -231,6 +235,7 @@ impl DohTransport {
             };
             return Err(QueryError::new(st, format!("doh: http {status}")));
         }
+        let hdrs = RdnsHeaders::from(resp.headers());
         let mut body = resp.into_body();
         let mut out = Vec::new();
         while let Some(chunk) = body.data().await {
@@ -245,7 +250,37 @@ impl DohTransport {
                 ));
             }
         }
-        Ok(out)
+        Ok((out, hdrs))
+    }
+}
+
+/// firestack `rdnsHeaders`: what RethinkDNS upstreams say about an answer.
+#[derive(Debug, Default)]
+struct RdnsHeaders {
+    blocklists: String,
+    region: String,
+}
+
+impl From<&http::HeaderMap> for RdnsHeaders {
+    fn from(h: &http::HeaderMap) -> Self {
+        let get = |k: &str| {
+            h.get(k)
+                .and_then(|v| v.to_str().ok())
+                .unwrap_or("")
+                .to_string()
+        };
+        let mut region = get("x-nile-region");
+        if region.is_empty() {
+            // Cf-Ray: d1e2a3d4b5e6e7f8-SIN
+            region = get("cf-ray")
+                .split_once('-')
+                .map(|(_, r)| r.to_string())
+                .unwrap_or_default();
+        }
+        RdnsHeaders {
+            blocklists: get("x-nile-flags"),
+            region,
+        }
     }
 }
 
@@ -281,8 +316,8 @@ impl Transport for DohTransport {
             msg::add_padding_if_none(&mut m);
             let body = msg::pack(&m).unwrap_or(q);
             let r = tokio::time::timeout(QUERY_TIMEOUT, me.exchange(body, &pid)).await;
-            let raw = match r {
-                Ok(Ok(raw)) => raw,
+            let (raw, hdrs) = match r {
+                Ok(Ok(x)) => x,
                 Ok(Err(mut e)) => {
                     me.stats.err(e.status);
                     e.server = me.host.clone();
@@ -312,6 +347,8 @@ impl Transport for DohTransport {
                 server: me.host.clone(),
                 pid,
                 latency,
+                blocklists: hdrs.blocklists,
+                region: hdrs.region,
             })
         })
     }

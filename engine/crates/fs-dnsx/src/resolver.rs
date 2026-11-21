@@ -13,14 +13,15 @@
 //! `onQuery` (3 s) → transport choice from `TIDCSV` → cache → upstream → `onUpstreamAnswer` (15 s, may redirect
 //! once) → cache store → `onResponse`. On upstream failure the client gets no reply (firestack semantics).
 
-use crate::cache::{self, Cache};
+use crate::cache::{self, Caches, Summ, TCache};
+use fs_blocklist::stamp::{Mode, Rdns};
 use fs_core::bridge::{DnsListener, DnsOpts, DnsSummary, dns_status};
 use fs_core::settings;
 use fs_dns::ids;
 use fs_dns::msg;
 use fs_dns::transport::Transport;
-use hickory_proto::op::ResponseCode;
-use hickory_proto::rr::RecordType;
+use hickory_proto::op::{Message, MessageType, ResponseCode};
+use hickory_proto::rr::{RData, RecordType};
 use parking_lot::RwLock;
 use std::collections::HashMap;
 use std::net::{IpAddr, SocketAddr};
@@ -31,6 +32,20 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 pub const ON_QUERY_TIMEOUT: Duration = Duration::from_secs(3);
 pub const ON_UPSTREAM_ANSWER_TIMEOUT: Duration = Duration::from_secs(15);
 pub const ORIGIN_TUNNEL: &str = "tunnel";
+/// firestack `errNop`
+const NO_ERROR: &str = "no error";
+/// `dns.RcodeBadTime`, reported when a transport is in hangover
+const RCODE_BADTIME: i64 = 18;
+
+/// Outcome of one resolution run.
+enum Step {
+    /// no answer for the client
+    None,
+    /// upstream answer (Kotlin's `onUpstreamAnswer` follows)
+    Answer(Vec<u8>),
+    /// final answer (blocked by on-device blocklists)
+    Final(Vec<u8>),
+}
 
 /// One entry of `TIDCSV`: `[Cache]<tid>[:pid1[:pid2]]`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -77,7 +92,9 @@ const RDNS_MAX_DOMAINS: usize = 8;
 
 pub struct Resolver {
     transports: RwLock<HashMap<String, Arc<dyn Transport>>>,
-    cache: Cache,
+    caches: Caches,
+    rdnsl: RwLock<Option<Arc<fs_blocklist::RdnsLocal>>>,
+    rdnsr: RwLock<Option<Arc<Rdns>>>,
     listener: Arc<dyn DnsListener>,
     fakedns: Vec<SocketAddr>,
     rdns: parking_lot::Mutex<RdnsMap>,
@@ -92,7 +109,9 @@ impl Resolver {
             .collect();
         Resolver {
             transports: RwLock::new(HashMap::new()),
-            cache: Cache::default(),
+            caches: Caches::default(),
+            rdnsl: RwLock::new(None),
+            rdnsr: RwLock::new(None),
             listener,
             fakedns,
             rdns: parking_lot::Mutex::new(HashMap::new()),
@@ -166,12 +185,14 @@ impl Resolver {
     pub fn add(&self, t: Arc<dyn Transport>) -> bool {
         let id = t.id().to_string();
         self.transports.write().insert(id.clone(), t);
+        self.caches.drop_tid(&id); // firestack recreates the caching transport
         self.listener.on_dns_added(id);
         true
     }
 
     pub fn remove(&self, id: &str) -> bool {
         let removed = self.transports.write().remove(id).is_some();
+        self.caches.drop_tid(id);
         if removed {
             self.listener.on_dns_removed(id.to_string());
         }
@@ -189,12 +210,12 @@ impl Resolver {
     }
 
     pub fn clear_cache(&self) {
-        self.cache.clear();
+        self.caches.clear();
     }
 
     pub fn stop_all(&self) {
         self.transports.write().clear();
-        self.cache.clear();
+        self.caches.clear();
         self.listener.on_dns_stopped();
     }
 
@@ -251,7 +272,7 @@ impl Resolver {
             start: unix_millis(),
             uid: uid.to_string(),
             status: dns_status::START,
-            msg: "no error".into(),
+            msg: NO_ERROR.into(),
             ..Default::default()
         };
         let Some(qmsg) = msg::parse(q) else {
@@ -286,10 +307,19 @@ impl Resolver {
         };
 
         let mut answer = None;
+        let base = smm.clone();
         for run in 1..=2 {
-            let r = self.forward_once(&qmsg, q, &opts, &mut smm, start).await;
-            let Some(ans) = r else { break };
-            if run == 1 && !smm.cached {
+            smm = base.clone();
+            let ans = match self.forward_once(&qmsg, q, &opts, &mut smm, start).await {
+                Step::None => break,
+                Step::Final(a) => {
+                    // blocked by on-device blocklists: no onUpstreamAnswer (firestack)
+                    answer = Some(a);
+                    break;
+                }
+                Step::Answer(a) => a,
+            };
+            if run == 1 {
                 let ipcsv = msg::parse(&ans)
                     .map(|m| {
                         msg::answer_ips(&m)
@@ -318,6 +348,7 @@ impl Resolver {
                     Err(_) => {
                         smm.status = dns_status::CLIENT_ERROR;
                         smm.msg = "dns: onUpstreamAnswer timeout".into();
+                        smm.id = "NoDNS".into();
                         self.listener.on_response(smm);
                         return None;
                     }
@@ -326,11 +357,6 @@ impl Resolver {
             answer = Some(ans);
             break;
         }
-        smm.latency = if smm.cached {
-            0.0
-        } else {
-            start.elapsed().as_secs_f64()
-        };
         if let Some(a) = &answer
             && smm.blocked_target.is_empty()
         {
@@ -340,14 +366,16 @@ impl Resolver {
         answer
     }
 
+    /// One run of firestack `forwardInner`: local blocklists on the query, the upstream (through the transport's
+    /// cache for `Cache<tid>`), then blocklists on the answer.
     async fn forward_once(
         &self,
-        qmsg: &hickory_proto::op::Message,
+        qmsg: &Message,
         q: &[u8],
         opts: &DnsOpts,
         smm: &mut DnsSummary,
         start: Instant,
-    ) -> Option<Vec<u8>> {
+    ) -> Step {
         let prefs = parse_tidcsv(&opts.tidcsv);
         let pref = prefs.first().cloned().unwrap_or(Pref {
             cache: true,
@@ -357,7 +385,8 @@ impl Resolver {
         let Some(t) = self.determine(&pref.tid) else {
             smm.status = dns_status::TRANSPORT_ERROR;
             smm.msg = format!("{};no such transport", pref.tid);
-            return None;
+            smm.latency = start.elapsed().as_secs_f64();
+            return Step::None;
         };
         smm.typ = t.typ().to_string();
         smm.id = if pref.cache {
@@ -366,65 +395,238 @@ impl Resolver {
             t.id().to_string()
         };
         let pid = Self::pid_for(&pref.tid, &pref);
-
         let (qname, qtype) = msg::question(qmsg).unwrap_or_default();
-        let ckey = cache::key(&qname, qtype, smm.do_bit);
-        if pref.cache
-            && t.id() != ids::BLOCK_ALL
-            && let Some(mut hit) = self.cache.get(&ckey)
-        {
-            if hit.len() >= 2 && q.len() >= 2 {
-                hit[0] = q[0];
-                hit[1] = q[1];
+
+        // blockQ: on-device blocklists, unless the transport is block-free
+        if let Some((ans, lists)) = self.block_q(t.id(), qmsg, qtype) {
+            if opts.noblock {
+                smm.blocklists = lists; // report only
+            } else {
+                smm.latency = start.elapsed().as_secs_f64();
+                smm.status = dns_status::COMPLETE;
+                smm.blocklists = lists;
+                smm.blocked_target = qname;
+                smm.rdata = msg::interesting_rdata(msg::parse(&ans).as_ref());
+                smm.msg = NO_ERROR.into();
+                return Step::Final(ans);
             }
-            let m = msg::parse(&hit);
-            smm.cached = true;
-            smm.status = dns_status::COMPLETE;
-            smm.rdata = msg::interesting_rdata(m.as_ref());
-            smm.rcode = m
-                .as_ref()
-                .map(|m| u16::from(m.metadata.response_code) as i64)
-                .unwrap_or(0);
-            smm.rttl = m.as_ref().map(|m| msg::max_ttl(m) as i64).unwrap_or(0);
-            smm.pid = pid;
-            return Some(hit);
         }
 
-        match t.clone().query(q.to_vec(), pid.clone()).await {
-            Ok(a) => {
-                let m = msg::parse(&a.msg);
-                smm.status = dns_status::COMPLETE;
-                smm.server = a.server;
-                smm.pid = a.pid;
-                smm.rdata = msg::interesting_rdata(m.as_ref());
-                if let Some(m) = &m {
-                    smm.rcode = u16::from(m.metadata.response_code) as i64;
-                    smm.rttl = msg::max_ttl(m) as i64;
-                    smm.ad = m.metadata.authentic_data;
-                    if t.id() == ids::BLOCK_ALL {
-                        smm.blocked_target = qname.clone();
+        let ans = if pref.cache {
+            self.query_cached(&t, qmsg, q, &pid, smm).await
+        } else {
+            query_direct(&t, q, &pid, smm).await
+        };
+        if smm.latency <= 0.0 {
+            smm.latency = start.elapsed().as_secs_f64();
+        }
+        let Some(ans) = ans else {
+            if smm.status == dns_status::START {
+                smm.status = dns_status::INTERNAL_ERROR;
+            }
+            return Step::None;
+        };
+        let Some(am) = msg::parse(&ans) else {
+            return Step::Answer(ans);
+        };
+        if t.id() == ids::BLOCK_ALL {
+            smm.blocked_target = qname.clone();
+        }
+
+        // blockA: remote blockstamp → names, else on-device blocklists on CNAME / SVCB targets
+        let (blocked, target, names) = self.block_a(t.id(), qmsg, &am, &smm.blocklists);
+        if !names.is_empty() {
+            smm.blocklists = names;
+            smm.blocked_target = target;
+        }
+        if smm.msg.is_empty() {
+            smm.msg = NO_ERROR.into();
+        }
+        if !opts.noblock
+            && let Some(b) = blocked
+        {
+            let bm = msg::parse(&b);
+            smm.rttl = bm.as_ref().map(|m| msg::max_ttl(m) as i64).unwrap_or(0);
+            smm.rcode = 0;
+            smm.rdata = msg::interesting_rdata(bm.as_ref());
+            smm.status = dns_status::COMPLETE;
+            return Step::Final(b);
+        }
+        Step::Answer(ans)
+    }
+
+    /// firestack `ctransport.fetch`: fresh cache hits are served as-is, stale ones with 15 s TTLs plus a background
+    /// refresh; misses go upstream through the barrier. Every answer is reported as cached (firestack).
+    async fn query_cached(
+        &self,
+        t: &Arc<dyn Transport>,
+        qmsg: &Message,
+        q: &[u8],
+        pid: &str,
+        smm: &mut DnsSummary,
+    ) -> Option<Vec<u8>> {
+        let (qname, qtype) = msg::question(qmsg).unwrap_or_default();
+        let Some(key) = cache::key(&qname, qtype, smm.do_bit) else {
+            return query_direct(t, q, pid, smm).await;
+        };
+        let tc = self.caches.get(t.id());
+        if tc.transport_ok()
+            && let Some(hit) = tc.fresh_copy(&key)
+        {
+            match as_response(qmsg, &hit.msg, hit.fresh) {
+                Ok(r) => {
+                    if !hit.fresh {
+                        let (tc, t, key, q, pid) = (
+                            tc.clone(),
+                            t.clone(),
+                            key.clone(),
+                            q.to_vec(),
+                            pid.to_string(),
+                        );
+                        tokio::spawn(async move {
+                            let _ = send_request(&tc, &t, &key, q, &pid).await;
+                        });
                     }
-                    let ips = msg::answer_ips(m);
-                    let ok = m.metadata.response_code == ResponseCode::NoError;
-                    if pref.cache
-                        && t.id() != ids::BLOCK_ALL
-                        && cache::cacheable(&qname, ok, m.metadata.truncation, &ips)
-                    {
-                        self.cache.put(ckey, a.msg.clone(), msg::max_ttl(m));
-                    }
+                    fill_summary(smm, &hit.s);
+                    smm.latency = 0.0; // not the cached latency
+                    smm.cached = true;
+                    return Some(r);
                 }
-                smm.latency = start.elapsed().as_secs_f64();
-                Some(a.msg)
+                Err(AsErr::Mismatch) => tc.remove(&key),
+                Err(AsErr::StaleDnssec) => {}
+            }
+        }
+        let (resp, s, hangover) = send_request(&tc, t, &key, q.to_vec(), pid).await;
+        let resp = resp.and_then(|(m, fresh)| as_response(qmsg, &m, fresh).ok());
+        fill_summary(smm, &s);
+        if hangover {
+            smm.msg = format!("{}; dns: no connectivity", s.msg);
+            smm.rcode = RCODE_BADTIME;
+            smm.status = dns_status::SEND_FAILED;
+            smm.cached = true;
+            return None;
+        }
+        smm.cached = true;
+        resp
+    }
+
+    /// firestack `blockQ`: refused answer and blocklist names when on-device blocklists block the query.
+    fn block_q(&self, tid: &str, qmsg: &Message, qtype: u16) -> Option<(Vec<u8>, String)> {
+        if skip_block(tid) {
+            return None;
+        }
+        let rl = self.rdnsl.read().clone()?;
+        if !rl.rdns.on_device_block() {
+            return None;
+        }
+        let names: Vec<String> = qmsg.queries.iter().map(|q| q.name().to_ascii()).collect();
+        let lists = rl
+            .block_query(&names, qtype)
+            .ok()
+            .filter(|l| !l.is_empty())?;
+        let ans = msg::refused_response(qmsg).and_then(|m| msg::pack(&m))?;
+        Some((ans, lists))
+    }
+
+    /// firestack `blockA`: (blocked answer, blocked target, blocklist names).
+    fn block_a(
+        &self,
+        tid: &str,
+        qmsg: &Message,
+        ans: &Message,
+        stamp: &str,
+    ) -> (Option<Vec<u8>>, String, String) {
+        let none = (None, String::new(), String::new());
+        if !stamp.is_empty()
+            && let Some(br) = self.rdnsr.read().clone()
+            && let Ok(names) = br.stamp_to_names(stamp)
+        {
+            return (None, String::new(), names); // the upstream blocked it
+        }
+        if skip_block(tid) {
+            return none;
+        }
+        let Some(rl) = self.rdnsl.read().clone() else {
+            return none;
+        };
+        if !rl.rdns.on_device_block() {
+            return none;
+        }
+        let qname = ans
+            .queries
+            .first()
+            .map(|q| q.name().to_ascii())
+            .unwrap_or_default();
+        let targets: Vec<String> = ans
+            .answers
+            .iter()
+            .filter_map(|r| match &r.data {
+                RData::CNAME(c) => Some(c.0.to_ascii()),
+                RData::SVCB(s) if s.svc_priority == 0 => Some(s.target_name.to_ascii()),
+                RData::HTTPS(h) if h.svc_priority == 0 => Some(h.target_name.to_ascii()),
+                _ => None,
+            })
+            .collect();
+        match rl.block_answer(&qname, ans.answers.len(), &targets) {
+            Ok((target, names)) if !names.is_empty() => {
+                match msg::refused_response(qmsg).and_then(|m| msg::pack(&m)) {
+                    Some(b) => (Some(b), target, names),
+                    None => (None, target, names),
+                }
+            }
+            _ => none,
+        }
+    }
+
+    /// firestack `SetRdnsLocal`: empty paths unset; on error the local blocklist is unset too.
+    pub fn set_rdns_local(
+        &self,
+        td: &str,
+        rd: &str,
+        conf: &str,
+        filetag: &str,
+    ) -> Result<(), String> {
+        if td.is_empty() || rd.is_empty() {
+            *self.rdnsl.write() = None;
+            return Ok(());
+        }
+        match fs_blocklist::RdnsLocal::new(td, rd, conf, filetag) {
+            Ok(r) => {
+                *self.rdnsl.write() = Some(Arc::new(r));
+                Ok(())
             }
             Err(e) => {
-                smm.status = e.status;
-                smm.msg = e.msg;
-                smm.server = e.server;
-                smm.pid = pid;
-                smm.latency = start.elapsed().as_secs_f64();
-                None
+                *self.rdnsl.write() = None;
+                Err(e)
             }
         }
+    }
+
+    /// firestack `SetRdnsRemote`: empty path unsets.
+    pub fn set_rdns_remote(&self, filetag: &str) -> Result<(), String> {
+        if filetag.is_empty() {
+            *self.rdnsr.write() = None;
+            return Ok(());
+        }
+        match Rdns::from_filetag(std::path::Path::new(filetag), Mode::Remote) {
+            Ok(r) => {
+                *self.rdnsr.write() = Some(Arc::new(r));
+                Ok(())
+            }
+            Err(e) => {
+                *self.rdnsr.write() = None;
+                Err(e)
+            }
+        }
+    }
+
+    /// The local blocklists' stamp object (shared: `setStamp` applies to lookups).
+    pub fn rdns_local(&self) -> Option<Arc<Rdns>> {
+        self.rdnsl.read().as_ref().map(|r| r.rdns.clone())
+    }
+
+    pub fn rdns_remote(&self) -> Option<Arc<Rdns>> {
+        self.rdnsr.read().clone()
     }
 
     /// Internal lookup (no Kotlin callbacks, no cache): resolves `host` via the Default transport, A and AAAA.
@@ -459,6 +661,179 @@ impl Resolver {
     }
 }
 
+/// firestack `skipBlock`: block-free and ALG transports never apply on-device blocklists; Default and Bootstrap
+/// skip them when looping back (`canBlockDefault`).
+fn skip_block(tid: &str) -> bool {
+    let id = tid
+        .strip_prefix(ids::CACHE_PREFIX)
+        .filter(|s| !s.is_empty())
+        .unwrap_or(tid);
+    match id {
+        ids::BLOCK_FREE | ids::ALG => true,
+        ids::DEFAULT | ids::BOOTSTRAP => settings::LOOPINGBACK.load(Ordering::Relaxed),
+        _ => false,
+    }
+}
+
+/// Summary fields of an upstream answer (firestack transports fill these in `DNSSummary`).
+fn summ_of(a: &fs_dns::transport::Answer, m: Option<&Message>) -> Summ {
+    Summ {
+        server: a.server.clone(),
+        pid: a.pid.clone(),
+        rdata: msg::interesting_rdata(m),
+        ad: m.is_some_and(|m| m.metadata.authentic_data),
+        rcode: m
+            .map(|m| u16::from(m.metadata.response_code) as i64)
+            .unwrap_or(0),
+        rttl: m.map(|m| msg::max_ttl(m) as i64).unwrap_or(0),
+        status: dns_status::COMPLETE,
+        msg: String::new(),
+        blocklists: a.blocklists.clone(),
+        region: a.region.clone(),
+        latency: a.latency.as_secs_f64(),
+    }
+}
+
+/// firestack `fillSummary`: cached / upstream summary fields into the query's summary.
+fn fill_summary(out: &mut DnsSummary, s: &Summ) {
+    if out.server.is_empty() {
+        out.server = s.server.clone();
+    }
+    if out.latency <= 0.0 {
+        out.latency = s.latency;
+    }
+    if out.region.is_empty() {
+        out.region = s.region.clone();
+    }
+    if !s.rdata.is_empty() {
+        out.rdata = s.rdata.clone();
+        out.ad = s.ad;
+    }
+    if !s.pid.is_empty() {
+        out.pid = s.pid.clone();
+    }
+    out.rcode = s.rcode;
+    out.rttl = s.rttl;
+    out.status = s.status;
+    out.blocklists = s.blocklists.clone();
+    out.blocked_target = String::new();
+    out.msg = s.msg.clone();
+}
+
+/// A query to a transport without its cache.
+async fn query_direct(
+    t: &Arc<dyn Transport>,
+    q: &[u8],
+    pid: &str,
+    smm: &mut DnsSummary,
+) -> Option<Vec<u8>> {
+    match t.clone().query(q.to_vec(), pid.to_string()).await {
+        Ok(a) => {
+            let m = msg::parse(&a.msg);
+            fill_summary(smm, &summ_of(&a, m.as_ref()));
+            smm.latency = a.latency.as_secs_f64();
+            Some(a.msg)
+        }
+        Err(e) => {
+            smm.status = e.status;
+            smm.msg = e.msg;
+            smm.server = e.server;
+            smm.pid = pid.to_string();
+            None
+        }
+    }
+}
+
+/// firestack `sendRequest`: the upstream exchange through the barrier (stores cacheable answers), then the
+/// cached copy is preferred. Returns (answer and whether it is fresh, its summary, in hangover).
+async fn send_request(
+    tc: &Arc<TCache>,
+    t: &Arc<dyn Transport>,
+    key: &str,
+    q: Vec<u8>,
+    pid: &str,
+) -> (Option<(Arc<Vec<u8>>, bool)>, Summ, bool) {
+    let (out, _) = tc
+        .barrier(key, || {
+            let (tc, t, key, pid) = (tc.clone(), t.clone(), key.to_string(), pid.to_string());
+            async move {
+                let r = t.clone().query(q, pid.clone()).await;
+                tc.checkpoint(t.status() == dns_status::SEND_FAILED);
+                match r {
+                    Ok(a) => {
+                        let m = msg::parse(&a.msg);
+                        let s = summ_of(&a, m.as_ref());
+                        let msg = Arc::new(a.msg);
+                        if let Some(m) = &m {
+                            let ok = m.metadata.response_code == ResponseCode::NoError;
+                            if cache::cacheable(
+                                &key,
+                                ok,
+                                m.metadata.truncation,
+                                &msg::answer_ips(m),
+                            ) {
+                                tc.put(&key, msg.clone(), s.clone(), msg::max_ttl(m));
+                            }
+                        }
+                        Ok((msg, s))
+                    }
+                    Err(e) => {
+                        let s = Summ {
+                            server: e.server.clone(),
+                            pid,
+                            status: e.status,
+                            msg: e.msg.clone(),
+                            ..Default::default()
+                        };
+                        Err((e, s))
+                    }
+                }
+            }
+        })
+        .await;
+    let hit = tc.fresh_copy(key);
+    let hangover = !tc.transport_ok();
+    match (hit, out) {
+        (Some(h), _) => (Some((h.msg, h.fresh)), h.s, hangover),
+        // uncacheable answers are not fresh either (firestack): TTLs drop to 15 s
+        (None, Ok((m, s))) => (Some((m, false)), s, hangover),
+        (None, Err((_, s))) => (None, s, hangover),
+    }
+}
+
+enum AsErr {
+    /// stale answers would alter the TTLs of a DNSSEC-authenticated answer
+    StaleDnssec,
+    /// cached answer does not match the query
+    Mismatch,
+}
+
+/// firestack `asResponse`: the cached answer with the query's id and question (dns 0x20); stale answers get
+/// TTL 15 s on their answer records.
+fn as_response(q: &Message, cached: &[u8], fresh: bool) -> Result<Vec<u8>, AsErr> {
+    let mut a = msg::parse(cached).ok_or(AsErr::Mismatch)?;
+    if !fresh && a.metadata.authentic_data {
+        return Err(AsErr::StaleDnssec);
+    }
+    let name = |m: &Message| {
+        m.queries
+            .first()
+            .map(|x| fs_blocklist::normalize_qname(&x.name().to_ascii()))
+    };
+    if name(&a) != name(q) {
+        return Err(AsErr::Mismatch);
+    }
+    a.metadata.id = q.metadata.id;
+    a.queries = q.queries.clone();
+    a.metadata.message_type = MessageType::Response;
+    if !fresh {
+        for r in a.answers.iter_mut() {
+            r.ttl = cache::STALE_TTL;
+        }
+    }
+    msg::pack(&a).ok_or(AsErr::Mismatch)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -489,10 +864,15 @@ mod tests {
         assert!(parse_tidcsv("").is_empty());
     }
 
+    #[derive(Default)]
     struct Fake {
         id: String,
         n: AtomicUsize,
         fail: bool,
+        /// answer with a CNAME to this name first
+        cname: Option<String>,
+        /// x-nile-flags of the answer
+        stamp: String,
     }
     impl Transport for Fake {
         fn id(&self) -> &str {
@@ -517,13 +897,23 @@ mod tests {
         ) -> BoxFuture<Result<Answer, QueryError>> {
             self.n.fetch_add(1, Ordering::SeqCst);
             let fail = self.fail;
+            let (cname, stamp) = (self.cname.clone(), self.stamp.clone());
             Box::pin(async move {
                 if fail {
                     return Err(QueryError::new(dns_status::SEND_FAILED, "boom"));
                 }
                 let m = msg::parse(&q).unwrap();
                 let mut r = msg::empty_response(&m);
-                let name = m.queries[0].name().clone();
+                let mut name = m.queries[0].name().clone();
+                if let Some(c) = cname {
+                    let target = hickory_proto::rr::Name::from_ascii(&c).unwrap();
+                    r.add_answer(hickory_proto::rr::Record::from_rdata(
+                        name,
+                        60,
+                        RData::CNAME(hickory_proto::rr::rdata::CNAME(target.clone())),
+                    ));
+                    name = target;
+                }
                 r.add_answer(hickory_proto::rr::Record::from_rdata(
                     name,
                     60,
@@ -536,6 +926,8 @@ mod tests {
                     server: "fake".into(),
                     pid,
                     latency: Duration::from_millis(3),
+                    blocklists: stamp,
+                    ..Default::default()
                 })
             })
         }
@@ -598,8 +990,7 @@ mod tests {
         let r = Resolver::new("10.111.222.3:53,[fd66:f83a:c650::3]:53", pol.clone());
         let pref = Arc::new(Fake {
             id: "Preferred".into(),
-            n: AtomicUsize::new(0),
-            fail: false,
+            ..Default::default()
         });
         r.add(pref.clone());
         r.add(Arc::new(fs_dns::dns53::BlockAll::default()));
@@ -633,7 +1024,8 @@ mod tests {
                 (res[0].qname.as_str(), res[0].qtype, res[0].uid.as_str()),
                 ("example.com.", 1, "10123")
             );
-            assert!(res[1].cached && res[1].latency == 0.0);
+            // firestack: everything through a cache is reported cached; hits take the time since the query
+            assert!(res[0].cached && res[1].cached && res[1].latency > 0.0);
         }
 
         // Kotlin redirects the answer to BlockAll (e.g. a blocked ip): second run answers 0.0.0.0
@@ -662,8 +1054,8 @@ mod tests {
         // upstream failure: no reply, status reported
         r.add(Arc::new(Fake {
             id: "Preferred".into(),
-            n: AtomicUsize::new(0),
             fail: true,
+            ..Default::default()
         }));
         assert!(
             r.forward(&q("nocache.example.", 12), ORIGIN_TUNNEL, "f4", "1")
@@ -685,6 +1077,156 @@ mod tests {
         assert_eq!(
             pol.responses.lock().last().unwrap().status,
             dns_status::TRANSPORT_ERROR
+        );
+    }
+
+    #[tokio::test]
+    async fn caches_are_per_transport_and_redirects_see_cached_answers() {
+        let pol = Arc::new(Policy::default());
+        let r = Resolver::new("10.111.222.3:53", pol.clone());
+        let (a, b) = (
+            Arc::new(Fake {
+                id: "Preferred".into(),
+                ..Default::default()
+            }),
+            Arc::new(Fake {
+                id: "System".into(),
+                ..Default::default()
+            }),
+        );
+        r.add(a.clone());
+        r.add(b.clone());
+        *pol.tid.lock() = "CachePreferred".into();
+        r.forward(&q("x.example.", 1), ORIGIN_TUNNEL, "f1", "1")
+            .await
+            .unwrap();
+        *pol.tid.lock() = "CacheSystem".into();
+        r.forward(&q("x.example.", 2), ORIGIN_TUNNEL, "f2", "1")
+            .await
+            .unwrap();
+        assert_eq!(
+            (a.n.load(Ordering::SeqCst), b.n.load(Ordering::SeqCst)),
+            (1, 1)
+        );
+        // a cached answer still goes through onUpstreamAnswer, so Kotlin's IP rules apply to it
+        *pol.redirect.lock() = Some("BlockAll".into());
+        r.add(Arc::new(fs_dns::dns53::BlockAll::default()));
+        let c = r
+            .forward(&q("x.example.", 3), ORIGIN_TUNNEL, "f3", "1")
+            .await
+            .unwrap();
+        assert_eq!(msg::interesting_rdata(msg::parse(&c).as_ref()), "0.0.0.0");
+        assert_eq!(
+            b.n.load(Ordering::SeqCst),
+            1,
+            "served from System's cache before the redirect"
+        );
+    }
+
+    fn oracle_dir() -> std::path::PathBuf {
+        let engine = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+        let pin = std::fs::read_to_string(engine.join("api/PIN")).unwrap();
+        engine.join("testdata/oracle").join(pin.trim())
+    }
+
+    #[tokio::test]
+    async fn remote_blockstamp_names() {
+        let pol = Arc::new(Policy::default());
+        *pol.tid.lock() = "Preferred".into();
+        let r = Resolver::new("10.111.222.3:53", pol.clone());
+        let ft = oracle_dir().join("rdns-filetag.json");
+        r.set_rdns_remote(ft.to_str().unwrap()).unwrap();
+        let rem = r.rdns_remote().unwrap();
+        let stamp = rem
+            .flags_to_stamp("1,17", fs_blocklist::stamp::EB64)
+            .unwrap();
+        r.add(Arc::new(Fake {
+            id: "Preferred".into(),
+            stamp: stamp.clone(),
+            ..Default::default()
+        }));
+        r.forward(&q("ads.example.", 1), ORIGIN_TUNNEL, "f1", "1")
+            .await
+            .unwrap();
+        let s = pol.responses.lock().last().unwrap().clone();
+        assert_eq!(s.blocklists, rem.stamp_to_names(&stamp).unwrap());
+        assert!(s.blocklists.contains(':') && s.blocklists.contains(','));
+        assert!(rem.set_stamp("x").is_err(), "remote mode has no stamp");
+        r.set_rdns_remote("").unwrap();
+        assert!(r.rdns_remote().is_none());
+    }
+
+    /// Needs the on-device trie (RR_BLOCKLIST_DIR, see fs-blocklist/tests/oracle.rs).
+    #[tokio::test]
+    async fn local_blocklists_block_queries_and_cloaked_answers() {
+        let Some(dir) = std::env::var_os("RR_BLOCKLIST_DIR").map(std::path::PathBuf::from) else {
+            eprintln!("skipped: RR_BLOCKLIST_DIR not set");
+            return;
+        };
+        let j = |n: &str| dir.join(n).to_string_lossy().into_owned();
+        let pol = Arc::new(Policy::default());
+        *pol.tid.lock() = "CachePreferred".into();
+        let r = Resolver::new("10.111.222.3:53", pol.clone());
+        r.set_rdns_local(
+            &j("td.txt"),
+            &j("rd.txt"),
+            &j("basicconfig.json"),
+            &j("filetag.json"),
+        )
+        .unwrap();
+        let rl = r.rdns_local().unwrap();
+        let all: Vec<String> = (0..250).map(|i| i.to_string()).collect();
+        let stamp = rl
+            .flags_to_stamp(&all.join(","), fs_blocklist::stamp::EB32)
+            .unwrap();
+        rl.set_stamp(&stamp).unwrap();
+        let up = Arc::new(Fake {
+            id: "Preferred".into(),
+            ..Default::default()
+        });
+        r.add(up.clone());
+
+        let a = r
+            .forward(&q("doubleclick.net.", 1), ORIGIN_TUNNEL, "f1", "1")
+            .await
+            .unwrap();
+        assert_eq!(msg::interesting_rdata(msg::parse(&a).as_ref()), "0.0.0.0");
+        let s = pol.responses.lock().last().unwrap().clone();
+        assert_eq!(s.blocked_target, "doubleclick.net.");
+        assert!(!s.blocklists.is_empty());
+        assert_eq!(
+            up.n.load(Ordering::SeqCst),
+            0,
+            "blocked before going upstream"
+        );
+
+        // CNAME cloaking: the answer points at a blocked name
+        r.add(Arc::new(Fake {
+            id: "Preferred".into(),
+            cname: Some("ad.doubleclick.net.".into()),
+            ..Default::default()
+        }));
+        let a = r
+            .forward(&q("en.wikipedia.org.", 2), ORIGIN_TUNNEL, "f2", "1")
+            .await
+            .unwrap();
+        assert_eq!(msg::interesting_rdata(msg::parse(&a).as_ref()), "0.0.0.0");
+        let s = pol.responses.lock().last().unwrap().clone();
+        assert_eq!(s.blocked_target, "ad.doubleclick.net", "{s:?}");
+
+        // BlockFree skips local blocklists
+        r.add(Arc::new(Fake {
+            id: "BlockFree".into(),
+            ..Default::default()
+        }));
+        *pol.tid.lock() = "BlockFree".into();
+        let a = r
+            .forward(&q("doubleclick.net.", 3), ORIGIN_TUNNEL, "f3", "1")
+            .await
+            .unwrap();
+        assert_eq!(
+            msg::interesting_rdata(msg::parse(&a).as_ref()),
+            "93.184.215.14"
         );
     }
 

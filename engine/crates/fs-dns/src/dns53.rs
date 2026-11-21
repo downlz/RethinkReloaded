@@ -152,6 +152,7 @@ impl Transport for Dns53Transport {
                             server: server.to_string(),
                             pid,
                             latency,
+                            ..Default::default()
                         });
                     }
                     Ok(_) => {
@@ -216,6 +217,7 @@ impl Transport for BlockAll {
                 server: String::new(),
                 pid,
                 latency: Duration::ZERO,
+                ..Default::default()
             })
         })
     }

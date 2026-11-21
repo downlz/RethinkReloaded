@@ -183,6 +183,7 @@ impl Transport for DotTransport {
                         server: self.host.clone(),
                         pid,
                         latency,
+                        ..Default::default()
                     })
                 }
                 Ok(_) => {
