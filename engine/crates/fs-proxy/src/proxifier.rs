@@ -186,6 +186,7 @@ impl Proxifier {
             resolver: RwLock::new(None),
             rt: tokio::runtime::Handle::current(),
         });
+        crate::set_runtime(&px.rt);
         tokio::spawn(async move {
             while let Some((ev, id, hdl)) = rx.recv().await {
                 match ev {
@@ -595,7 +596,7 @@ impl Proxifier {
         let all: Vec<SharedProxy> = self.p.read().values().cloned().collect();
         let ids: Vec<String> = all.iter().map(|p| p.id().to_string()).collect();
         for p in all {
-            tokio::task::spawn_blocking(move || {
+            self.rt.spawn_blocking(move || {
                 let _ = p.refresh();
             });
         }
@@ -656,7 +657,7 @@ impl Proxifier {
         if old.as_ref().is_some_and(|x| x.handle() == v.handle()) {
             if !dryrun {
                 let o2 = o.clone();
-                tokio::task::spawn_blocking(move || o2.refresh());
+                self.rt.spawn_blocking(move || o2.refresh());
             }
             return Ok(()); // no change
         }
@@ -758,6 +759,19 @@ impl Proxifier {
 }
 
 /// Transports and other internal dialers dial through a proxy by its id.
+impl Proxifier {
+    /// `who`: one proxy id, or a csv of them to choose among for `dst` (firestack's transports `ProxyTo` their pids).
+    async fn dialer_for(&self, who: &str, dst: SocketAddr, proto: &str) -> io::Result<SharedProxy> {
+        if !who.contains(',') {
+            return self.proxy_for_wait(who).await.map_err(io::Error::other);
+        }
+        let pids: Vec<String> = who.split(',').map(|s| s.trim().to_string()).collect();
+        self.proxy_to("dns", dst, proto, "", "", &pids)
+            .await
+            .map_err(io::Error::other)
+    }
+}
+
 impl Dial for Proxifier {
     fn dial_tcp<'a>(
         &'a self,
@@ -766,13 +780,13 @@ impl Dial for Proxifier {
         timeout: Duration,
     ) -> Fut<'a, io::Result<TcpConn>> {
         Box::pin(async move {
-            let p = self.proxy_for_wait(who).await.map_err(io::Error::other)?;
+            let p = self.dialer_for(who, dst, "tcp").await?;
             p.dial_tcp(dst, timeout).await
         })
     }
     fn dial_udp<'a>(&'a self, who: &'a str, dst: SocketAddr) -> Fut<'a, io::Result<UdpConn>> {
         Box::pin(async move {
-            let p = self.proxy_for_wait(who).await.map_err(io::Error::other)?;
+            let p = self.dialer_for(who, dst, "udp").await?;
             p.dial_udp(dst).await
         })
     }

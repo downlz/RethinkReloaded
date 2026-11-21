@@ -123,6 +123,35 @@ engines; the gate run's 84.7 ms p95 did not reproduce in four further runs, and 
 the latency gate: repeat both engines several times in one session, and profile the callback lanes.
 Not yet measured: screen-off wakeups (Perfetto), `VpnStartupBenchmark`, a battery run, an armv7 device.
 
+### Phase 2 status (2026-11-21)
+
+| Area | Status |
+|---|---|
+| Proxy registry (`Proxies`): add/remove/get, `ProxyTo` (pins, stall, Auto → Exit), refresh, Router aggregates, listener callbacks | done |
+| SOCKS5 client (TCP, UDP associate, credentials), HTTP CONNECT client (Basic, 407 retry, TLS to `https://` proxies) | done |
+| WireGuard (gotatun + smoltcp per proxy): UAPI config, MTU reconciliation, status/stats, ping/refresh, pause/resume | done |
+| Hops (`hop` / `testHop`): firestack's rules; WireGuard family/announce/route/MTU checks; replaced vias keep origins | done |
+| DNS through Kotlin's proxies (`tid:pid`), `Intra.addProxyDNS` (WireGuard DNS transport, by address) | done |
+| Local servers (`Tunnel.getServices`, fs-rnet): SOCKS5 (CONNECT, UDP) and HTTP (CONNECT, plain) | done (unused by the v0.5.8 app) |
+| Exit gate, through the app on the Android 15 emulator against `engine/e2e/wg-peer` on the host | pass (below) |
+
+Exit gate runs (adb shell uid routed by the app; `fs-probe` echo/udp/get/ntp):
+
+| Check | Result |
+|---|---|
+| WireGuard to a local server (wg-peer, gotatun + userspace stack) | TCP echo, UDP echo, HTTP through the tunnel |
+| Multi-hop: inner peer reachable only inside the outer tunnel, set as a Relay in the app | TCP echo, UDP echo, HTTP two tunnels deep |
+| SOCKS5 UDP (app's SOCKS5 proxy → fs-rnet SOCKS5 server on the host) | NTP query and reply over UDP associate; TCP too |
+
+Bugs the e2e run found, now fixed and covered by tests: `getProxy`/`refreshProxies`/`hop` panicked off the runtime
+(Kotlin threads); a WireGuard hop never handshook (firestack refreshes on hop) and gotatun's unbounded
+`force_handshake` held the device lock; DNS ignored Kotlin's proxy choice; Kotlin's WireGuard DNS transport
+(`addProxyDNS`) was missing.
+
+Open items: the WireGuard list's rx/tx counters in the app did not visibly advance during the run, although engine
+counters do (unit-tested), so check the UI refresh path in the measurement pass. Kotlin does not restore a relay after
+a VPN restart (Kotlin's own state; check against the Go engine).
+
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the
   facade, but they permanently throw `rpn: unsupported`.

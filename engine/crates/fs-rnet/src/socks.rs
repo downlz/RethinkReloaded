@@ -184,7 +184,14 @@ async fn associate(s: &Arc<Server>, mut c: TcpStream, from: SocketAddr) {
             return;
         }
     };
-    let Ok(bound) = sock.local_addr() else { return };
+    let Ok(mut bound) = sock.local_addr() else {
+        return;
+    };
+    if bound.ip().is_loopback() {
+        // clients behind a NAT or port forward (an emulator, adb) cannot reach our loopback by its address:
+        // unspecified tells them to use the address they connected to
+        bound.set_ip(IpAddr::V4(Ipv4Addr::UNSPECIFIED));
+    }
     if reply(&mut c, REP_OK, Some(bound)).await.is_err() {
         return;
     }

@@ -23,5 +23,9 @@ smoltcp = { version = "0.14", default-features = false, features = ["std", "log"
 parking_lot.workspace = true
 tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util"] }
 
+[features]
+# wg::peer: an in-process WireGuard far end (tests, e2e/wg-peer)
+peer = []
+
 [dev-dependencies]
 tokio = { workspace = true, features = ["net", "time", "rt", "macros", "sync", "io-util", "rt-multi-thread"] }

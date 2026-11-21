@@ -17,6 +17,8 @@
 //! stack; Kotlin sees firestack's status machine (TUP → TOK / TKO / TNT / TZZ, TPU, END) and stats.
 
 pub mod config;
+#[cfg(any(test, feature = "peer"))]
+pub mod peer;
 pub mod stack;
 
 use crate::upstream::HostResolver;
@@ -437,6 +439,8 @@ impl WgProxy {
         let me = Arc::downgrade(self);
         self.handle.spawn(async move {
             let Some(w) = me.upgrade() else { return };
+            // held through the build: a hop meanwhile waits for the device, then rebinds it
+            let mut slot = w.dev.clone().lock_owned().await;
             let peers = w.peers().await;
             let cfg = w.cfg.read().clone();
             let built = DeviceBuilder::new()
@@ -454,7 +458,8 @@ impl WgProxy {
                 .await;
             match built {
                 Ok(d) => {
-                    *w.dev.lock().await = Some(d);
+                    *slot = Some(d);
+                    drop(slot);
                     // first handshakes now rather than on the first packet
                     w.ping();
                 }
@@ -710,15 +715,22 @@ impl Proxy for WgProxy {
             _ => false,
         };
         *self.st.via.lock() = via.as_ref().map(Arc::downgrade);
-        if !same {
-            let dev = self.dev.clone();
-            self.handle.spawn(async move {
-                if let Some(d) = dev.lock().await.as_ref() {
+        // firestack swaps the via and refreshes: rebind (waiting out a device still being built), then handshake
+        // now, as a proxy that never was ok gets no flows to start one
+        let (dev, cfg, resolver) = (
+            self.dev.clone(),
+            self.cfg.read().clone(),
+            self.resolver.clone(),
+        );
+        self.handle.spawn(async move {
+            if let Some(d) = dev.lock().await.as_mut() {
+                if !same {
                     d.suspend().await;
                     let _ = d.resume().await;
                 }
-            });
-        }
+                handshake_all(d, &cfg, &resolver).await;
+            }
+        });
         Ok(())
     }
     fn pause(&self) -> bool {
@@ -785,17 +797,8 @@ impl Proxy for WgProxy {
         let cfg = self.cfg.read().clone();
         let resolver = self.resolver.clone();
         self.handle.spawn(async move {
-            let mut g = dev.lock().await;
-            let Some(d) = g.as_mut() else { return };
-            for p in &cfg.peers {
-                let key = PublicKey::from(p.public_key);
-                for e in &p.endpoints {
-                    if let Some(a) = resolve(&resolver, e).await.first() {
-                        let _ = d.modify_peer(&key, |m| m.set_endpoint(Some(*a))).await;
-                        break;
-                    }
-                }
-                let _ = d.force_handshake(&key).await;
+            if let Some(d) = dev.lock().await.as_mut() {
+                handshake_all(d, &cfg, &resolver).await;
             }
         });
         true
@@ -839,6 +842,24 @@ impl WgProxy {
     }
 }
 
+/// A handshake with every peer, re-resolving endpoints (firestack `Ping`).
+async fn handshake_all(d: &mut Dev, cfg: &WgCfg, resolver: &Option<HostResolver>) {
+    for p in &cfg.peers {
+        let key = PublicKey::from(p.public_key);
+        for e in &p.endpoints {
+            if let Some(a) = resolve(resolver, e).await.first() {
+                let _ = d.modify_peer(&key, |m| m.set_endpoint(Some(*a))).await;
+                break;
+            }
+        }
+        // gotatun waits for the handshake to complete, forever; the initiation is out on the first poll, so wait
+        // briefly (callers hold the device lock: an endpoint that never answers must not wedge the proxy)
+        let _ = tokio::time::timeout(HANDSHAKE_WAIT, d.force_handshake(&key)).await;
+    }
+}
+
+const HANDSHAKE_WAIT: Duration = Duration::from_millis(500);
+
 fn status_str(s: i32) -> &'static str {
     match s {
         TKO => "notok",
@@ -858,86 +879,7 @@ mod tests {
     use fs_core::bridge::AllowAllBridge;
     use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-    /// The far end's bind: a loopback socket, or a socket inside another far end's stack.
-    struct Plain(UdpConn);
-    #[derive(Clone)]
-    struct PlainIo(UdpConn);
-    impl UdpTransportFactory for Plain {
-        type Send = PlainIo;
-        type Recv = PlainIo;
-        async fn bind(&mut self, _: &UdpTransportFactoryParams) -> io::Result<(PlainIo, PlainIo)> {
-            Ok((PlainIo(self.0.clone()), PlainIo(self.0.clone())))
-        }
-    }
-    impl UdpSend for PlainIo {
-        type SendManyBuf = ();
-        async fn send_to(&self, p: Packet, dst: SocketAddr) -> io::Result<()> {
-            self.0.send_to(&p, dst).await.map(|_| ())
-        }
-    }
-    impl UdpRecv for PlainIo {
-        type RecvManyBuf = ();
-        async fn recv_from(
-            &mut self,
-            pool: &mut PacketBufPool,
-        ) -> io::Result<(Packet, SocketAddr)> {
-            let mut b = pool.get();
-            let (n, a) = self.0.recv_from(&mut b).await?;
-            b.truncate(n);
-            Ok((b, canon(a)))
-        }
-    }
-
-    /// A WireGuard peer (key `sk`, tunnel address `addr`) accepting `client` (`client_ip`) over `bind`, with
-    /// TCP and UDP echo on port 7 inside its tunnel.
-    async fn far_end(
-        sk: [u8; 32],
-        client: [u8; 32],
-        client_ip: &str,
-        addr: &str,
-        bind: UdpConn,
-    ) -> (impl Sized, Arc<Stack>) {
-        let (tx, rx) = mpsc::channel(1024);
-        let server = Stack::new(&[config::Net::parse(addr).unwrap()], 1420, tx);
-        let dev = DeviceBuilder::new()
-            .with_udp(Plain(bind))
-            .with_ip_pair(ToStack(server.clone()), FromStack { rx, mtu: 1420 })
-            .with_private_key(StaticSecret::from(sk))
-            .with_peer(
-                Peer::new(PublicKey::from(client)).with_allowed_ip(client_ip.parse().unwrap()),
-            )
-            .build()
-            .await
-            .unwrap();
-        let s2 = server.clone();
-        tokio::spawn(async move {
-            loop {
-                let Ok(mut c) = s2.accept(7).await else {
-                    return;
-                };
-                tokio::spawn(async move {
-                    let mut b = [0u8; 64];
-                    while let Ok(n) = c.read(&mut b).await {
-                        if n == 0 || c.write_all(&b[..n]).await.is_err() {
-                            break;
-                        }
-                    }
-                });
-            }
-        });
-        let us = server.udp_on(7).unwrap();
-        tokio::spawn(async move {
-            let mut b = [0u8; 1500];
-            while let Ok((n, from)) = fs_dialers::Datagram::recv_from(&us, &mut b).await {
-                let _ = fs_dialers::Datagram::send_to(&us, &b[..n], from).await;
-            }
-        });
-        (dev, server)
-    }
-
-    fn pubkey(k: [u8; 32]) -> [u8; 32] {
-        PublicKey::from(&StaticSecret::from(k)).to_bytes()
-    }
+    use peer::{far_end, pubkey};
 
     fn client_cfg(
         ck: [u8; 32],
@@ -1016,6 +958,8 @@ mod tests {
         )
         .unwrap();
         assert_eq!(wg1.mtu(), Some(1420), "1340 inside + 80");
+        // as in the app: wg0 is up (its direct handshakes failing) before Kotlin sets the hop
+        tokio::time::sleep(Duration::from_secs(1)).await;
         wg0.hop(Some(wg1.clone()), true).unwrap();
         assert_eq!(
             wg0.mtu.load(Ordering::Relaxed),
@@ -1027,12 +971,32 @@ mod tests {
         assert_eq!(wg0.mtu.load(Ordering::Relaxed), 1260);
         assert_eq!(wg0.via().map(|v| v.handle()), Some(wg1.handle()));
 
+        // the hop itself handshakes (as firestack's refresh): without it, a proxy that never was ok gets no flows
+        let t = std::time::Instant::now();
+        while wg0.stat().last_ok <= 0 {
+            assert!(
+                t.elapsed() < Duration::from_secs(10),
+                "no handshake over the hop: {:?}",
+                wg0.stat()
+            );
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+
+        let (rx0, orx0) = (wg0.stat().rx, wg1.stat().rx);
         let mut c = wg0
             .dial_tcp("10.8.0.1:7".parse().unwrap(), Duration::from_secs(15))
             .await
             .unwrap();
         echo(&mut c, b"two tunnels deep").await;
+        assert!(
+            wg0.stat().rx > rx0 && wg1.stat().rx > orx0,
+            "data counts, not just handshakes"
+        );
         assert!(wg1.stat().rx > 0, "the outer tunnel carried the inner one");
+        let st = wg0.stat();
+        eprintln!("wg0 after hop: status {} {st:?}", wg0.status());
+        assert!(st.rx > 0 && st.tx > 0, "{st:?}");
+        assert_eq!(wg0.status(), TOK, "{st:?}");
 
         // unhop: back to the network's MTU
         wg0.hop(None, false).unwrap();

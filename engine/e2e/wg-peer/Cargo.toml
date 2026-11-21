@@ -1,0 +1,16 @@
+[package]
+name = "wg-peer"
+description = "Host-side far end for e2e runs: WireGuard peers (outer, and inner inside it for multi-hop) and a SOCKS5 server with UDP"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+fs-core = { path = "../../crates/fs-core" }
+fs-dialers = { path = "../../crates/fs-dialers" }
+fs-proxy = { path = "../../crates/fs-proxy", features = ["peer"] }
+fs-rnet = { path = "../../crates/fs-rnet" }
+base64 = "0.22"
+tokio = { workspace = true, features = ["net", "time", "rt", "rt-multi-thread", "macros", "sync", "io-util", "signal"] }

@@ -273,11 +273,18 @@ fn override_proxy(pid: &str, ids_: &[&str]) -> String {
     pid.into()
 }
 
-/// Phase 1 dials only Base and Exit; other proxies (WireGuard, SOCKS5, …) arrive in Phase 2 and use Base.
+/// The proxies a transport dials through: Kotlin's pid csv (the dialer picks among them, firestack `ProxyTo`),
+/// Base when there are none.
 fn dial_pid(pidcsv: &str) -> String {
-    match pidcsv.split(',').next().map(str::trim) {
-        Some(EXIT) => EXIT.into(),
-        _ => BASE.into(),
+    let ids: Vec<&str> = pidcsv
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .collect();
+    if ids.is_empty() {
+        BASE.into()
+    } else {
+        ids.join(",")
     }
 }
 

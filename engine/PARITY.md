@@ -92,6 +92,11 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   peer endpoint and has a known MTU (`calcTunMtu` of the via's router MTU, reconciled). A SOCKS5 or HTTP proxy has no
   MTU (`errNoMtu`), so WireGuard hops only through WireGuard. A WireGuard router reports `calcNetMtu` (tunnel MTU
   + 80), as firestack.
+* DNS queries dial through the proxies Kotlin names in `TIDCSV` (`tid:pid`); with several, the first usable one
+  (`ProxyTo`). `Intra.addProxyDNS` registers a DNS53 transport with the proxy's id for its first DNS address;
+  firestack also accepts a host name there.
+* A hop (and a refresh) handshakes right away, as firestack's `Refresh`. Handshake waits are bounded to 500 ms;
+  gotatun's `force_handshake` otherwise waits forever for an unreachable peer.
 * Updating a WireGuard proxy re-creates it (firestack updates a running device in place when only peers changed).
 * gotatun's timers tick every 250 ms while a tunnel is up (Phase 4 tuning item).
 * Local servers (`Tunnel.getServices`, firestack `rnet`): SOCKS5 (CONNECT, UDP associate) and HTTP (CONNECT and

@@ -300,6 +300,18 @@ async fn hops() {
     assert!(px.test_hop("h1", "wgx").contains("announce"));
     assert!(px.test_hop("s5a", "wgx").contains("mtu"));
 
+    // Kotlin calls in on its own threads, off the runtime: idle-proxy pings and refreshes must not panic
+    let px2 = px.clone();
+    std::thread::spawn(move || {
+        assert!(px2.proxy_for("dead").is_ok(), "pings the failing proxy");
+        assert_eq!(px2.test_hop("s5a", "s5b"), "");
+        px2.hop("s5a", "s5b", false).unwrap();
+        px2.hop("s5a", "s5b", false).unwrap(); // unchanged: refreshes
+        assert!(!px2.refresh_proxies().is_empty());
+    })
+    .join()
+    .expect("no panics off the runtime");
+
     px.remove_proxy("s5a");
     assert!(px.hop("s5a", "s5b", false).is_err());
 }

@@ -4612,7 +4612,7 @@ pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addODoHTransport<'
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_addProxyDNS<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jobject, a1: sys::jobject) -> () {
-    unsafe { rt::enter::<'l, (), _>(env, "Intra.addProxyDNS", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = unsafe { JObject::from_raw(a1) }; rt::unimplemented("Intra.addProxyDNS") }) }
+    unsafe { rt::enter::<'l, (), _>(env, "Intra.addProxyDNS", true, |env| { let a0 = unsafe { JObject::from_raw(a0) }; let a1 = unsafe { JObject::from_raw(a1) }; crate::impls::tunnel::add_proxy_dns(env, a0, a1) }) }
 }
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_com_celzero_firestack_intra_Intra_build<'l>(env: *mut sys::JNIEnv, _class: sys::jclass, a0: sys::jboolean) -> sys::jstring {
@@ -5396,5 +5396,5 @@ pub extern "system" fn Java_go_Universe_00024proxyerror_error<'l>(env: *mut sys:
 }
 
 /// Natives with a real implementation (impls + struct accessors + runtime).
-pub const fn implemented_count() -> usize { 794 }
-pub const STUB_CENSUS: (usize, usize) = (162, 105); // (unimplemented, rpn)
+pub const fn implemented_count() -> usize { 795 }
+pub const STUB_CENSUS: (usize, usize) = (161, 105); // (unimplemented, rpn)

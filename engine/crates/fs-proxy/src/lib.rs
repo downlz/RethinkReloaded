@@ -252,6 +252,22 @@ pub fn candial(st: i32) -> Result<()> {
 }
 
 /// firestack `healthy`: local and no-op proxies are always fine; others must not be stopped or paused, and must
+/// The engine runtime, captured by the first `Proxifier`: work spawned from Kotlin threads (JNI calls are not
+/// on the runtime) lands there.
+static RT: std::sync::OnceLock<tokio::runtime::Handle> = std::sync::OnceLock::new();
+
+pub(crate) fn set_runtime(h: &tokio::runtime::Handle) {
+    let _ = RT.set(h.clone());
+}
+
+/// A handle to the runtime the caller is on, else the engine's.
+pub(crate) fn rt() -> tokio::runtime::Handle {
+    tokio::runtime::Handle::try_current()
+        .ok()
+        .or_else(|| RT.get().cloned())
+        .expect("proxy: no runtime (Proxifier not created)")
+}
+
 /// have been OK recently (an old proxy that never was, or was not for 10 min, is not); idle ones get pinged.
 pub fn healthy(p: &SharedProxy) -> Result<()> {
     if local(p.id()) || noop(p.typ()) {
@@ -268,13 +284,13 @@ pub fn healthy(p: &SharedProxy) -> Result<()> {
     let tzz = TZZ_TIMEOUT.as_millis() as i64;
     let ping = |p: &SharedProxy| {
         let p = p.clone();
-        tokio::spawn(async move {
+        rt().spawn(async move {
             p.ping();
         });
     };
     if (old_enough && never_ok) || beyond {
         let p2 = p.clone();
-        tokio::spawn(async move { p2.on_not_ok() });
+        rt().spawn(async move { p2.on_not_ok() });
         return Err(format!(
             "proxy: {} not ok; never ok? {never_ok} / stale? {beyond}",
             p.id()

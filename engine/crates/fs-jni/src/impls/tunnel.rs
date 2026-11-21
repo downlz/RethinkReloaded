@@ -209,6 +209,31 @@ pub fn add_dns_proxy(env: &mut JNIEnv, t: JObject, id: String, csv: String) -> F
     Ok(tunnel_of(env, &t)?.add_dns53(&id, &csv)?)
 }
 
+/// `Intra.addProxyDNS(t, proxy)`: a DNS53 transport to the proxy's DNS server, with the proxy's id (Kotlin then
+/// sends queries to it over that proxy). Only addresses: firestack also accepts a host name.
+pub fn add_proxy_dns(env: &mut JNIEnv, t: JObject, p: JObject) -> FsResult<()> {
+    let tun = tunnel_of(env, &t)?;
+    let px = rt::obj_of::<crate::impls::proxies::ProxyRef>(env, &p)
+        .map_err(|_| FsError::new("dns: not a proxy"))?
+        .0
+        .clone();
+    let csv = px.dns();
+    let first = csv.split(',').map(str::trim).find(|s| !s.is_empty());
+    let Some(first) = first else {
+        return Err(FsError::new(format!(
+            "dns: px: no proxy dns for {}",
+            px.id()
+        )));
+    };
+    if fs_dns::dns53::Dns53Transport::parse_servers(first).is_empty() {
+        return Err(FsError::new(format!(
+            "dns: px: {}: dns by name ({first}) unsupported",
+            px.id()
+        )));
+    }
+    Ok(tun.add_dns53(px.id(), first)?)
+}
+
 /// `Intra.setSystemDNS(t, ipcsv)`
 pub fn set_system_dns(env: &mut JNIEnv, t: JObject, csv: String) -> FsResult<()> {
     Ok(tunnel_of(env, &t)?.add_dns53(fs_dns::ids::SYSTEM, &csv)?)
