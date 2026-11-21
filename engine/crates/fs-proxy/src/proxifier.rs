@@ -148,6 +148,8 @@ pub struct Proxifier {
     events: mpsc::Sender<(Event, String, String)>,
     listener: Arc<dyn ProxyListener>,
     resolver: RwLock<Option<crate::upstream::HostResolver>>,
+    /// the engine runtime (proxies started from Kotlin's threads run their tasks here)
+    rt: tokio::runtime::Handle,
 }
 
 fn hdlstr(p: &SharedProxy) -> String {
@@ -182,6 +184,7 @@ impl Proxifier {
             events: tx,
             listener: listener.clone(),
             resolver: RwLock::new(None),
+            rt: tokio::runtime::Handle::current(),
         });
         tokio::spawn(async move {
             while let Some((ev, id, hdl)) = rx.recv().await {
@@ -215,6 +218,10 @@ impl Proxifier {
 
     pub fn host_resolver(&self) -> Option<crate::upstream::HostResolver> {
         self.resolver.read().clone()
+    }
+
+    pub fn runtime(&self) -> &tokio::runtime::Handle {
+        &self.rt
     }
 
     pub fn link_props(&self) -> LinkProps {

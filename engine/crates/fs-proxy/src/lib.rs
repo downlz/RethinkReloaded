@@ -19,6 +19,7 @@ pub mod http1;
 pub mod proxifier;
 pub mod socks5;
 pub mod upstream;
+pub mod wg;
 
 pub use proxifier::Proxifier;
 
@@ -379,7 +380,14 @@ pub fn add_proxy(px: &Arc<Proxifier>, id: &str, txt: &str) -> Result<SharedProxy
         return Err("proxy: add failed".into());
     }
     let p: SharedProxy = if is_wg(id) {
-        return Err(format!("proxy: {id}: wireguard arrives in phase 2 step 3"));
+        wg::WgProxy::new(
+            id,
+            txt,
+            px.protector().clone(),
+            px.host_resolver(),
+            &px.link_props(),
+            px.runtime().clone(),
+        )?
     } else if txt.is_empty() {
         builtin::Direct::basic(id, px.protector().clone())
     } else {
