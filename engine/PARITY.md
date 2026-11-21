@@ -119,6 +119,15 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   * Answers are not truncated for UDP clients (as DoH and DNS53 in this engine). firestack truncates DNSCrypt answers
     above the client's EDNS size.
 
+* ODoH (RFC 9230, firestack `doh/odoh.go`):
+  * HPKE via Cloudflare's odoh-rs.
+  * Queries go to the target, or through the relay with `targethost`/`targetpath`. Relay paths default to `/proxy`,
+    target paths to `/dns-query`.
+  * The target config comes from its HTTPS record (SvcParam 32769) and is cached for the record's TTL. firestack asks
+    the default DNS first, then 1.1.1.1 over DoH; here 1.1.1.1 over DoH is asked directly. Otherwise the config comes
+    from `/.well-known/odohconfigs`, cached 1 h. The source that worked last goes first.
+  * A client error (4xx) drops the cached config.
+
 ## Deliberate deviations
 * `RadixTree.getAny/hasAny`: when only the empty key matches, Go indexes `rev[-1]` and panics; Rust reports no match.
   The oracle recorded 90 such panics in 8040 operations.

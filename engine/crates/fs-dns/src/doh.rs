@@ -161,6 +161,39 @@ impl DohTransport {
         body: Vec<u8>,
         pid: &str,
     ) -> Result<(Vec<u8>, RdnsHeaders), QueryError> {
+        let get = self.use_get.load(Ordering::Relaxed);
+        let req = if get {
+            let q = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(&body);
+            let pq = self.url.path_and_query().map(|p| p.as_str()).unwrap_or("/");
+            let sep = if pq.contains('?') { '&' } else { '?' };
+            Req {
+                method: "GET",
+                path_and_query: format!("{pq}{sep}dns={q}"),
+                ctype: DNS_MESSAGE,
+                body: None,
+            }
+        } else {
+            Req {
+                method: "POST",
+                path_and_query: self
+                    .url
+                    .path_and_query()
+                    .map(|p| p.as_str())
+                    .unwrap_or("/")
+                    .to_string(),
+                ctype: DNS_MESSAGE,
+                body: Some(body),
+            }
+        };
+        self.send(req, pid).await
+    }
+
+    /// One HTTP request over the transport's connection (re-dialed once when it went stale).
+    pub(crate) async fn send(
+        &self,
+        req: Req,
+        pid: &str,
+    ) -> Result<(Vec<u8>, RdnsHeaders), QueryError> {
         let mut guard = self.conn.lock().await;
         let send = match guard.as_ref() {
             Some(s) => s.clone(),
@@ -171,7 +204,7 @@ impl DohTransport {
             }
         };
         drop(guard);
-        let r = self.request(send, body.clone()).await;
+        let r = self.request(send, &req).await;
         if let Err(e) = &r
             && e.status == dns_status::SEND_FAILED
         {
@@ -179,7 +212,7 @@ impl DohTransport {
             *self.conn.lock().await = None;
             let s = self.connect(pid).await?;
             *self.conn.lock().await = Some(s.clone());
-            return self.request(s, body).await;
+            return self.request(s, &req).await;
         }
         r
     }
@@ -187,44 +220,40 @@ impl DohTransport {
     async fn request(
         &self,
         send: h2::client::SendRequest<Bytes>,
-        body: Vec<u8>,
+        r: &Req,
     ) -> Result<(Vec<u8>, RdnsHeaders), QueryError> {
         let sendfail = |e: h2::Error| QueryError::new(dns_status::SEND_FAILED, format!("h2: {e}"));
         let mut send = send.ready().await.map_err(sendfail)?;
-        let get = self.use_get.load(Ordering::Relaxed);
-        let uri = if get {
-            let q = base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(&body);
-            let pq = self.url.path_and_query().map(|p| p.as_str()).unwrap_or("/");
-            let sep = if pq.contains('?') { '&' } else { '?' };
-            format!(
-                "https://{}:{}{pq}{sep}dns={q}",
-                self.url.host().unwrap_or(&self.host),
-                self.port
-            )
-        } else {
-            self.url.to_string()
-        };
+        let uri = format!(
+            "https://{}:{}{}",
+            self.url.host().unwrap_or(&self.host),
+            self.port,
+            r.path_and_query
+        );
         let mut req = http::Request::builder()
-            .method(if get { "GET" } else { "POST" })
+            .method(r.method)
             .uri(uri)
-            .header("content-type", "application/dns-message")
-            .header("accept", "application/dns-message");
-        if !get {
+            .header("accept", r.ctype);
+        if let Some(b) = &r.body {
             // Go's net/http always sends it; some front ends (Cloudflare) answer 400 without it
-            req = req.header("content-length", body.len().to_string());
+            req = req
+                .header("content-type", r.ctype)
+                .header("content-length", b.len().to_string());
+        } else if r.ctype == DNS_MESSAGE {
+            req = req.header("content-type", r.ctype);
         }
         let req = req
             .body(())
             .map_err(|e| QueryError::new(dns_status::INTERNAL_ERROR, e.to_string()))?;
-        let (resp, mut stream) = send.send_request(req, get).map_err(sendfail)?;
-        if !get {
+        let (resp, mut stream) = send.send_request(req, r.body.is_none()).map_err(sendfail)?;
+        if let Some(b) = &r.body {
             stream
-                .send_data(Bytes::from(body), true)
+                .send_data(Bytes::from(b.clone()), true)
                 .map_err(sendfail)?;
         }
         let resp = resp.await.map_err(sendfail)?;
         let status = resp.status();
-        if status.as_u16() == 404 || status.as_u16() == 405 {
+        if r.ctype == DNS_MESSAGE && (status.as_u16() == 404 || status.as_u16() == 405) {
             self.use_get.store(true, Ordering::Relaxed);
         }
         if !status.is_success() {
@@ -254,9 +283,21 @@ impl DohTransport {
     }
 }
 
+const DNS_MESSAGE: &str = "application/dns-message";
+
+/// An HTTP request over a DoH transport's connection.
+pub(crate) struct Req {
+    pub method: &'static str,
+    /// e.g. `/dns-query?dns=…`
+    pub path_and_query: String,
+    /// content type of the body, and the accepted response type
+    pub ctype: &'static str,
+    pub body: Option<Vec<u8>>,
+}
+
 /// firestack `rdnsHeaders`: what RethinkDNS upstreams say about an answer.
 #[derive(Debug, Default)]
-struct RdnsHeaders {
+pub(crate) struct RdnsHeaders {
     blocklists: String,
     region: String,
 }

@@ -403,6 +403,21 @@ impl Tunnel {
         Ok(())
     }
 
+    /// `Intra.addODoHTransport(t, id, relay, target, ipcsv)`: `ipcsv` are the relay's addresses, or the target's
+    /// when there is no relay.
+    pub fn add_odoh(&self, id: &str, relay: &str, target: &str, ipcsv: &str) -> Result<(), String> {
+        let t = fs_dns::odoh::OdohTransport::new(
+            id,
+            relay,
+            target,
+            parse_ips(ipcsv),
+            self.dialer(),
+            Some(self.host_resolver()),
+        )?;
+        self.sh.resolver.add(Arc::new(t));
+        Ok(())
+    }
+
     /// `Intra.addDNSCryptTransport(t, id, stamp)`: fetches the server's certificate (blocking the caller, as
     /// firestack), then serves `id` from it. Call from outside the runtime (JNI threads are).
     pub fn add_dnscrypt(&self, id: &str, stamp: &str) -> Result<(), String> {

@@ -28,6 +28,9 @@ chacha20 = "0.9"
 poly1305 = "0.8"
 x25519-dalek = "2"
 ring = "0.17"
+# ODoH (RFC 9230): HPKE-sealed queries (Cloudflare's odoh-rs, the counterpart of the odoh-go firestack uses)
+odoh-rs = "1"
+rand_core = "0.10"
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["net", "time", "rt", "macros", "io-util", "sync", "rt-multi-thread"] }

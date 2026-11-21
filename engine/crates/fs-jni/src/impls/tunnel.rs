@@ -234,6 +234,18 @@ pub fn add_proxy_dns(env: &mut JNIEnv, t: JObject, p: JObject) -> FsResult<()> {
     Ok(tun.add_dns53(px.id(), first)?)
 }
 
+/// `Intra.addODoHTransport(t, id, relay, target, ipcsv)`
+pub fn add_odoh(
+    env: &mut JNIEnv,
+    t: JObject,
+    id: String,
+    relay: String,
+    target: String,
+    ipcsv: String,
+) -> FsResult<()> {
+    Ok(tunnel_of(env, &t)?.add_odoh(&id, &relay, &target, &ipcsv)?)
+}
+
 /// `Intra.addDNSCryptTransport(t, id, stamp)`
 pub fn add_dnscrypt(env: &mut JNIEnv, t: JObject, id: String, stamp: String) -> FsResult<()> {
     Ok(tunnel_of(env, &t)?.add_dnscrypt(&id, &stamp)?)
