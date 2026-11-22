@@ -260,6 +260,83 @@ Found and fixed during the run:
 * The engine did not compile for 32-bit Android ABIs (`socklen_t`), so the app shipped a stale `libgojni`.
 * CI now lints armeabi-v7a and arm64-v8a with cargo-ndk.
 
+### Phase 4 status (2026-11-22)
+
+**Work done before the phone check** (branch `dnsmvp/phase4`):
+
+| Area | Result |
+|---|---|
+| Fuzzing (`engine/fuzz`, 8 targets, weekly CI) | 5-minute runs of every target are clean (1.2–6 million inputs each). Two panics found and fixed, both with regression tests: (1) the ICMP echo parser in the TUN reader sliced backwards on a short IPv4 total length, so any app could stop the VPN with one packet; (2) a non-ASCII character inside a WireGuard key |
+| AddressSanitizer | Unit tests of fs-jni, fs-dialers, fs-blocklist, fs-iptree and fs-dns pass, as do the 10 JVM host tests against an ASan `libgojni` (the real JNI path, including refnum GC). No reports |
+| Memory: on-device blocklists | Blocklist files are hashed with plain reads and mapped for random access. gotrie hashes through the mapping and keeps the whole ~180 MB trie resident. Emulator, 18 lists, 300 lookups: **app PSS 315 → 138 MB**; throughput and CPU unchanged |
+| Memory: code size | opt-level `s`/`z` saves less than 1 MB of PSS (all native code pages total about 4 MB), at +4% / +16% CPU. The release profile stays at opt-level 3 |
+| Memory: what else is resident (blocklists off) | Mostly the app: ART and app regions such as 43 MB of read-only anonymous memory that persists with the VPN stopped. The engine's own part is small, so the Phase 2 gate (whole-app PSS ≤ 80% of Go) mainly measures the app |
+| Release default switch | `rr-release.yml`: alpha tags build Rust prereleases; the repository variable `RR_ENGINE` (default `go`) sets the engine for other releases. Flipping it is a variable change, and Go stays selectable |
+| Soak (emulator, 2.9 h; 34 cycles of 100 uncached DNS queries, 20 TCP connects and a download) | No restarts; VPN up throughout. File descriptors flat (174–180); threads flat (66). Native heap swings between 27 and 31 MB and drifts up about 0.9 MB/h, slowing from 1.2 to 0.7 MB/h between the halves. That fits about 3,400 unique names filling the DNS and ALG caches; the phone soak will show whether it levels off |
+
+**Phone check (2026-11-22, Motorola Edge 60 Pro, Android 17; releaseDebug builds of both engines; Wi-Fi):**
+
+| Metric | Go | Rust | Gate | Result |
+|---|---|---|---|---|
+| Idle PSS, A/B median of 3, blocklists off | 156.9 MB | 135.5 MB (−14%) | ≤ 80% of Go | **fail** (86%, as in Phase 2). Without graphics (35 MB, equal for both): 121.9 vs 100.5 MB (82%) |
+| Idle context switches/min, A/B median of 3 | 4,419 | 1,250 (−72%) | ≤ Go | pass |
+| LAN download through the VPN | 168 Mbit/s | 197 Mbit/s (+17%) | ≥ 95% of Go | pass |
+| App CPU per GB | 45.6 s | 26.6 s (−42%) | ≤ Go | pass |
+| Cached DNS, 400 queries: p50 / p95 | 26.5 / 34.1 ms | 22.9 / 32.0 ms | p50 ≤ Go + 1 ms, p95 ≤ Go | pass |
+| Uncached DNS: p50 / p95 | 83 / 129 ms | 68 / 76 ms | | better |
+| Release APK `libgojni.so` (arm64) | 19.8 MB | 8.0 MB (after the strip fix) | | |
+
+Notes:
+* The three A/B runs of 40 cached queries showed a Rust p95 of up to 145 ms. The 400-query runs above, and the
+  baseline runs (Rust 24 ms, Go 94 ms), show that this was noise.
+* For the download, the app's "Do not route Private IPs" setting and the universal rules "Block port 80" and
+  "Block when DNS is bypassed" were switched off, as in Phase 2, and restored afterwards. With the first setting on,
+  LAN traffic skips the VPN entirely.
+* Desync on the real network: the traceroute measured 7 hops, a decoy went out at TTL 7, and the TLS handshake and
+  HTTP exchange to Cloudflare still succeeded. This is the full desync path, which the emulator could not show.
+* `Proxy.client` exit-IP lookup: the live test passes on the phone. The WireGuard UI card still needs a WireGuard
+  server with internet access to show it.
+* mDNS:
+  * In the app, `.local` names never reach mDNS on either engine: Kotlin pins a transport (`CachePreferred`) for
+    every query, and in firestack a pinned transport overrides the `.local` rule.
+  * Live test of the transport: it answers on the Mac (44 ms), but gets no answer on the phone's Wi-Fi.
+  * The likely cause is the choice of multicast egress interface on Android: an unbound socket with no
+    `IP_MULTICAST_IF`. This is not yet compared with Go.
+* Soak on the phone: stopped at the owner's request after 2 samples (stable). A long soak is still to do.
+* On-device blocklists on the phone: the app's blocklist download did not start, so this case was not measured on
+  the phone. The emulator measured 315 → 138 MB, and Go loads the trie the same way as before the fix.
+* Found during the run:
+  * Release APKs shipped the unstripped library (56 MB), because the app module has no NDK and AGP's strip step
+    copied it unchanged. The facade now strips it and keeps symbols under `build/rustSymbols`.
+  * `soak.sh` died on a SIGPIPE on the phone; fixed.
+
+**Decisions and follow-ups (2026-11-22):**
+* **Memory: accepted by the owner** as measured. Whole-app idle PSS is 86% of Go, against the original ≤ 80% gate;
+  without graphics it is 82%. With on-device blocklists on, Rust is far below Go. The whole-app gate mostly measures
+  the app's own regions.
+* **Phone soak: dropped.** The owner is running the release build on the phone for real-world testing instead.
+* **Relay restore after a restart:**
+  * A VPN restart keeps relays with both engines.
+  * An app restart (reboot, update, force-stop) lost them with both engines. Upstream's `WgHopMapDao` had
+    `getAllWgs` and `getAllRpn` swapped, so no WireGuard hop was ever reloaded, and each re-add stored a duplicate
+    row.
+  * Fixed in the fork (ledger entry in `FORK_CHANGES.md`). After a process restart the stored relay is re-applied,
+    and the inner tunnel handshakes through it.
+  * The Phase 2 open item ("Kotlin does not restore a relay") was this bug.
+* **mDNS:**
+  * Queries now go out of each LAN interface with TTL 255, and `getifaddrs` is resolved at run time for API 23.
+  * On the test Wi-Fi no multicast from the phone reaches the LAN at all, even from a plain socket outside the
+    engine, so live mDNS cannot be checked there.
+  * Against a real responder (macOS) the transport answers in about 30 ms.
+* **On-device blocklists on the phone:** the app's blocklist sheet shows its entries disabled and the download does
+  not start (with Go too), so this is app-side. It is left for the owner's testing.
+* **Release build installed on the phone** for testing: `v0.5.8-56-g7932aa61f`, Rust engine, releaseDebug
+  (release configuration, debug signing, so it upgrades the installed app in place).
+* **Not done:** setting `RR_ENGINE=rust` and tagging an alpha. Both wait for the owner's testing.
+
+Not done: an HWASan device run. The emulator system image is not HWASan, and ASan on the host covers the unsafe
+code paths.
+
 ## Explicit non-goals
 * **RPN** (Windscribe WIN, Exit64, PIP blind-RSA tokens). Kotlin still compiles against these APIs, so they exist in the
   facade, but they permanently throw `rpn: unsupported`.

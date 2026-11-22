@@ -1,0 +1,39 @@
+# RethinkReloaded: fuzz the engine's parsers (weekly, and on demand). See engine/fuzz/README.md.
+name: rr-fuzz
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: "seconds per target"
+        default: "300"
+permissions:
+  contents: read
+jobs:
+  fuzz:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [dns_msg, stamp, dnscrypt, odoh_config, wg_config, iptree, packets, proxy_server]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Nightly + cargo-fuzz
+        run: |
+          rustup toolchain install nightly --profile minimal
+          cargo install cargo-fuzz --locked --version 0.13.2
+      - name: Fuzz ${{ matrix.target }}
+        working-directory: engine/fuzz
+        run: |
+          mkdir -p corpus/${{ matrix.target }}
+          cp seeds/${{ matrix.target }}/* corpus/${{ matrix.target }}/ 2>/dev/null || true
+          cargo +nightly fuzz run -O ${{ matrix.target }} corpus/${{ matrix.target }} -- \
+            -max_total_time=${{ github.event.inputs.seconds || '300' }}
+      - name: Upload crash
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-crash-${{ matrix.target }}
+          path: engine/fuzz/artifacts/

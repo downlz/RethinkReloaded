@@ -67,10 +67,14 @@ pub fn parse_echo(p: &[u8]) -> Option<Echo> {
     match p.first()? >> 4 {
         4 => {
             let ihl = ((p[0] & 0x0f) as usize) * 4;
-            if p.len() < ihl + 8 || p[9] != 1 || p[ihl] != 8 || p[ihl + 1] != 0 {
+            if ihl < 20 || p.len() < ihl + 8 || p[9] != 1 || p[ihl] != 8 || p[ihl + 1] != 0 {
                 return None;
             }
             let total = (u16::from_be_bytes([p[2], p[3]]) as usize).min(p.len());
+            // a total length shorter than the headers is malformed (any app can write one into the tunnel)
+            if total < ihl + 8 {
+                return None;
+            }
             Some(Echo {
                 src: IpAddr::V4(Ipv4Addr::new(p[12], p[13], p[14], p[15])),
                 dst: IpAddr::V4(Ipv4Addr::new(p[16], p[17], p[18], p[19])),
@@ -85,6 +89,9 @@ pub fn parse_echo(p: &[u8]) -> Option<Echo> {
             let src: [u8; 16] = p[8..24].try_into().ok()?;
             let dst: [u8; 16] = p[24..40].try_into().ok()?;
             let total = (40 + u16::from_be_bytes([p[4], p[5]]) as usize).min(p.len());
+            if total < 48 {
+                return None; // payload shorter than the echo header
+            }
             Some(Echo {
                 src: IpAddr::V6(Ipv6Addr::from(src)),
                 dst: IpAddr::V6(Ipv6Addr::from(dst)),
@@ -257,6 +264,24 @@ mod tests {
             "1.1.1.1".parse().unwrap(),
             &icmp,
         )
+    }
+
+    #[test]
+    fn malformed_echoes_are_ignored() {
+        // fuzzer finds: total length below the header, short IHL, IPv6 echo without payload
+        let short_total = [
+            0x45, 0x1c, 0, 0, 0, 0, 0, 0, 0x40, 1, 0, 0, 10, 111, 59, 1, 1, 1, 1, 1, 8, 0, 0, 0, 1,
+            0, 1, 1,
+        ];
+        assert!(parse_echo(&short_total).is_none());
+        let mut small_ihl = short_total;
+        small_ihl[0] = 0x41;
+        assert!(parse_echo(&small_ihl).is_none());
+        let mut v6 = vec![0u8; 48];
+        v6[0] = 0x60;
+        v6[6] = 58;
+        v6[40] = 128;
+        assert!(parse_echo(&v6).is_none(), "payload length 0");
     }
 
     #[test]

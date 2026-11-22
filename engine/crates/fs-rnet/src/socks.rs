@@ -305,7 +305,7 @@ fn udp_header(dst: &str) -> Vec<u8> {
 }
 
 /// `("host:port", payload offset)`; fragments are dropped (as most servers do).
-fn parse_udp(b: &[u8]) -> Option<(String, usize)> {
+pub(crate) fn parse_udp(b: &[u8]) -> Option<(String, usize)> {
     if b.len() < 4 || b[2] != 0 {
         return None;
     }

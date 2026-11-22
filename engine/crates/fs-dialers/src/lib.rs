@@ -18,6 +18,7 @@
 
 pub mod conn;
 pub mod desync;
+pub mod mcast;
 pub mod split;
 pub use conn::{Datagram, Dial, Fut, SharedDial, TcpConn, UdpConn};
 

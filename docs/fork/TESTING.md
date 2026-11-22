@@ -101,6 +101,22 @@ adb shell am start -n io.github.downlz.rethinkreloaded/com.celzero.bravedns.ui.a
 * `engine/e2e/probe-app` is a separate APK, so it has its own UID. It is used for per-app firewall rules.
 * WireGuard is tested against a host `wg` / gotatun server.
 
+### Sanitizers and fuzzing
+* Fuzzing: `engine/fuzz` (see its README). It runs weekly in CI (`rr-fuzz.yml`).
+* AddressSanitizer for the engine's unit tests (nightly):
+  ```bash
+  cd engine && RUSTFLAGS=-Zsanitizer=address cargo +nightly test -Zbuild-std --target aarch64-apple-darwin \
+    --target-dir target/asan -p fs-jni -p fs-dialers -p fs-blocklist -p fs-iptree -p fs-dns --lib --tests
+  ```
+* AddressSanitizer for the real JNI path: build `fs-jni` the same way with `cargo +nightly build`, then run the JVM
+  host tests with
+  `-PrustHostLibDir=$PWD/engine/target/asan/aarch64-apple-darwin/debug -PhostPreload=<toolchain>/lib/rustlib/aarch64-apple-darwin/lib/librustc-nightly_rt.asan.dylib`.
+
+### Soak
+`engine/perf/soak.sh <hours> <cycle_minutes> <host> <port> <path>` keeps DNS, TCP and download traffic flowing
+through the VPN. Each cycle it samples PSS, native heap, file descriptors (debuggable builds) and threads. It reports
+growth per hour and stops if the app process restarts.
+
 ## 7. Performance and battery (physical arm64 + armv7 devices; Go baseline first)
 | Metric | Tool |
 |---|---|

@@ -72,9 +72,14 @@ fn key32(v: &str) -> Result<[u8; 32], String> {
     if b.len() != 64 {
         return Err("wg: key must be 64 hex chars".into());
     }
+    // bytes, not str slices: a non-ASCII character must be an error, not a char-boundary panic
+    let hex = |c: u8| (c as char).to_digit(16).map(|d| d as u8);
     let mut out = [0u8; 32];
     for (i, o) in out.iter_mut().enumerate() {
-        *o = u8::from_str_radix(&v[2 * i..2 * i + 2], 16).map_err(|e| format!("wg: key: {e}"))?;
+        match (hex(b[2 * i]), hex(b[2 * i + 1])) {
+            (Some(h), Some(l)) => *o = h << 4 | l,
+            _ => return Err("wg: key: invalid hex".into()),
+        }
     }
     Ok(out)
 }
@@ -189,6 +194,16 @@ mod tests {
 
     const K: &str = "e84b5a6d2717c1003a13b431570353dbaca9146cf150c5f8575680feba52027a";
     const P: &str = "b85996fecc9c7f1fc6d2572a76eda11d59bcd20be8e543b15ce4bd85a8e75a33";
+
+    #[test]
+    fn keys_reject_non_hex_without_panicking() {
+        // fuzzer find: a multi-byte character inside a 64-byte key split a str slice
+        let k = format!("{}\u{a0}{}", "1".repeat(13), "1".repeat(49));
+        assert_eq!(k.len(), 64);
+        assert!(key32(&k).is_err());
+        assert!(key32(&"g".repeat(64)).is_err());
+        assert_eq!(key32(&"0f".repeat(32)).unwrap(), [0x0f; 32]);
+    }
 
     #[test]
     fn firestack_config() {

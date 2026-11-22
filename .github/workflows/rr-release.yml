@@ -1,6 +1,7 @@
 # Builds and publishes signed RethinkReloaded fdroid APKs for fork release tags (vX.Y.Z-rr.N).
 # Secrets: RR_KS_BASE64 (base64 keystore), RR_KS_STORE_PASSWORD, RR_KS_ALIAS, RR_KS_KEY_PASSWORD.
-# See docs/fork/RELEASING.md.
+# Engine: tags with "-alpha" (vX.Y.Z-rr.N-alpha.M) build the Rust engine and publish a prerelease; other tags use the
+# repository variable RR_ENGINE ("go", the default, or "rust"). See docs/fork/RELEASING.md.
 name: rr-release
 
 on:
@@ -30,6 +31,28 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
+      - name: Engine
+        env:
+          RR_ENGINE: ${{ vars.RR_ENGINE }}
+        run: |
+          case "$TAG" in
+            *-alpha*) engine=rust; pre=true ;;
+            *) engine=${RR_ENGINE:-go}; pre=false ;;
+          esac
+          case "$engine" in
+            rust) flag=-PfirestackRepo=rust ;;
+            go) flag= ;;
+            *) echo "RR_ENGINE must be go or rust, not '$engine'"; exit 1 ;;
+          esac
+          echo "ENGINE=$engine" >> "$GITHUB_ENV"; echo "PRERELEASE=$pre" >> "$GITHUB_ENV"
+          echo "ENGINE_FLAG=$flag" >> "$GITHUB_ENV"
+          echo "engine: $engine (prerelease: $pre)"
+      - name: Rust toolchain + cargo-ndk (Rust engine)
+        if: env.ENGINE == 'rust'
+        working-directory: engine
+        run: |
+          rustup show
+          cargo install cargo-ndk --locked --version 4.1.2
       - name: Keystore
         env:
           RR_KS_BASE64: ${{ secrets.RR_KS_BASE64 }}
@@ -47,8 +70,8 @@ jobs:
           } > keystore.properties
       - name: Build
         run: |
-          rev=$(echo "$TAG" | sed -n 's/.*-rr\.\([0-9][0-9]*\)$/\1/p')
-          ./gradlew --no-daemon -PrrRevision="${rev:-0}" :app:assembleFdroidFullRelease
+          rev=$(echo "$TAG" | sed -n 's/.*-rr\.\([0-9][0-9]*\).*/\1/p')
+          ./gradlew --no-daemon -PrrRevision="${rev:-0}" $ENGINE_FLAG :app:assembleFdroidFullRelease
       - name: Collect APKs
         run: |
           mkdir dist
@@ -63,8 +86,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           base=${TAG%-rr.*}
+          engine_note="Network engine: Go (upstream firestack)."
+          [ "$ENGINE" = rust ] && engine_note="Network engine: RethinkReloaded's Rust port of firestack (experimental)."
           notes="RethinkReloaded $TAG, based on [celzero/rethink-app $base](https://github.com/celzero/rethink-app/releases/tag/$base).
 
+          $engine_note
+
           All credit for the app goes to Celzero and the rethink-app contributors. Upstream release notes: https://github.com/celzero/rethink-app/releases/tag/$base"
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "RethinkReloaded $TAG" --notes "$notes" --draft
+          pre=; [ "$PRERELEASE" = true ] && pre=--prerelease
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "RethinkReloaded $TAG" --notes "$notes" --draft $pre
           gh release upload "$TAG" dist/* --clobber

@@ -378,3 +378,9 @@ mod tests {
         assert_eq!(opened.into_msg().as_ref(), b"answer-bytes");
     }
 }
+
+/// Entry point for the fuzzers (`--cfg fuzzing`): an ODoH target's config list.
+#[cfg(fuzzing)]
+pub fn fuzz_config(raw: &[u8]) {
+    let _ = OdohTransport::first_config(raw);
+}

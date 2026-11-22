@@ -219,6 +219,10 @@ does (`https://dl.rethinkdns.com/{trie?compressed,rank?compressed,basicconfig,bl
   relays to OpenDNS on port 443 confirm the relay path works.
 
 ## Deliberate deviations
+* On-device blocklist files are hashed with plain reads, and their mapping is advised as random access. gotrie
+  hashes through the mapping, which keeps the whole trie resident: about 170 MB of `td.txt` plus 11 MB of `rd.txt`.
+  On the emulator, with 18 blocklists and 300 lookups, whole-app PSS dropped from 315 MB to 138 MB. Lookups and their
+  results are unchanged.
 * `Proxy.client()` skips firestack's second provider, Windscribe's geo API, because firestack calls it with a made-up
   bearer token and the fork does not send forged credentials to a third party. The remaining providers cover the
   same fields, except latitude and longitude, which the Cloudflare trace lacks.

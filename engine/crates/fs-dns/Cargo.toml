@@ -37,3 +37,6 @@ rand_core = "0.10"
 [dev-dependencies]
 tokio = { workspace = true, features = ["net", "time", "rt", "macros", "io-util", "sync", "rt-multi-thread"] }
 rustls-pki-types = "1.12"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(fuzzing)"] }

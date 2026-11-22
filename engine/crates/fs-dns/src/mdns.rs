@@ -8,7 +8,7 @@
 // Derived-From: celzero/firestack@d3d530ea3e:intra/dns53/mdns.go (oneshot queries)
 
 //! Multicast DNS (`Local`, RFC 6762 §5.1 one-shot queries): the question goes from unprotected-by-the-tunnel
-//! (protected) unicast sockets to 224.0.0.251:5353 and [ff02::fb]:5353; responses are collected for three seconds and
+//! (protected) unicast sockets to 224.0.0.251:5353 and [ff02::fb]:5353, out of each LAN interface with TTL 255; responses are collected for three seconds and
 //! the first one with an address for the queried name (or a CNAME target of it) answers. The answer is rebuilt
 //! around the app's question (mDNS responses carry no question section and id 0). Families follow the link.
 
@@ -79,7 +79,12 @@ impl MdnsTransport {
                 continue;
             }
             if let Ok(s) = self.dialer.announce_udp("Base", v6).await
-                && s.send_to(&wire, dst).await.is_ok()
+                && {
+                    // RFC 6762 §11: IP TTL 255 (sockets default to 1 for multicast)
+                    let _ = s.set_multicast_hops(v6, 255);
+                    // out of each LAN interface: Android's routing does not reliably put the group on the LAN
+                    s.send_multicast(&wire, dst).await.is_ok()
+                }
             {
                 socks.push(s);
             }

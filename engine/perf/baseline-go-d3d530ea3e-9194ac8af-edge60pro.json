@@ -1,0 +1,17 @@
+{
+  "label": "p4-go",
+  "captured": "2026-11-22T06:03:38Z",
+  "device": "motorola motorola edge 60 pro / Android 17 (API 37) / arm64-v8a",
+  "vpn": "io.github.downlz.rethinkreloaded",
+  "network": "Active default network: 873; Wi-Fi standard: 11ac;RSSI: -56;Link speed: 351Mbps;Link speed: 351Mbps;Link speed: 866Mbps;Rx Link speed: 585Mbps;Rx Link speed: 866Mbps",
+  "http_target": "<lan-host> 8000 /big.bin",
+  "firestack_pin": "d3d530ea3e",
+  "screen": "on (charging), idle = no user traffic",
+  "idle": {"label": "p4-go", "captured": "2026-11-22T06:02:11Z", "device": "motorola edge 60 pro / Android 17 / arm64-v8a", "emulator": false, "engine": "go", "firestack_pin": "d3d530ea3e", "libgojni_bytes": 19797608, "vpn_connected": true, "samples": [{"pss_kb": 127710, "native_heap_kb": 37240, "rss_kb": 219896, "threads": 83}, {"pss_kb": 124288, "native_heap_kb": 30104, "rss_kb": 218288, "threads": 83}, {"pss_kb": 111330, "native_heap_kb": 24220, "rss_kb": 203580, "threads": 82}, {"pss_kb": 110610, "native_heap_kb": 24220, "rss_kb": 203532, "threads": 82}, {"pss_kb": 110570, "native_heap_kb": 24220, "rss_kb": 203524, "threads": 82}, {"pss_kb": 110573, "native_heap_kb": 24220, "rss_kb": 203516, "threads": 82}, {"pss_kb": 110693, "native_heap_kb": 24220, "rss_kb": 203420, "threads": 82}, {"pss_kb": 110742, "native_heap_kb": 24228, "rss_kb": 203400, "threads": 82}, {"pss_kb": 110757, "native_heap_kb": 24240, "rss_kb": 203756, "threads": 82}, {"pss_kb": 110671, "native_heap_kb": 24240, "rss_kb": 203740, "threads": 82}]},
+  "wakeups": {"ctx_switches_per_min":2210,"threads":82},
+  "dns_uncached": {"cmd":"dns","server":"10.111.222.3:53","mode":"uncached","count":40,"ok":40,"fail":0,"p50_ms":83.09,"p95_ms":129.10,"max_ms":148.30},
+  "dns_cached": {"cmd":"dns","server":"10.111.222.3:53","mode":"cached","count":40,"ok":40,"fail":0,"p50_ms":29.23,"p95_ms":93.98,"max_ms":127.65},
+  "tcp_connect": {"cmd":"tcp","target":"1.1.1.1:443","count":20,"ok":20,"fail":0,"p50_ms":4.18,"p95_ms":5.82,"max_ms":5.91},
+  "download": {"cmd":"get","url":"http://<lan-host>:8000/big.bin","connect_ms":4.1,"ttfb_ms":81.9,"bytes":314573007,"seconds":15.00,"mbit_s":167.82},
+  "app_cpu_seconds_per_gb": 45.55
+}

@@ -25,6 +25,7 @@ Fork-owned paths need no ledger entry because upstream never has them:
 | `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt` | legacy prefs file name from `BuildConfig.APPLICATION_ID` | "LAN traffic" setting reset on every update | yes |
 | `benchmark/src/main/java/com/celzero/bravedns/benchmark/VpnStartupBenchmark.kt` | target package `io.github.downlz.rethinkreloaded` | upstream's package would benchmark the original Rethink app installed next to the fork | no |
 | `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt` | append fork credit (`R.string.rr_fork_credit`) under the About header | attribution to Celzero in-app | no |
+| `app/src/main/java/com/celzero/bravedns/database/WgHopMapDao.kt` | `getAllWgs` / `getAllRpn` queries swapped back | WireGuard relays were lost on every app restart (reboot, update) and re-adding one stored a duplicate row; seen with both engines | yes |
 
 <!-- ledger:begin -->
 - `.gitignore`
@@ -36,6 +37,7 @@ Fork-owned paths need no ledger entry because upstream never has them:
 - `app/src/main/java/com/celzero/bravedns/ui/HomeScreenActivity.kt`
 - `app/src/main/java/com/celzero/bravedns/ui/fragment/AboutFragment.kt`
 - `benchmark/src/main/java/com/celzero/bravedns/benchmark/VpnStartupBenchmark.kt`
+- `app/src/main/java/com/celzero/bravedns/database/WgHopMapDao.kt`
 <!-- ledger:end -->
 
 ## Disabled upstream workflows (via `gh workflow disable`, files untouched)

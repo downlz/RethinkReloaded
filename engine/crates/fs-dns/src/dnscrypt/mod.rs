@@ -675,3 +675,13 @@ mod tests {
         }
     }
 }
+
+/// Entry points for the fuzzers (`--cfg fuzzing`).
+#[cfg(fuzzing)]
+pub mod fuzz {
+    pub fn intercept(b: &[u8]) {
+        let _ = super::intercept_request(b);
+        let _ = super::intercept_response(b);
+        let _ = super::crypto::unpad(b);
+    }
+}
