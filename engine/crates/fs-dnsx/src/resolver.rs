@@ -709,9 +709,9 @@ impl Resolver {
     }
 
     /// firestack `preferencesFrom` (tunnel queries: no pre-chosen tids; undelegated/mDNS overrides not ported).
-    /// firestack `requiresGoosOrLocal`: mDNS names go to `Local`; undelegated names to the system resolver when
-    /// Kotlin asks for it (`Intra.undelegatedDomains`). The port has no mDNS transport yet (Phase 3), so `.local`
-    /// names keep their normal route until one exists.
+    /// firestack `requiresGoosOrLocal`: mDNS names (`.local`, DNS-SD) go to the mDNS transport (`Local`, added at
+    /// tunnel connect); undelegated names to the system resolver when Kotlin asks for it
+    /// (`Intra.undelegatedDomains`).
     fn requires_goos_or_local(&self, qname: &str) -> &'static str {
         if (qname.ends_with(".local") || undelegated::is_mdns_query(qname))
             && self.get(LOCAL).is_some()

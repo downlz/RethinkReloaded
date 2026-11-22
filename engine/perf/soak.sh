@@ -27,7 +27,8 @@ while [ "$(date +%s)" -lt "$end" ]; do
   nat=$(echo "$m" | awk '/^ *Native Heap:/ && !d {print $3; d=1}')
   fds=$(sh "run-as $pkg ls /proc/$pid/fd 2>/dev/null | wc -l")
   thr=$(sh "ls /proc/$pid/task | wc -l")
-  vpn=$(sh dumpsys vpn_management | awk '/Active vpn type:/ {print ($4 != "-1") ? 1 : 0; exit}')
+  # no early `exit` in awk: under pipefail the closed pipe (SIGPIPE) would end the script
+  vpn=$(sh dumpsys vpn_management | awk '/Active vpn type:/ && !d {print ($4 != "-1") ? 1 : 0; d=1}')
   el=$(( $(date +%s) - t0 ))
   samples="$samples{\"s\":$el,\"pss_kb\":${pss:-0},\"native_heap_kb\":${nat:-0},\"fds\":${fds:-0},\"threads\":${thr:-0},\"vpn\":${vpn:-0}},"
   echo "t=${el}s pss $pss native $nat fds $fds threads $thr vpn $vpn" >&2

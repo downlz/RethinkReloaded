@@ -76,6 +76,25 @@ val cargoNdk by tasks.registering(Exec::class) {
         listOf("cargo", "ndk", "--platform", "23") + abiArgs +
             listOf("-o", out.absolutePath, "build", "--locked", "--profile", rustProfile, "-p", "fs-jni")
     )
+    // Split symbols out (the app module has no NDK, so AGP's strip step copies libraries unchanged): keep the
+    // unstripped library for symbolizing crash reports under build/rustSymbols/<abi>/ and ship a stripped one
+    // (llvm-strip --strip-all keeps .dynsym, i.e. JNI_OnLoad and the Java_* exports).
+    val symbols = layout.buildDirectory.dir("rustSymbols").get().asFile
+    val abis = rustAbis
+    val hostTag = if (System.getProperty("os.name").lowercase().contains("mac")) "darwin-x86_64" else "linux-x86_64"
+    outputs.dir(symbols)
+    doLast {
+        val strip = File(ndk.get().asFile, "toolchains/llvm/prebuilt/$hostTag/bin/llvm-strip")
+        for (abi in abis) {
+            val lib = File(out, "$abi/libgojni.so")
+            if (!lib.exists()) continue
+            val keep = File(symbols, "$abi/libgojni.so")
+            keep.parentFile.mkdirs()
+            lib.copyTo(keep, overwrite = true)
+            val p = ProcessBuilder(strip.absolutePath, "--strip-all", lib.absolutePath).inheritIO().start()
+            check(p.waitFor() == 0) { "llvm-strip failed for $lib" }
+        }
+    }
 }
 
 tasks.configureEach {
