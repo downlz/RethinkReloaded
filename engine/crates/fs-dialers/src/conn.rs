@@ -120,6 +120,22 @@ impl From<UdpSocket> for UdpConn {
 }
 
 impl UdpConn {
+    /// Multicast TTL / IPv6 hop limit for a plain socket (RFC 6762 §11: mDNS uses 255; sockets default to 1, which
+    /// some responders drop). No-op for sockets of other stacks.
+    pub fn set_multicast_hops(&self, v6: bool, hops: u32) -> io::Result<()> {
+        match self {
+            UdpConn::Sock(s) => {
+                let r = socket2::SockRef::from(s.as_ref());
+                if v6 {
+                    r.set_multicast_hops_v6(hops)
+                } else {
+                    r.set_multicast_ttl_v4(hops)
+                }
+            }
+            UdpConn::Dyn(_) => Ok(()),
+        }
+    }
+
     pub async fn send(&self, b: &[u8]) -> io::Result<usize> {
         match self {
             UdpConn::Sock(s) => s.send(b).await,
