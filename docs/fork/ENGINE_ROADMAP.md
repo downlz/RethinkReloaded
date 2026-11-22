@@ -310,13 +310,29 @@ Notes:
     copied it unchanged. The facade now strips it and keeps symbols under `build/rustSymbols`.
   * `soak.sh` died on a SIGPIPE on the phone; fixed.
 
-**Still open:**
-* The memory-gate decision (see below).
-* A long phone soak.
-* mDNS egress on Android.
-* Relay restore after a VPN restart, compared with Go (emulator).
-* The phone with blocklists on.
-* Then set `RR_ENGINE=rust`.
+**Decisions and follow-ups (2026-11-22):**
+* **Memory: accepted by the owner** as measured. Whole-app idle PSS is 86% of Go, against the original ≤ 80% gate;
+  without graphics it is 82%. With on-device blocklists on, Rust is far below Go. The whole-app gate mostly measures
+  the app's own regions.
+* **Phone soak: dropped.** The owner is running the release build on the phone for real-world testing instead.
+* **Relay restore after a restart:**
+  * A VPN restart keeps relays with both engines.
+  * An app restart (reboot, update, force-stop) lost them with both engines. Upstream's `WgHopMapDao` had
+    `getAllWgs` and `getAllRpn` swapped, so no WireGuard hop was ever reloaded, and each re-add stored a duplicate
+    row.
+  * Fixed in the fork (ledger entry in `FORK_CHANGES.md`). After a process restart the stored relay is re-applied,
+    and the inner tunnel handshakes through it.
+  * The Phase 2 open item ("Kotlin does not restore a relay") was this bug.
+* **mDNS:**
+  * Queries now go out of each LAN interface with TTL 255, and `getifaddrs` is resolved at run time for API 23.
+  * On the test Wi-Fi no multicast from the phone reaches the LAN at all, even from a plain socket outside the
+    engine, so live mDNS cannot be checked there.
+  * Against a real responder (macOS) the transport answers in about 30 ms.
+* **On-device blocklists on the phone:** the app's blocklist sheet shows its entries disabled and the download does
+  not start (with Go too), so this is app-side. It is left for the owner's testing.
+* **Release build installed on the phone** for testing: `v0.5.8-56-g7932aa61f`, Rust engine, releaseDebug
+  (release configuration, debug signing, so it upgrades the installed app in place).
+* **Not done:** setting `RR_ENGINE=rust` and tagging an alpha. Both wait for the owner's testing.
 
 Not done: an HWASan device run. The emulator system image is not HWASan, and ASan on the host covers the unsafe
 code paths.
