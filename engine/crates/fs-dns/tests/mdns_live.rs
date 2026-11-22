@@ -23,7 +23,9 @@ async fn resolves_a_lan_host() {
     let Ok(name) = std::env::var("RR_MDNS_NAME") else {
         return;
     };
-    let t = Arc::new(MdnsTransport::new(Arc::new(Protector::new(Arc::new(AllowAllBridge)))));
+    let t = Arc::new(MdnsTransport::new(Arc::new(Protector::new(Arc::new(
+        AllowAllBridge,
+    )))));
     t.refresh_proto("4");
     let q = msg::pack(&msg::query(&format!("{name}."), RecordType::A, 0x6d64).unwrap()).unwrap();
     let a = t.query(q, "Base".into()).await.expect("an mDNS answer");

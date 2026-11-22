@@ -52,7 +52,9 @@ fn mmap(path: &Path) -> Result<(Mmap, String), String> {
     let mut h = Md5::new();
     let mut buf = vec![0u8; 256 * 1024];
     loop {
-        let n = f.read(&mut buf).map_err(|e| format!("trie: {}: {e}", path.display()))?;
+        let n = f
+            .read(&mut buf)
+            .map_err(|e| format!("trie: {}: {e}", path.display()))?;
         if n == 0 {
             break;
         }
