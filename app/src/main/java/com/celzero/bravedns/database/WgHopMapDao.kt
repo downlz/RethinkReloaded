@@ -43,9 +43,11 @@ interface WgHopMapDao {
 
     @Query("select * from WgHopMap where src = :src") fun getBySrc(src: String): WgHopMap?
 
-    @Query("select * from WgHopMap where src like '$ID_RPN%'") fun getAllWgs(): List<WgHopMap>
+    // [rr] the two queries were swapped (WireGuard relays were never reloaded after an app restart)
+    @Query("select * from WgHopMap where src like '$ID_WG_BASE%'") fun getAllWgs(): List<WgHopMap>
 
-    @Query("select * from WgHopMap where src like '$ID_WG_BASE%'") fun getAllRpn(): List<WgHopMap>
+    // [rr] see getAllWgs
+    @Query("select * from WgHopMap where src like '$ID_RPN%'") fun getAllRpn(): List<WgHopMap>
 
     @Query("delete from WgHopMap") fun deleteAll()
 }
